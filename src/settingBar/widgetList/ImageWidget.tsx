@@ -1,19 +1,14 @@
 import React, { useState } from "react";
-import { Button, Col, Figure, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { nanoid } from "nanoid";
 import presetImageList from "../../config/image.json";
 import { ImageItemKind } from "../../view/object/image";
-import colorStyles from "../../style/color.module.css";
-import borderStyles from "../../style/border.module.css";
 import sizeStyles from "../../style/size.module.css";
-import spaceStyles from "../../style/space.module.css";
-import displayStyles from "../../style/display.module.css";
-import alignStyles from "../../style/align.module.css";
-import fontStyles from "../../style/font.module.css";
 import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
 import useImageAsset from "../../hook/useImageAsset";
 import useI18n from "../../hook/usei18n";
+import colorMapping from "../../config/colorMapping";
 
 export const IMAGE_LIST_KEY = "importedImage";
 
@@ -28,9 +23,38 @@ const ImageWidget: React.FC = () => {
     return [...presetImageList];
   });
 
+  const getKeywordList = (image: any) => {
+    return [
+      {
+        type: "action",
+        keyword: "running",
+        position: {
+          x: 0.4,
+          y: 0.3,
+        },
+      },
+      {
+        type: "object",
+        keyword: "butterfly",
+        position: {
+          x: 0.4,
+          y: 0.3,
+        },
+      },
+      {
+        type: "layout",
+        position: {
+          x: 0.4,
+          y: 0.3,
+        },
+      },
+    ];
+  };
+
   const uploadImage = () => {
     const fileReader = new FileReader();
     fileReader.onload = () => {
+      const keywordList = getKeywordList(fileReader.result);
       setImageAssetList((prev) => {
         const result = [
           {
@@ -38,6 +62,7 @@ const ImageWidget: React.FC = () => {
             id: nanoid(),
             name: "imported image",
             src: fileReader.result as string,
+            keywords: keywordList,
           },
           ...prev,
         ];
@@ -60,27 +85,13 @@ const ImageWidget: React.FC = () => {
   };
 
   return (
-    <Col className={[sizeStyles["mx-h-30vh"]].join(" ")}>
-      <Row>
-        <h6>
-          {getTranslation("widget", "image", "name")}
-          <Button
-            className={[
-              colorStyles.transparentDarkColorTheme,
-              borderStyles.none,
-              displayStyles["inline-block"],
-              sizeStyles.width25,
-              spaceStyles.p0,
-              spaceStyles.ml1rem,
-              alignStyles["text-left"],
-            ].join(" ")}
-            onClick={uploadImage}
-          >
-            <i className="bi-plus" />
-          </Button>
-        </h6>
-      </Row>
-      <Row xs={2}>
+    <Col className={[sizeStyles["mx-h-50vh"]].join(" ")}>
+      <Button className="w-100 mb-3" size="sm" onClick={uploadImage}>
+        <i className="bi-plus" />
+        Import Image
+      </Button>
+
+      <Row xs={1}>
         {imageAssetList.map((_data) => (
           <ImageThumbnail
             key={`image-thumbnail-${_data.id}`}
@@ -88,9 +99,10 @@ const ImageWidget: React.FC = () => {
               id: _data.id,
               src: _data.src ?? `find:${_data.id}`,
               name: _data.name,
+              keywords: _data.keywords,
               "data-item-type": _data.type,
             }}
-            maxPx={80}
+            maxPx={200}
           />
         ))}
       </Row>
@@ -105,32 +117,52 @@ const ImageThumbnail: React.FC<{
   data: Omit<ImageItemKind, "image">;
 }> = ({ data: { id, ...data }, maxPx }) => {
   const { getImageAssetSrc } = useImageAsset();
+  const [selectedKeywords, setSelectedKeywords] = useState<any[]>([]);
   return (
-    <Figure as={Col} className={[alignStyles.absoluteCenter, alignStyles.wrapTrue].join(" ")}>
-      <Drag
-        dragType="copyMove"
-        dragSrc={{
-          trigger: TRIGGER.INSERT.IMAGE,
-          "data-item-type": data["data-item-type"],
-          src: data.src.startsWith("data:")
-            ? data.src
-            : `${process.env.PUBLIC_URL}/assets/image/${data.src}`,
-        }}
-      >
-        <Figure.Image
-          alt={data.name}
-          src={
-            data.src.startsWith("data:")
+    <div>
+      <Form>
+        <Drag
+          dragType="copyMove"
+          dragSrc={{
+            trigger: TRIGGER.INSERT.IMAGE,
+            "data-item-type": data["data-item-type"],
+            src: data.src.startsWith("data:")
               ? data.src
-              : `${process.env.PUBLIC_URL}/assets/image/${data.src}`
-          }
-        />
-      </Drag>
-      <Figure.Caption
-        className={[fontStyles.font075em, sizeStyles.width100, "text-center"].join(" ")}
-      >
-        {data.name}
-      </Figure.Caption>
-    </Figure>
+              : `${process.env.PUBLIC_URL}/assets/image/${data.src}`,
+            keywords: selectedKeywords,
+          }}
+        >
+          <img
+            alt={data.name}
+            style={{ maxWidth: `${maxPx}px`, maxHeight: `${maxPx}px` }}
+            src={
+              data.src.startsWith("data:")
+                ? data.src
+                : `${process.env.PUBLIC_URL}/assets/image/${data.src}`
+            }
+          />
+        </Drag>
+        <h5 className="mt-3">Select why you liked this reference</h5>
+
+        {data.keywords?.map((keyword) => (
+          <Form.Check
+            type="checkbox"
+            id={id + "-" + keyword.type + "-" + keyword.keyword}
+            key={id + "-" + keyword.type + "-" + keyword.keyword}
+            label={keyword.type + ":" + keyword.keyword}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedKeywords((prev) => [...prev, keyword]);
+              } else
+                setSelectedKeywords((prev) =>
+                  prev.filter((prevKeyword) => prevKeyword !== keyword)
+                );
+            }}
+            style={{ color: colorMapping[keyword.type], fontWeight: "bold" }}
+          />
+        ))}
+      </Form>
+      <hr />
+    </div>
   );
 };

@@ -28,7 +28,7 @@ const Frame: React.FC<FrameProps> = ({ data, e, onSelect }) => {
   const stage = useStage();
   const { checkIsInFrame, moveToLayer, getItemsInThisFrame } = useDragAndDrop(
     stage.stageRef,
-    stage.dragBackgroundOrigin,
+    stage.dragBackgroundOrigin
   );
   const frameRef = useRef() as RefObject<Konva.Rect>;
   const initialPosition = {
@@ -79,7 +79,7 @@ const Frame: React.FC<FrameProps> = ({ data, e, onSelect }) => {
       e.target.getParent().clipFunc(e.target.getLayer().Context);
       e.target.getLayer()?.batchDraw();
     },
-    [data],
+    [data]
   );
 
   useEffect(() => {
@@ -96,7 +96,8 @@ const Frame: React.FC<FrameProps> = ({ data, e, onSelect }) => {
       <Label
         x={frameRef.current?.x() ?? initialPosition.x}
         y={frameRef.current?.y() ?? initialPosition.y}
-        onClick={onSelect}>
+        onClick={onSelect}
+      >
         <Tag name="label-tag" pointerDirection="left" />
         <Text
           text={attrs["data-frame-type"]}

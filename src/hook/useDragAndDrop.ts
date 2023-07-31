@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import Konva from "konva";
 import { Vector2d } from "konva/lib/types";
 import { MutableRefObject, useCallback } from "react";
@@ -15,7 +16,7 @@ import { StageData } from "../redux/currentStageData";
 
 const useDragAndDrop = (
   stageRef: MutableRefObject<Konva.Stage>,
-  dragBackgroudOrigin: MutableRefObject<Vector2d>,
+  dragBackgroudOrigin: MutableRefObject<Vector2d>
 ) => {
   const { createItem, updateItem } = useItem();
 
@@ -76,6 +77,7 @@ const useDragAndDrop = (
         },
         className: "sample-image",
         children: [],
+        keywords: data.keywords,
       };
 
       createItem(newImage);
@@ -97,7 +99,7 @@ const useDragAndDrop = (
               curr.charCodeAt(0) >= 32 && curr.charCodeAt(0) <= 126
                 ? acc + data.fontSize * (3 / 5)
                 : acc + data.fontSize,
-            0,
+            0
           ),
         height: data.height,
         fill: "#00000",
@@ -168,8 +170,8 @@ const useDragAndDrop = (
 
   const insertLine = (e: DragEvent, data: { [key: string]: any }) => {
     const position = getFramePos(stageRef.current, e, 100, 100);
-    const curvePoints
-      = data.name.indexOf("curve") !== -1
+    const curvePoints =
+      data.name.indexOf("curve") !== -1
         ? data.name.indexOf("one") !== -1
           ? [110, -10]
           : [80, -10, 10, 110]
@@ -229,7 +231,7 @@ const useDragAndDrop = (
     const items = stage
       .getChildren()[0]
       .getChildren(
-        (_item) => _item.attrs.name === "label-target" && _item.attrs["data-item-type"] !== "frame",
+        (_item) => _item.attrs.name === "label-target" && _item.attrs["data-item-type"] !== "frame"
       )
       .filter((_item) => isInFrame(frame, _item));
     return items;
@@ -260,9 +262,9 @@ const useDragAndDrop = (
 
   const moveToLayer = (item: Shape<ShapeConfig>) => {
     const newParent = item.getLayer();
-    item.getParent().children
-      = (item.getParent().children as Node<NodeConfig>[])?.filter(
-        (_item) => _item.id() !== item.id(),
+    item.getParent().children =
+      (item.getParent().children as Node<NodeConfig>[])?.filter(
+        (_item) => _item.id() !== item.id()
       ) ?? item.getParent().children;
     if (newParent) {
       newParent.add(item);
@@ -313,26 +315,27 @@ const isInFrame = (targetFrame: Node<NodeConfig>, item: Node<NodeConfig>) => {
     width: width * item.scaleX(),
     height: height * item.scaleY(),
   };
+
   return (
-    (position.x >= targetFrame.x()
-      && position.x <= targetFrame.x() + targetFrame.width()
-      && position.y >= targetFrame.y()
-      && position.y <= targetFrame.y() + targetFrame.height())
-    || (position.x + size.width >= targetFrame.x()
-      && position.x + size.width <= targetFrame.x() + targetFrame.width()
-      && position.y + size.height >= targetFrame.y()
-      && position.y + size.height <= targetFrame.y() + targetFrame.height())
-    || (position.x >= targetFrame.x()
-      && position.x <= targetFrame.x() + targetFrame.width()
-      && position.y + size.height >= targetFrame.y()
-      && position.y + size.height <= targetFrame.y() + targetFrame.height())
-    || (position.x + size.width >= targetFrame.x()
-      && position.x + size.width <= targetFrame.x() + targetFrame.width()
-      && position.y >= targetFrame.y()
-      && position.y <= targetFrame.y() + targetFrame.height())
-    || (position.x + size.width / 2 >= targetFrame.x()
-      && position.x + size.width / 2 <= targetFrame.x() + targetFrame.width()
-      && position.y + size.height / 2 >= targetFrame.y()
-      && position.y + size.height / 2 <= targetFrame.y() + targetFrame.height())
+    (position.x >= targetFrame.x() &&
+      position.x <= targetFrame.x() + targetFrame.width() &&
+      position.y >= targetFrame.y() &&
+      position.y <= targetFrame.y() + targetFrame.height()) ||
+    (position.x + size.width >= targetFrame.x() &&
+      position.x + size.width <= targetFrame.x() + targetFrame.width() &&
+      position.y + size.height >= targetFrame.y() &&
+      position.y + size.height <= targetFrame.y() + targetFrame.height()) ||
+    (position.x >= targetFrame.x() &&
+      position.x <= targetFrame.x() + targetFrame.width() &&
+      position.y + size.height >= targetFrame.y() &&
+      position.y + size.height <= targetFrame.y() + targetFrame.height()) ||
+    (position.x + size.width >= targetFrame.x() &&
+      position.x + size.width <= targetFrame.x() + targetFrame.width() &&
+      position.y >= targetFrame.y() &&
+      position.y <= targetFrame.y() + targetFrame.height()) ||
+    (position.x + size.width / 2 >= targetFrame.x() &&
+      position.x + size.width / 2 <= targetFrame.x() + targetFrame.width() &&
+      position.y + size.height / 2 >= targetFrame.y() &&
+      position.y + size.height / 2 <= targetFrame.y() + targetFrame.height())
   );
 };

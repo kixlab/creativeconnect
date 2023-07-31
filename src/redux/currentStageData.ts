@@ -11,13 +11,14 @@ export type StageData = {
   attrs: OverrideItemData<any>;
   className: string;
   children?: StageData[];
+  keywords?: any[];
 };
 
 export const stageDataEpic: Epic = (action$, state$) =>
   action$.pipe(
     ofType(stageDataAction.addItem.type),
     take(1),
-    tap((action$) => console.log("")),
+    tap((action$) => console.log(""))
   );
 
 export const stageDataEntity = createEntityAdapter<StageData>();
@@ -40,7 +41,7 @@ export const stageDataSlice = createSlice({
           action.payload.map((item) => ({
             id: item.id,
             changes: item.attrs,
-          })),
+          }))
         );
         return;
       }
@@ -65,7 +66,7 @@ export const stageDataSlice = createSlice({
 const stageDataReducer = stageDataSlice.reducer;
 
 export const stageDataSelector = stageDataEntity.getSelectors(
-  (state: StoreState) => state.currentStageData,
+  (state: StoreState) => state.currentStageData
 );
 export const stageDataAction = stageDataSlice.actions;
 export default stageDataReducer;

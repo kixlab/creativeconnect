@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import React, { useEffect, useMemo, useState } from "react";
 import { Transformer } from "react-konva";
 import { Node, NodeConfig } from "konva/lib/Node";
@@ -49,11 +50,11 @@ function App() {
     past,
     future,
     setPast,
-    setFuture,
+    setFuture
   );
   const transformer = useTransformer();
-  const { selectedItems, onSelectItem, setSelectedItems, clearSelection }
-    = useSelection(transformer);
+  const { selectedItems, onSelectItem, setSelectedItems, clearSelection } =
+    useSelection(transformer);
   const { tabList, onClickTab, onCreateTab, onDeleteTab } = useTab(transformer, clearHistory);
   const { stageData } = useItem();
   const { initializeFileDataList, updateFileData } = useStageDataList();
@@ -91,7 +92,7 @@ function App() {
     setSelectedItems,
     transformer,
     createStageDataObject,
-    onSelectItem,
+    onSelectItem
   );
 
   const currentTabId = useMemo(() => tabList.find((tab) => tab.active)?.id ?? null, [tabList]);
@@ -107,7 +108,7 @@ function App() {
         }
         return a.attrs.zIndex - b.attrs.zIndex;
       }),
-    [stageData],
+    [stageData]
   );
 
   const header = (
@@ -188,7 +189,7 @@ function App() {
       case "text":
         return (
           <TextItem
-            key={`image-${item.id}`}
+            key={`text-${item.id}`}
             data={item as TextItemProps["data"]}
             transformer={transformer}
             onSelect={onSelectItem}
@@ -233,7 +234,7 @@ function App() {
       layerUp(selectedItems);
     },
     {},
-    [selectedItems],
+    [selectedItems]
   );
 
   useHotkeys(
@@ -243,7 +244,7 @@ function App() {
       layerDown(selectedItems);
     },
     {},
-    [selectedItems],
+    [selectedItems]
   );
 
   useHotkeys(
@@ -253,7 +254,7 @@ function App() {
       duplicateItems(selectedItems, createStageDataObject);
     },
     {},
-    [selectedItems, stageData],
+    [selectedItems, stageData]
   );
 
   useHotkeys(
@@ -263,7 +264,7 @@ function App() {
       copyItems(selectedItems, setClipboard, createStageDataObject);
     },
     {},
-    [selectedItems, stageData, clipboard],
+    [selectedItems, stageData, clipboard]
   );
 
   useHotkeys(
@@ -273,7 +274,7 @@ function App() {
       selectAll(stage, onSelectItem);
     },
     {},
-    [selectedItems],
+    [selectedItems]
   );
 
   useHotkeys(
@@ -283,7 +284,7 @@ function App() {
       pasteItems(clipboard);
     },
     {},
-    [clipboard],
+    [clipboard]
   );
 
   useHotkeys(
@@ -293,7 +294,7 @@ function App() {
       goToPast();
     },
     {},
-    [goToPast],
+    [goToPast]
   );
 
   useHotkeys(
@@ -303,7 +304,7 @@ function App() {
       goToFuture();
     },
     {},
-    [goToFuture],
+    [goToFuture]
   );
 
   useHotkeys(
@@ -313,7 +314,7 @@ function App() {
       flipHorizontally(selectedItems);
     },
     {},
-    [selectedItems],
+    [selectedItems]
   );
 
   useHotkeys(
@@ -323,7 +324,7 @@ function App() {
       flipVertically(selectedItems);
     },
     {},
-    [selectedItems],
+    [selectedItems]
   );
 
   useHotkeys(
@@ -333,7 +334,7 @@ function App() {
       deleteItems(selectedItems, setSelectedItems, transformer.transformerRef);
     },
     { enabled: Boolean(selectedItems.length) },
-    [selectedItems, transformer.transformerRef.current],
+    [selectedItems, transformer.transformerRef.current]
   );
 
   useEffect(() => {

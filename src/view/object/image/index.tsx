@@ -1,18 +1,24 @@
+/* eslint-disable operator-linebreak */
 import Konva from "konva";
 import { Filter } from "konva/lib/Node";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { Image as KonvaImage } from "react-konva";
+import { Image as KonvaImage, Label, Tag, Text } from "react-konva";
 import useDragAndDrop from "../../../hook/useDragAndDrop";
 import { OverrideItemProps } from "../../../hook/useItem";
 import useStage from "../../../hook/useStage";
 import { StageData } from "../../../redux/currentStageData";
 import { decimalUpToSeven } from "../../../util/decimalUpToSeven";
+import colorMapping from "../../../config/colorMapping";
 
 export type ImageItemKind = {
   "data-item-type": string;
   id: string;
   name: string;
   src: string;
+  keywords?: {
+    type: string;
+    keyword?: string;
+  }[];
   image: typeof Image;
 };
 
@@ -34,22 +40,8 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
   const stage = useStage();
   const { onDragMoveFrame, onDragEndFrame, checkIsInFrame } = useDragAndDrop(
     stage.stageRef,
-    stage.dragBackgroundOrigin,
+    stage.dragBackgroundOrigin
   );
-  // const changeImageSrc = (base64: string) => {
-  //   const newImage = new Image();
-  //   newImage.onload = () => {
-  //     setImageSrc(newImage);
-  //   };
-  //   newImage.crossOrigin = "Anonymous";
-  //   newImage.src = base64;
-  // };
-  // const { onMouseMoveSelectColor, onMouseDownAndMoveRemoveColor } = useBrush(
-  //   imageSrc as HTMLImageElement,
-  //   changeImageSrc,
-  //   attrs.width,
-  //   attrs.height
-  // );
 
   const filters = useMemo(() => {
     if (!data.attrs._filters) {
@@ -111,28 +103,57 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
   }, []);
 
   return (
-    <KonvaImage
-      ref={imageRef}
-      image={imageSrc}
-      onClick={onSelect}
-      name="label-target"
-      data-item-type="image"
-      data-frame-type="image"
-      id={data.id}
-      x={attrs.x}
-      y={attrs.y}
-      width={attrs.width}
-      height={attrs.height}
-      scaleX={attrs.scaleX}
-      scaleY={attrs.scaleY}
-      fill={attrs.fill ?? "transparent"}
-      opacity={attrs.opacity ?? 1}
-      rotation={attrs.rotation ?? 0}
-      filters={filters ?? [Konva.Filters.Brighten]}
-      draggable
-      onDragMove={onDragMoveFrame}
-      onDragEnd={onDragEndFrame}
-    />
+    <>
+      <KonvaImage
+        ref={imageRef}
+        image={imageSrc}
+        onClick={onSelect}
+        name="label-target"
+        data-item-type="image"
+        data-frame-type="image"
+        id={data.id}
+        x={attrs.x}
+        y={attrs.y}
+        width={attrs.width}
+        height={attrs.height}
+        scaleX={attrs.scaleX}
+        scaleY={attrs.scaleY}
+        fill={attrs.fill ?? "transparent"}
+        opacity={attrs.opacity ?? 1}
+        rotation={attrs.rotation ?? 0}
+        filters={filters ?? [Konva.Filters.Brighten]}
+        draggable
+        onDragMove={onDragMoveFrame}
+        onDragEnd={onDragEndFrame}
+      />
+      {data.keywords?.map((keyword) => (
+        <Label
+          x={
+            (imageRef.current?.x() ?? 0) +
+            keyword.position.x *
+              (imageRef.current?.width() ?? 0) *
+              (imageRef.current?.scaleX() ?? 0)
+          }
+          y={
+            (imageRef.current?.y() ?? 0) +
+            keyword.position.y *
+              (imageRef.current?.height() ?? 0) *
+              (imageRef.current?.scaleY() ?? 0)
+          }
+          key={data.id + "-" + keyword.type + ": " + keyword.keyword}
+        >
+          <Tag name="label-tag" pointerDirection="left" fill={colorMapping[keyword.type]} />
+          <Text
+            text={keyword.type + ": " + keyword.keyword}
+            name="label-text"
+            fontSize={12}
+            lineHeight={1.2}
+            padding={5}
+            fill="#ffffff"
+          />
+        </Label>
+      ))}
+    </>
   );
 };
 

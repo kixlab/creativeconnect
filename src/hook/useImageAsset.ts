@@ -16,8 +16,9 @@ const useImageAsset = () => {
           id: image.id,
           name: image.name,
           src: image.src,
-        }),
-      ),
+          keywords: image.keywords,
+        })
+      )
     );
   };
 
