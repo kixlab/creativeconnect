@@ -1,0 +1,18 @@
+[
+  {
+    "id": "image",
+    "name": "Image"
+  },
+  {
+    "id": "align",
+    "name": "Align"
+  },
+  {
+    "id": "text",
+    "name": "Text"
+  },
+  {
+    "id": "export",
+    "name": "Export"
+  }
+]

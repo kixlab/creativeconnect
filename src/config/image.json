@@ -1,0 +1,14 @@
+[
+  {
+    "type": "image",
+    "id": "sample-image-1",
+    "name": "sample-image-1",
+    "src": "sitting-1.svg"
+  },
+  {
+    "type": "image",
+    "id": "sample-image-2",
+    "name": "sample-image-2",
+    "src": "sitting-2.svg"
+  }
+]
