@@ -2,7 +2,6 @@ import { Node, NodeConfig } from "konva/lib/Node";
 import { StageData } from "../redux/currentStageData";
 import useHotkeyFunc from "./useHotkeyFunc";
 import useItem from "./useItem";
-import useModal from "./useModal";
 import useRemoveImageBackground from "./useRemoveImageBackground";
 import useSelection from "./useSelection";
 import useStage from "./useStage";
@@ -10,19 +9,15 @@ import useTransformer from "./useTransformer";
 
 const useTool = (
   stage: ReturnType<typeof useStage>,
-  modal: ReturnType<typeof useModal>,
   selectedItems: ReturnType<typeof useSelection>["selectedItems"],
   setSelectedItems: ReturnType<typeof useSelection>["setSelectedItems"],
   transformer: ReturnType<typeof useTransformer>,
   createStageDataObject: (item: Node<NodeConfig>) => StageData,
-  onSelectItem: ReturnType<typeof useSelection>["onSelectItem"],
+  onSelectItem: ReturnType<typeof useSelection>["onSelectItem"]
 ) => {
   const { updateItem } = useItem();
   const hotkeyFunc = useHotkeyFunc();
   const { autoRemoveBackground } = useRemoveImageBackground();
-  const onClickHotkeyButton = () => {
-    modal.openModal();
-  };
 
   const removeBackground = (selectedItems: ReturnType<typeof useSelection>["selectedItems"]) => {
     if (selectedItems.length === 1 && selectedItems[0].attrs["data-item-type"] === "image") {
@@ -66,15 +61,12 @@ const useTool = (
         return hotkeyFunc.resetZoom(stage);
       case "remove-background":
         return removeBackground(selectedItems);
-      case "hotkey":
-        return onClickHotkeyButton();
       default:
         return null;
     }
   };
 
   return {
-    onClickHotkeyButton,
     getClickCallback,
   };
 };

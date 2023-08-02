@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StageDataListItem } from "../redux/StageDataList";
-import { TabKind } from "../tab/Tab";
+import { TabKind } from "../header/tab/Tab";
 import useLocalStorage from "./useLocalStorage";
 import useSelection from "./useSelection";
 import useStageDataList from "./useStageDataList";
@@ -11,7 +11,7 @@ export const TAB_ID = "tabId";
 
 const useTab = (
   transformer: ReturnType<typeof useTransformer>,
-  clearHistory: ReturnType<typeof useWorkHistory>["clearHistory"],
+  clearHistory: ReturnType<typeof useWorkHistory>["clearHistory"]
 ) => {
   const [tabList, setTabList] = useState<TabKind[]>([]);
   const { createFileData, removeFileData, changeStageData } = useStageDataList();
@@ -28,7 +28,7 @@ const useTab = (
       prev.map((file) => ({
         id: file.id,
         active: currentActiveFileId === file.id,
-      })),
+      }))
     );
     setValue(TAB_ID, { id: currentActiveFileId });
     clearHistory();
@@ -43,23 +43,23 @@ const useTab = (
       prev.map((file) => ({
         id: file.id,
         active: tabId === file.id,
-      })),
+      }))
     );
     setValue(TAB_ID, { id: tabId });
     clearHistory();
   };
 
   const onCreateTab = (e?: React.SyntheticEvent, fileItem?: StageDataListItem) => {
-    const newTabId
-      = fileItem?.id
-      ?? `file-${tabList.length === 0 ? 1 : parseInt(tabList[tabList.length - 1].id.slice(5)) + 1}`;
+    const newTabId =
+      fileItem?.id ??
+      `file-${tabList.length === 0 ? 1 : parseInt(tabList[tabList.length - 1].id.slice(5)) + 1}`;
     const prevTabId = tabList.find((_tab) => _tab.active)?.id;
     clearSelection();
     createFileData(
       fileItem ?? {
         id: newTabId,
         data: [],
-      },
+      }
     );
     changeStageData(prevTabId ?? newTabId, newTabId);
     setTabList((prev) => [
@@ -84,8 +84,8 @@ const useTab = (
     }
     const currentTab = tabList.find((tab) => tab.active);
     const tabIndex = tabList.findIndex((tab) => tab.id === tabId);
-    const nextTabId
-      = tabList[tabIndex].id === currentTab!.id
+    const nextTabId =
+      tabList[tabIndex].id === currentTab!.id
         ? tabList[tabIndex === 0 ? tabIndex + 1 : tabIndex - 1].id
         : currentTab!.id;
     clearSelection();

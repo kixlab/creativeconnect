@@ -1,12 +1,12 @@
 import React from "react";
 import { Button, Nav } from "react-bootstrap";
-import colorStyles from "../style/color.module.css";
-import borderStyles from "../style/border.module.css";
-import displayStyles from "../style/display.module.css";
-import sizeStyles from "../style/size.module.css";
-import spaceStyles from "../style/space.module.css";
-import fontStyles from "../style/font.module.css";
-import alignStyles from "../style/align.module.css";
+import colorStyles from "../../style/color.module.css";
+import borderStyles from "../../style/border.module.css";
+import displayStyles from "../../style/display.module.css";
+import sizeStyles from "../../style/size.module.css";
+import spaceStyles from "../../style/space.module.css";
+import fontStyles from "../../style/font.module.css";
+import alignStyles from "../../style/align.module.css";
 
 export type TabKind = {
   id: string;
@@ -31,7 +31,7 @@ const Tab: React.FC<TabProps> = ({ data, onClickTab, onDeleteTab }) => {
       <Nav.Link
         eventKey={data.id}
         className={[
-          data.active ? colorStyles.greyTheme : colorStyles.whiteTheme,
+          data.active ? colorStyles.lightTheme : colorStyles.whiteTheme,
           borderStyles.roundTopSM,
           fontStyles.fontHalf1em,
           spaceStyles.p05em,
@@ -40,7 +40,8 @@ const Tab: React.FC<TabProps> = ({ data, onClickTab, onDeleteTab }) => {
         ].join(" ")}
         data-file-id={data.id}
         data-active={data.active}
-        onClick={onClickTab}>
+        onClick={onClickTab}
+      >
         {data.id}
         <Button
           className={[
@@ -52,7 +53,8 @@ const Tab: React.FC<TabProps> = ({ data, onClickTab, onDeleteTab }) => {
             spaceStyles.ml1rem,
             alignStyles["text-left"],
           ].join(" ")}
-          onClick={onDelete}>
+          onClick={onDelete}
+        >
           <i className="bi-x" />
         </Button>
       </Nav.Link>

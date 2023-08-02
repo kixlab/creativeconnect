@@ -54,12 +54,6 @@
     "desc": ""
   },
   {
-    "id": "duplicateItems",
-    "name": "Duplicate",
-    "keys": ["ctrl", "d"],
-    "desc": ""
-  },
-  {
     "id": "copyItems",
     "name": "Copy Selected Items",
     "keys": ["ctrl", "c"],
@@ -75,18 +69,6 @@
     "id": "selectAllItems",
     "name": "Select All Items",
     "keys": ["ctrl", "a"],
-    "desc": ""
-  },
-  {
-    "id": "flipHorizontally",
-    "name": "Flip Horizontally",
-    "keys": ["shift", "h"],
-    "desc": ""
-  },
-  {
-    "id": "flipVertically",
-    "name": "Flip Vertically",
-    "keys": ["shift", "v"],
     "desc": ""
   }
 ]

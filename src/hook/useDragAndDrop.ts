@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import Konva from "konva";
 import { Vector2d } from "konva/lib/types";
 import { MutableRefObject, useCallback } from "react";

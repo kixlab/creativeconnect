@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import React, { useEffect, useMemo, useState } from "react";
 import { Transformer } from "react-konva";
 import { Node, NodeConfig } from "konva/lib/Node";
@@ -8,12 +7,7 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import Header from "./header";
 import Layout from "./layout";
 import SettingBar from "./settingBar";
-import TabGroup from "./tab";
-import workModeList from "./config/workMode.json";
-import NavBar from "./navBar";
-import NavBarButton from "./navBar/NavBarButton";
 import View from "./view";
-import Frame, { FrameProps } from "./view/frame";
 import { StageData } from "./redux/currentStageData";
 import useItem from "./hook/useItem";
 import { StageDataListItem } from "./redux/StageDataList";
@@ -25,10 +19,6 @@ import useTransformer from "./hook/useTransformer";
 import useStage from "./hook/useStage";
 import useTool from "./hook/useTool";
 import TextItem, { TextItemProps } from "./view/object/text";
-import ShapeItem, { ShapeItemProps } from "./view/object/shape";
-import IconItem, { IconItemProps } from "./view/object/icon";
-import LineItem, { LineItemProps } from "./view/object/line";
-import useModal from "./hook/useModal";
 import hotkeyList from "./config/hotkey.json";
 import useHotkeyFunc from "./hook/useHotkeyFunc";
 import useWorkHistory from "./hook/useWorkHistory";
@@ -59,20 +49,10 @@ function App() {
   const { stageData } = useItem();
   const { initializeFileDataList, updateFileData } = useStageDataList();
   const stage = useStage();
-  const modal = useModal();
-  const {
-    deleteItems,
-    copyItems,
-    selectAll,
-    pasteItems,
-    duplicateItems,
-    layerDown,
-    layerUp,
-    flipHorizontally,
-    flipVertically,
-  } = useHotkeyFunc();
+  const { deleteItems, copyItems, selectAll, pasteItems, layerDown, layerUp } = useHotkeyFunc();
   const { getTranslation } = useI18n();
   const [clipboard, setClipboard] = useState<StageData[]>([]);
+  const [showHotkeyModal, setShowHotkeyModal] = useState(false);
   const createStageDataObject = (item: Node<NodeConfig>): StageData => {
     const { id } = item.attrs;
     const target = item.attrs["data-item-type"] === "frame" ? item.getParent() : item;
@@ -87,7 +67,6 @@ function App() {
   };
   const { getClickCallback } = useTool(
     stage,
-    modal,
     selectedItems,
     setSelectedItems,
     transformer,
@@ -112,49 +91,35 @@ function App() {
   );
 
   const header = (
-    <Header>
-      <TabGroup
-        onClickTab={onClickTab}
-        tabList={tabList}
-        onCreateTab={onCreateTab}
-        onDeleteTab={onDeleteTab}
-      />
-    </Header>
-  );
-
-  const navBar = (
-    <NavBar>
-      {workModeList.map((data) => (
-        <NavBarButton
-          key={`navbar-${data.id}`}
-          data={data}
-          stage={stage}
-          onClick={getClickCallback(data.id)}
-        />
-      ))}
-    </NavBar>
+    <Header
+      onClickTab={onClickTab}
+      tabList={tabList}
+      onCreateTab={onCreateTab}
+      onDeleteTab={onDeleteTab}
+      showModal={() => setShowHotkeyModal(true)}
+    />
   );
 
   const hotkeyModal = (
-    <Modal show={modal.displayModal} onHide={modal.closeModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>Keyboard Shortcut</Modal.Title>
-      </Modal.Header>
+    <Modal show={showHotkeyModal} onHide={() => setShowHotkeyModal(false)}>
+      <Modal.Header closeButton />
       <Modal.Body>
         {hotkeyList.map((hotkey) => (
-          <Col key={hotkey.name}>
+          <div key={hotkey.name} className="d-flex justify-content-between mb-2">
             <h6>{getTranslation("hotkey", hotkey.id, "name")}</h6>
             <Row className="justify-content-end" xs={4}>
               {hotkey.keys.map((key, idx) => (
                 <React.Fragment key={hotkey.name + key}>
                   {idx !== 0 && "+"}
                   <Col xs="auto" className="align-items-center">
-                    <Button disabled>{key}</Button>
+                    <Button variant="success" disabled size="sm">
+                      {key}
+                    </Button>
                   </Col>
                 </React.Fragment>
               ))}
             </Row>
-          </Col>
+          </div>
         ))}
       </Modal.Body>
     </Modal>
@@ -170,14 +135,6 @@ function App() {
 
   const renderObject = (item: StageData) => {
     switch (item.attrs["data-item-type"]) {
-      case "frame":
-        return (
-          <Frame
-            key={`frame-${item.id}`}
-            data={item as FrameProps["data"]}
-            onSelect={onSelectItem}
-          />
-        );
       case "image":
         return (
           <ImageItem
@@ -191,33 +148,6 @@ function App() {
           <TextItem
             key={`text-${item.id}`}
             data={item as TextItemProps["data"]}
-            transformer={transformer}
-            onSelect={onSelectItem}
-          />
-        );
-      case "shape":
-        return (
-          <ShapeItem
-            key={`shape-${item.id}`}
-            data={item as ShapeItemProps["data"]}
-            transformer={transformer}
-            onSelect={onSelectItem}
-          />
-        );
-      case "icon":
-        return (
-          <IconItem
-            key={`icon-${item.id}`}
-            data={item as IconItemProps["data"]}
-            transformer={transformer}
-            onSelect={onSelectItem}
-          />
-        );
-      case "line":
-        return (
-          <LineItem
-            key={`line-${item.id}`}
-            data={item as LineItemProps["data"]}
             transformer={transformer}
             onSelect={onSelectItem}
           />
@@ -245,16 +175,6 @@ function App() {
     },
     {},
     [selectedItems]
-  );
-
-  useHotkeys(
-    "ctrl+d",
-    (e) => {
-      e.preventDefault();
-      duplicateItems(selectedItems, createStageDataObject);
-    },
-    {},
-    [selectedItems, stageData]
   );
 
   useHotkeys(
@@ -308,26 +228,6 @@ function App() {
   );
 
   useHotkeys(
-    "shift+h",
-    (e) => {
-      e.preventDefault();
-      flipHorizontally(selectedItems);
-    },
-    {},
-    [selectedItems]
-  );
-
-  useHotkeys(
-    "shift+v",
-    (e) => {
-      e.preventDefault();
-      flipVertically(selectedItems);
-    },
-    {},
-    [selectedItems]
-  );
-
-  useHotkeys(
     "backspace",
     (e) => {
       e.preventDefault();
@@ -362,7 +262,7 @@ function App() {
   }, [stageData]);
 
   return (
-    <Layout header={header} navBar={navBar} settingBar={settingBar}>
+    <Layout header={header} settingBar={settingBar}>
       {hotkeyModal}
       <View onSelect={onSelectItem} stage={stage}>
         {stageData.length ? sortedStageData.map((item) => renderObject(item)) : null}

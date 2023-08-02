@@ -1,30 +1,38 @@
 import React from "react";
-import { Col } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import colorStyles from "../style/color.module.css";
-import alignStyles from "../style/align.module.css";
-import sizeStyles from "../style/size.module.css";
-import Logo from "./Logo";
+import { TabKind, TabProps } from "./tab/Tab";
+import TabGroup from "./tab";
 
 type HeaderProps = {
-  children: React.ReactNode;
+  onClickTab: TabProps["onClickTab"];
+  onCreateTab: () => void;
+  onDeleteTab: (tabId: string) => void;
+  tabList: TabKind[];
+  showModal: () => void;
 };
 
-const Header: React.FC<HeaderProps> = ({ children }) => (
+const Header: React.FC<HeaderProps> = ({
+  onClickTab,
+  tabList,
+  onCreateTab,
+  onDeleteTab,
+  showModal,
+}) => (
   <header
-    className={[
-      colorStyles.darkTheme,
-      alignStyles.fromStartBottom,
-      sizeStyles.height100,
-      "p-0",
-    ].join(" ")}
+    className={[colorStyles.darkTheme, "p-0 h-100 d-flex flex-column align-items-start"].join(" ")}
   >
-    <Col
-      xs="auto"
-      className={[sizeStyles.widthLogo, sizeStyles.height100, alignStyles.absoluteCenter].join(" ")}
-    >
-      <Logo />
-    </Col>
-    <Col>{children}</Col>
+    <div className="w-100 d-flex justify-content-between align-items-center">
+      <TabGroup
+        onClickTab={onClickTab}
+        tabList={tabList}
+        onCreateTab={onCreateTab}
+        onDeleteTab={onDeleteTab}
+      />
+      <div style={{ padding: "0.5rem" }}>
+        <i style={{ cursor: "pointer" }} className="bi bi-question-circle" onClick={showModal}></i>
+      </div>
+    </div>
   </header>
 );
 

@@ -122,7 +122,7 @@ const View: React.FC<ViewProps> = ({
     (e: KonvaEventObject<MouseEvent>) => {
       e.target.getType() === "Stage" && onSelect(e);
     },
-    [onSelect],
+    [onSelect]
   );
 
   const onMouseDownOnStage = useCallback(
@@ -142,7 +142,7 @@ const View: React.FC<ViewProps> = ({
       }
       selectBox.visible(true);
     },
-    [onSelectEmptyBackground],
+    [onSelectEmptyBackground]
   );
 
   const onMouseMoveOnStage = (e: KonvaEventObject<MouseEvent>) => {
@@ -180,13 +180,13 @@ const View: React.FC<ViewProps> = ({
       const selectBox = stage.findOne(".select-box");
       const overlapItems: Node<NodeConfig>[] = getItemsInBoundary(stage, selectBox)
         ? getItemsInBoundary(stage, selectBox)!
-          .map((_item) =>
-            _item.attrs["data-item-type"] === "frame"
-              ? _item.getParent().getChildren() ?? []
-              : _item,
-          )
-          .flat()
-          .filter((_item) => _item.className !== "Label")
+            .map((_item) =>
+              _item.attrs["data-item-type"] === "frame"
+                ? _item.getParent().getChildren() ?? []
+                : _item
+            )
+            .flat()
+            .filter((_item) => _item.className !== "Label")
         : [];
 
       selectBox.visible(false);
@@ -201,7 +201,7 @@ const View: React.FC<ViewProps> = ({
       selectBox.getLayer()?.batchDraw();
       overlapItems?.length && onSelect(undefined, overlapItems);
     },
-    [onSelect],
+    [onSelect]
   );
 
   useHotkeys(
@@ -210,7 +210,7 @@ const View: React.FC<ViewProps> = ({
       moveStage();
     },
     { keydown: true, enabled: !stageRef.current?.draggable() },
-    [stageRef.current, moveStage],
+    [stageRef.current, moveStage]
   );
 
   useHotkeys(
@@ -220,7 +220,7 @@ const View: React.FC<ViewProps> = ({
       stageRef.current?.fire("mouseup");
     },
     { keyup: true },
-    [stageRef.current, moveStage],
+    [stageRef.current, moveStage]
   );
 
   useHotkeys(
@@ -229,7 +229,7 @@ const View: React.FC<ViewProps> = ({
       resetZoom();
     },
     {},
-    [stageRef.current, resetZoom],
+    [stageRef.current, resetZoom]
   );
 
   useEffect(() => {
@@ -249,16 +249,14 @@ const View: React.FC<ViewProps> = ({
       {({ store }) => (
         <Stage
           ref={stageRef}
-          width={window.innerWidth * 0.8}
-          height={window.innerHeight * 0.8}
+          width={window.innerWidth}
+          height={window.innerHeight}
           draggable={false}
           onWheel={zoomOnWheel}
           onMouseDown={onMouseDownOnStage}
           onMouseMove={onMouseMoveOnStage}
           onMouseUp={onMouseUpOnStage}
-          className={[positionStyles.absolute, positionStyles.top0, positionStyles.left0].join(
-            " ",
-          )}>
+        >
           <Provider store={store}>
             <Layer>
               {children}
@@ -309,10 +307,10 @@ export const getItemsInBoundary = (stage: Konva.Stage, targetItem: Konva.Node) =
       }
       const itemBoundary = item.getClientRect({ relativeTo: stage.getLayer() });
       return (
-        boundary.x <= itemBoundary.x
-        && boundary.y <= itemBoundary.y
-        && boundary.x + boundary.width >= itemBoundary.x + itemBoundary.width
-        && boundary.y + boundary.height >= itemBoundary.y + itemBoundary.height
+        boundary.x <= itemBoundary.x &&
+        boundary.y <= itemBoundary.y &&
+        boundary.x + boundary.width >= itemBoundary.x + itemBoundary.width &&
+        boundary.y + boundary.height >= itemBoundary.y + itemBoundary.height
       );
     })
     .map((item) => {
@@ -328,7 +326,7 @@ export const getItemsInBoundary = (stage: Konva.Stage, targetItem: Konva.Node) =
 export const getOriginFromTwoPoint = (
   p1: Vector2d,
   p2: Vector2d,
-  size: { width: number; height: number },
+  size: { width: number; height: number }
 ): IRect => {
   const result: IRect = {
     x: p1.x,

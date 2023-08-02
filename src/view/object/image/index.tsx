@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 import Konva from "konva";
 import { Filter } from "konva/lib/Node";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
