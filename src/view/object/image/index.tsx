@@ -1,5 +1,4 @@
 import Konva from "konva";
-import { Filter } from "konva/lib/Node";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Image as KonvaImage, Label, Tag, Text } from "react-konva";
 import useDragAndDrop from "../../../hook/useDragAndDrop";
@@ -8,6 +7,7 @@ import useStage from "../../../hook/useStage";
 import { StageData } from "../../../redux/currentStageData";
 import { decimalUpToSeven } from "../../../util/decimalUpToSeven";
 import colorMapping from "../../../config/colorMapping";
+import { Button } from "react-bootstrap";
 
 export type ImageItemKind = {
   "data-item-type": string;
@@ -17,6 +17,11 @@ export type ImageItemKind = {
   keywords?: {
     type: string;
     keyword?: string;
+    position?: {
+      x: number;
+      y: number;
+    };
+    mask: boolean[][];
   }[];
   image: typeof Image;
 };
@@ -25,11 +30,6 @@ export type ImageItemProps = OverrideItemProps<{
   data: StageData;
   e?: DragEvent;
 }>;
-
-export const filterMap: { [name: string]: Filter } = {
-  Brighten: Konva.Filters.Brighten,
-  Grayscale: Konva.Filters.Grayscale,
-};
 
 const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
   const { attrs } = data;
@@ -41,13 +41,6 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
     stage.stageRef,
     stage.dragBackgroundOrigin
   );
-
-  const filters = useMemo(() => {
-    if (!data.attrs._filters) {
-      return [Konva.Filters.Brighten];
-    }
-    return data.attrs._filters.map((filterName: string) => filterMap[filterName]);
-  }, [data.attrs]);
 
   useEffect(() => {
     const newImage = new Image();
@@ -101,6 +94,9 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
     imageRef.current!.cache();
   }, []);
 
+  const objectKeywords = data.keywords?.filter((keyword) => keyword.type === "object");
+  const otherKeywords = data.keywords?.filter((keyword) => keyword.type !== "object");
+
   return (
     <>
       <KonvaImage
@@ -120,38 +116,59 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
         fill={attrs.fill ?? "transparent"}
         opacity={attrs.opacity ?? 1}
         rotation={attrs.rotation ?? 0}
-        filters={filters ?? [Konva.Filters.Brighten]}
         draggable
         onDragMove={onDragMoveFrame}
         onDragEnd={onDragEndFrame}
       />
-      {data.keywords?.map((keyword) => (
-        <Label
-          x={
-            (imageRef.current?.x() ?? 0) +
-            keyword.position.x *
-              (imageRef.current?.width() ?? 0) *
-              (imageRef.current?.scaleX() ?? 0)
-          }
-          y={
-            (imageRef.current?.y() ?? 0) +
-            keyword.position.y *
-              (imageRef.current?.height() ?? 0) *
-              (imageRef.current?.scaleY() ?? 0)
-          }
-          key={data.id + "-" + keyword.type + ": " + keyword.keyword}
-        >
-          <Tag name="label-tag" pointerDirection="left" fill={colorMapping[keyword.type]} />
-          <Text
-            text={keyword.type + ": " + keyword.keyword}
-            name="label-text"
-            fontSize={12}
-            lineHeight={1.2}
-            padding={5}
-            fill="#ffffff"
-          />
-        </Label>
-      ))}
+      {objectKeywords?.map((keyword) => {
+        const xpos = imageRef.current?.x() ?? 0;
+        const ypos =
+          (imageRef.current?.y() ?? 0) +
+          keyword.position.y *
+            (imageRef.current?.height() ?? 0) *
+            (imageRef.current?.scaleY() ?? 0);
+        return (
+          <Label
+            x={xpos}
+            y={ypos}
+            key={data.id + "-" + keyword.type + ": " + keyword.keyword}
+            onClick={() => {
+              console.log("click");
+            }}
+          >
+            <Tag name="label-tag" pointerDirection="left" fill={colorMapping[keyword.type]} />
+            <Text
+              text={keyword.type + ": " + keyword.keyword}
+              name="label-text"
+              fontSize={12}
+              lineHeight={1.2}
+              padding={5}
+              fill="#ffffff"
+            />
+          </Label>
+        );
+      })}
+      {otherKeywords?.map((keyword, i) => {
+        const xpos = imageRef.current?.x() ?? 0;
+        const ypos =
+          (imageRef.current?.y() ?? 0) +
+          (imageRef.current?.height() ?? 0) * (imageRef.current?.scaleY() ?? 0) +
+          30 * i +
+          20;
+        return (
+          <Label x={xpos} y={ypos} key={data.id + "-" + keyword.type + ": " + keyword.keyword}>
+            <Tag name="label-tag" pointerDirection="left" fill={colorMapping[keyword.type]} />
+            <Text
+              text={keyword.type + ": " + keyword.keyword}
+              name="label-text"
+              fontSize={12}
+              lineHeight={1.2}
+              padding={5}
+              fill="#ffffff"
+            />
+          </Label>
+        );
+      })}
     </>
   );
 };

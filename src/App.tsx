@@ -17,7 +17,6 @@ import useSelection from "./hook/useSelection";
 import useTab from "./hook/useTab";
 import useTransformer from "./hook/useTransformer";
 import useStage from "./hook/useStage";
-import useTool from "./hook/useTool";
 import TextItem, { TextItemProps } from "./view/object/text";
 import hotkeyList from "./config/hotkey.json";
 import useHotkeyFunc from "./hook/useHotkeyFunc";
@@ -65,14 +64,6 @@ function App() {
       children: [],
     };
   };
-  const { getClickCallback } = useTool(
-    stage,
-    selectedItems,
-    setSelectedItems,
-    transformer,
-    createStageDataObject,
-    onSelectItem
-  );
 
   const currentTabId = useMemo(() => tabList.find((tab) => tab.active)?.id ?? null, [tabList]);
 
@@ -88,16 +79,6 @@ function App() {
         return a.attrs.zIndex - b.attrs.zIndex;
       }),
     [stageData]
-  );
-
-  const header = (
-    <Header
-      onClickTab={onClickTab}
-      tabList={tabList}
-      onCreateTab={onCreateTab}
-      onDeleteTab={onDeleteTab}
-      showModal={() => setShowHotkeyModal(true)}
-    />
   );
 
   const hotkeyModal = (
@@ -123,14 +104,6 @@ function App() {
         ))}
       </Modal.Body>
     </Modal>
-  );
-
-  const settingBar = (
-    <SettingBar
-      selectedItems={selectedItems}
-      clearSelection={clearSelection}
-      stageRef={stage.stageRef}
-    />
   );
 
   const renderObject = (item: StageData) => {
@@ -262,7 +235,17 @@ function App() {
   }, [stageData]);
 
   return (
-    <Layout header={header} settingBar={settingBar}>
+    <Layout
+      header={
+        <Header
+          onClickTab={onClickTab}
+          tabList={tabList}
+          onCreateTab={onCreateTab}
+          onDeleteTab={onDeleteTab}
+          showModal={() => setShowHotkeyModal(true)}
+        />
+      }
+    >
       {hotkeyModal}
       <View onSelect={onSelectItem} stage={stage}>
         {stageData.length ? sortedStageData.map((item) => renderObject(item)) : null}

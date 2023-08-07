@@ -42,13 +42,6 @@ const useImageAsset = () => {
       }
       imageNode.width(width);
       imageNode.height(height);
-      const newBase64 = imageNode.toDataURL({
-        x: 0,
-        y: 0,
-        width,
-        height,
-        pixelRatio: 1.2,
-      });
       const id = imageId ?? nanoid();
       if (callback) {
         callback(`find:${id}`);

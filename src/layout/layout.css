@@ -1,0 +1,71 @@
+.buttonWrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.buttonWrapper .importbutton {
+  animation: 0.7s ease-out 0s 1 rotatingFadeIn;
+  transition: all 0.3s;
+}
+
+.buttonWrapper .importbutton:hover {
+  background-color: var(--color-contrast);
+}
+
+@keyframes rotatingFadeIn {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.importbutton-rotate {
+  transform: rotate(45deg);
+}
+
+.buttonWrapper a {
+  height: 40px;
+  width: 40px;
+  font-size: x-large;
+  background: #000;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  margin: 2px;
+}
+
+.settingBar {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  z-index: 1000;
+  width: 400px;
+
+  background-color: var(--color-white);
+
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: var(--color-dark) 1px solid;
+
+  animation: 0.2s ease-out 0s 1 fadeIn;
+  transition: all 0.3s;
+}

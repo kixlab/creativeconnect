@@ -7,7 +7,6 @@ import { Provider, ReactReduxContext } from "react-redux";
 import { Layer, Rect, Stage } from "react-konva";
 import { decimalUpToSeven } from "../util/decimalUpToSeven";
 import Drop from "../util/Drop";
-import positionStyles from "../style/position.module.css";
 import { ITEMS_CONTEXT } from "../hook/useItem";
 import useDragAndDrop from "../hook/useDragAndDrop";
 import useStage, { STAGE_POSITION, STAGE_SCALE } from "../hook/useStage";

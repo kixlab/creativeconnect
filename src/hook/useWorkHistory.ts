@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StageData } from "../redux/currentStageData";
 import useItem from "./useItem";
 
@@ -6,7 +6,7 @@ const useWorkHistory = (
   past: StageData[][],
   future: StageData[][],
   setPast: React.Dispatch<React.SetStateAction<StageData[][]>>,
-  setFuture: React.Dispatch<React.SetStateAction<StageData[][]>>,
+  setFuture: React.Dispatch<React.SetStateAction<StageData[][]>>
 ) => {
   const { alterItems } = useItem();
   const [current, setCurrent] = useState<StageData[] | null>(null);
@@ -48,7 +48,7 @@ const useWorkHistory = (
         setCurrent(newCurrent);
       }
     },
-    [past, current, setPast, setFuture, setCurrent],
+    [past, current, setPast, setFuture, setCurrent]
   );
 
   const clearHistory = () => {

@@ -3,12 +3,12 @@ import { Accordion } from "react-bootstrap";
 import { Node, NodeConfig } from "konva/lib/Node";
 import Widget, { WidgetKind } from "./Widget";
 import widgetList from "../config/widget.json";
-import ImageWidget from "./widgetList/ImageWidget";
 import TextWidget from "./widgetList/TextWidget";
 import AlignWidget from "./widgetList/AlignWidget";
 import ExportWidget from "./widgetList/ExportWidget";
 import useSelection from "../hook/useSelection";
 import useStage from "../hook/useStage";
+import ImageWidget from "./ImageWidget";
 
 export type SettingBarProps = {
   selectedItems: Node<NodeConfig>[];
@@ -26,7 +26,7 @@ const Widgets = {
 export type WidgetIDList = keyof typeof Widgets;
 
 const SettingBar: React.FC<SettingBarProps> = (settingProps) => (
-  <aside style={{ width: "300px" }}>
+  <aside>
     <Accordion>
       {(widgetList as WidgetKind[]).map((data) => (
         <Widget key={`widget-${data.id}`} data={{ ...data, ...settingProps }}>

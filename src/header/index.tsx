@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
 import colorStyles from "../style/color.module.css";
 import { TabKind, TabProps } from "./tab/Tab";
 import TabGroup from "./tab";
