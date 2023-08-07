@@ -121,7 +121,9 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
         onDragEnd={onDragEndFrame}
       />
       {objectKeywords?.map((keyword) => {
-        const xpos = imageRef.current?.x() ?? 0;
+        const xpos =
+          (imageRef.current?.x() ?? 0) +
+          keyword.position.x * (imageRef.current?.width() ?? 0) * (imageRef.current?.scaleX() ?? 0);
         const ypos =
           (imageRef.current?.y() ?? 0) +
           keyword.position.y *
