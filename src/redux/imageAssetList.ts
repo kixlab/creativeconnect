@@ -10,13 +10,14 @@ export type ImageAssetListItem = {
   id: string;
   name: string;
   src: string;
+  keywords: any[];
 };
 
 export const imageAssetListEpic: Epic = (action$, state$) =>
   action$.pipe(
     ofType(imageAssetListAction.addItem.type),
     take(1),
-    tap((action$) => console.log(action$.payload)),
+    tap((action$) => console.log(action$.payload))
   );
 
 export const imageAssetListEntity = createEntityAdapter<ImageAssetListItem>();
@@ -54,7 +55,7 @@ export const imageAssetListSlice = createSlice({
 const imageAssetListReducer = imageAssetListSlice.reducer;
 
 export const imageAssetListSelector = imageAssetListEntity.getSelectors(
-  (state: StoreState) => state.imageAssetList,
+  (state: StoreState) => state.imageAssetList
 );
 export const imageAssetListAction = imageAssetListSlice.actions;
 export default imageAssetListReducer;

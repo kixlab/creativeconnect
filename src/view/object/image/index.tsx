@@ -7,7 +7,8 @@ import useStage from "../../../hook/useStage";
 import { StageData } from "../../../redux/currentStageData";
 import { decimalUpToSeven } from "../../../util/decimalUpToSeven";
 import colorMapping from "../../../config/colorMapping";
-import { Button } from "react-bootstrap";
+import useLabelSelection from "../../../hook/useLabelSelection";
+import { SelectedLabelListItem } from "../../../redux/selectedLabelList";
 
 export type ImageItemKind = {
   "data-item-type": string;
@@ -130,24 +131,13 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
             (imageRef.current?.height() ?? 0) *
             (imageRef.current?.scaleY() ?? 0);
         return (
-          <Label
-            x={xpos}
-            y={ypos}
-            key={data.id + "-" + keyword.type + ": " + keyword.keyword}
-            onClick={() => {
-              console.log("click");
-            }}
-          >
-            <Tag name="label-tag" pointerDirection="left" fill={colorMapping[keyword.type]} />
-            <Text
-              text={keyword.type + ": " + keyword.keyword}
-              name="label-text"
-              fontSize={12}
-              lineHeight={1.2}
-              padding={5}
-              fill="#ffffff"
-            />
-          </Label>
+          <ImageLabel
+            xpos={xpos}
+            ypos={ypos}
+            imageId={data.id}
+            type={keyword.type}
+            keyword={keyword.keyword ?? ""}
+          />
         );
       })}
       {otherKeywords?.map((keyword, i) => {
@@ -158,20 +148,61 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
           30 * i +
           20;
         return (
-          <Label x={xpos} y={ypos} key={data.id + "-" + keyword.type + ": " + keyword.keyword}>
-            <Tag name="label-tag" pointerDirection="left" fill={colorMapping[keyword.type]} />
-            <Text
-              text={keyword.type + ": " + keyword.keyword}
-              name="label-text"
-              fontSize={12}
-              lineHeight={1.2}
-              padding={5}
-              fill="#ffffff"
-            />
-          </Label>
+          <ImageLabel
+            xpos={xpos}
+            ypos={ypos}
+            imageId={data.id}
+            type={keyword.type}
+            keyword={keyword.keyword ?? ""}
+          />
         );
       })}
     </>
+  );
+};
+
+const ImageLabel: React.FC<{
+  xpos: number;
+  ypos: number;
+  imageId: string;
+  type: string;
+  keyword: string;
+}> = ({ xpos, ypos, imageId, type, keyword }) => {
+  const { addSelectedLabel, removeSelectedLabel, getAllSelectedLabel } = useLabelSelection();
+  const allSelectedLabel = getAllSelectedLabel();
+  const isSelected = useMemo(() => {
+    return allSelectedLabel.some((label) => {
+      return label.id === imageId + "-" + type + "-" + keyword;
+    });
+  }, [allSelectedLabel, imageId, type, keyword]);
+
+  const labelEntity: SelectedLabelListItem = {
+    id: imageId + "-" + type + "-" + keyword,
+    type,
+    fileid: imageId,
+    keyword,
+  };
+
+  return (
+    <Label
+      x={xpos}
+      y={ypos}
+      key={imageId + "-" + type + ": " + keyword}
+      onClick={() => {
+        if (isSelected) removeSelectedLabel(labelEntity.id);
+        else addSelectedLabel(labelEntity);
+      }}
+    >
+      <Tag name="label-tag" pointerDirection="left" fill={colorMapping[type]} />
+      <Text
+        text={type + ": " + keyword + " / selected: " + isSelected}
+        name="label-text"
+        fontSize={12}
+        lineHeight={1.2}
+        padding={5}
+        fill="#ffffff"
+      />
+    </Label>
   );
 };
 
