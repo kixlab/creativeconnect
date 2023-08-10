@@ -193,14 +193,21 @@ const ImageLabel: React.FC<{
         else addSelectedLabel(labelEntity);
       }}
     >
-      <Tag name="label-tag" pointerDirection="left" fill={colorMapping[type]} />
+      <Tag
+        name="label-tag"
+        pointerDirection="left"
+        fill={isSelected ? colorMapping[type] : "transparent"}
+        strokeWidth={1}
+        stroke={colorMapping[type]}
+        cornerRadius={5}
+      />
       <Text
-        text={type + ": " + keyword + " / selected: " + isSelected}
+        text={type + ": " + keyword}
         name="label-text"
-        fontSize={12}
+        fontSize={14}
         lineHeight={1.2}
-        padding={5}
-        fill="#ffffff"
+        padding={6}
+        fill={isSelected ? "white" : colorMapping[type]}
       />
     </Label>
   );

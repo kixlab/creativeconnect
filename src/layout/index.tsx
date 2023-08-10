@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import colorStyles from "../style/color.module.css";
-import "./layout.css";
 import ImageWidget from "../settingBar/ImageWidget";
+import useLabelSelection from "../hook/useLabelSelection";
+import MergeWidget from "../settingBar/MergeWidget";
+
+import "./layout.css";
 
 type LayoutProps = {
   header?: React.ReactNode;
@@ -12,28 +15,58 @@ type LayoutProps = {
 };
 
 function Layout(data: LayoutProps) {
-  const [showSettingBar, setShowSettingBar] = useState(false);
-  const handleClick = () => {
-    setShowSettingBar(!showSettingBar);
+  const [showImageWidget, setShowImageWidget] = useState(false);
+  const handleImportClick = () => {
+    setShowImageWidget(!showImageWidget);
   };
+  const [showMergeWidget, setShowMergeWidget] = useState(false);
+  const handleMergeClick = () => {
+    setShowMergeWidget(!showMergeWidget);
+  };
+
+  const { getAllSelectedLabel } = useLabelSelection();
+  const allSelectedLabel = getAllSelectedLabel();
+  useEffect(() => {
+    if (allSelectedLabel.length === 0) {
+      setShowImageWidget(true);
+      setShowMergeWidget(false);
+    } else {
+      setShowImageWidget(false);
+      setShowMergeWidget(true);
+    }
+  }, [allSelectedLabel]);
 
   return (
     <Container fluid className="overflow-hidden">
       {data.header}
       <div className={[colorStyles.lightTheme, "position-relative z-1 h-100"].join(" ")}>
         <div className="h-100">{data.children}</div>
-        {showSettingBar && (
-          <div className="settingBar">
+        {showImageWidget && (
+          <div className="imageWidget">
             <ImageWidget />
           </div>
         )}
-        <div className="buttonWrapper">
+        <div className="bottomButtonWrapper">
           <a
-            className={showSettingBar ? "importbutton importbutton-rotate" : "importbutton"}
-            onClick={handleClick}
+            className={showImageWidget ? "customButton customButton-selected" : "customButton"}
+            onClick={handleImportClick}
             href="#"
           >
             <i className="bi bi-plus"></i>
+          </a>
+        </div>
+        {showMergeWidget && (
+          <div className="mergeWidget">
+            <MergeWidget />
+          </div>
+        )}
+        <div className="topButtonWrapper">
+          <a
+            className={showMergeWidget ? "customButton customButton-selected" : "customButton"}
+            onClick={handleMergeClick}
+            href="#"
+          >
+            <i className="bi bi-union"></i>
           </a>
         </div>
       </div>

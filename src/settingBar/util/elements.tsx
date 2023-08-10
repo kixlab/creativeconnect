@@ -1,0 +1,54 @@
+import React, { useState } from "react";
+import colorMapping from "../../config/colorMapping";
+
+const ElementSelectButton: React.FC<{
+  id: string;
+  elementType: string;
+  elementName: string | undefined;
+  onChange: (e: any) => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  button: boolean;
+}> = ({ id, elementType, elementName, onChange, onMouseEnter, onMouseLeave, button }) => {
+  const [hovered, setHovered] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const handleChange = (e: any) => {
+    setSelected(e.target.checked);
+    onChange(e);
+  };
+  const color = colorMapping[elementType];
+  return (
+    <>
+      <input
+        type="checkbox"
+        className="btn-check"
+        id={id + "-" + elementType + "-" + elementName}
+        onChange={handleChange}
+        autoComplete="off"
+        checked={selected}
+        disabled={!button}
+      />
+      <label
+        className="btn btn-outline-primary btn-sm me-1 mb-1"
+        htmlFor={id + "-" + elementType + "-" + elementName}
+        onMouseEnter={() => {
+          setHovered(true);
+          onMouseEnter();
+        }}
+        onMouseLeave={() => {
+          setHovered(false);
+          onMouseLeave();
+        }}
+        style={{
+          color: selected || hovered || !button ? "white" : color,
+          borderColor: color,
+          backgroundColor: selected || hovered || !button ? color : "transparent",
+        }}
+      >
+        {elementType + ": " + elementName}
+      </label>
+    </>
+  );
+};
+
+export default ElementSelectButton;

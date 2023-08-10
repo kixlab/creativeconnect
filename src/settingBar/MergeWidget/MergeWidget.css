@@ -1,0 +1,13 @@
+.mergeWidgetWrapper {
+  max-height: 80vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 20px;
+
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.mergeWidgetWrapper::-webkit-scrollbar {
+  display: none;
+}

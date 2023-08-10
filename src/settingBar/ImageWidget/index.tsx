@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { nanoid } from "nanoid";
 import { ImageItemKind } from "../../view/object/image";
 import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
 import useImageAsset from "../../hook/useImageAsset";
-import colorMapping from "../../config/colorMapping";
-import "./ImageWidget.css";
 import { sendImage } from "../../api/ImageElementAPI";
 import { onnxMaskToImage } from "../../util/maskUtils";
+import ElementSelectButton from "../util/elements";
+
+import "./ImageWidget.css";
 
 export const IMAGE_LIST_KEY = "importedImage";
 
@@ -163,58 +164,11 @@ const ImageThumbnail: React.FC<{
             onMouseLeave={() => {
               setSegmentMask(null);
             }}
+            button={true}
           />
         ))}
       </Form>
       <hr />
     </div>
-  );
-};
-
-const ElementSelectButton: React.FC<{
-  id: string;
-  elementType: string;
-  elementName: string | undefined;
-  onChange: (e: any) => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}> = ({ id, elementType, elementName, onChange, onMouseEnter, onMouseLeave }) => {
-  const [hovered, setHovered] = useState(false);
-  const [selected, setSelected] = useState(false);
-  const handleChange = (e: any) => {
-    setSelected(e.target.checked);
-    onChange(e);
-  };
-  const color = colorMapping[elementType];
-  return (
-    <>
-      <input
-        type="checkbox"
-        className="btn-check"
-        id={id + "-" + elementType + "-" + elementName}
-        onChange={handleChange}
-        autoComplete="off"
-        checked={selected}
-      />
-      <label
-        className="btn btn-outline-primary btn-sm me-1 mb-1"
-        htmlFor={id + "-" + elementType + "-" + elementName}
-        onMouseEnter={() => {
-          setHovered(true);
-          onMouseEnter();
-        }}
-        onMouseLeave={() => {
-          setHovered(false);
-          onMouseLeave();
-        }}
-        style={{
-          color: selected || hovered ? "white" : color,
-          borderColor: color,
-          backgroundColor: selected || hovered ? color : "transparent",
-        }}
-      >
-        {elementType + ": " + elementName}
-      </label>
-    </>
   );
 };
