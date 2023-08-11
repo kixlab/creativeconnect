@@ -18,3 +18,9 @@ export const sendImage = (data) => {
   //   image: data.image,
   // });
 };
+
+export const sendElement = (data) => {
+  return imageElement.post("/sendElement", {
+    elements: data,
+  });
+};

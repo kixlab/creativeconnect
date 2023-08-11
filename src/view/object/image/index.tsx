@@ -34,7 +34,6 @@ export type ImageItemProps = OverrideItemProps<{
 }>;
 
 const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
-  console.log(data);
   const { attrs } = data;
   const imageRef = useRef() as RefObject<Konva.Image>;
   const [imageSrc, setImageSrc] = useState<CanvasImageSource>(new Image());
@@ -139,6 +138,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
             filename={data.filename ?? ""}
             type={keyword.type}
             keyword={keyword.keyword ?? ""}
+            mask={keyword.mask ?? undefined}
           />
         );
       })}
@@ -156,6 +156,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
             filename={data.filename ?? ""}
             type={keyword.type}
             keyword={keyword.keyword ?? ""}
+            mask={keyword.mask ?? undefined}
           />
         );
       })}
@@ -169,8 +170,8 @@ const ImageLabel: React.FC<{
   filename: string;
   type: string;
   keyword: string;
-}> = ({ xpos, ypos, filename, type, keyword }) => {
-  console.log(filename);
+  mask?: boolean[][];
+}> = ({ xpos, ypos, filename, type, keyword, mask }) => {
   const { addSelectedLabel, removeSelectedLabel, getAllSelectedLabel } = useLabelSelection();
   const allSelectedLabel = getAllSelectedLabel();
   const isSelected = useMemo(() => {
@@ -184,6 +185,7 @@ const ImageLabel: React.FC<{
     type,
     fileid: filename,
     keyword,
+    mask: mask ?? undefined,
   };
 
   return (

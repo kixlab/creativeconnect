@@ -16,12 +16,16 @@ type LayoutProps = {
 
 function Layout(data: LayoutProps) {
   const [showImageWidget, setShowImageWidget] = useState(false);
+  const [showMergeWidget, setShowMergeWidget] = useState(false);
+
   const handleImportClick = () => {
     setShowImageWidget(!showImageWidget);
+    setShowMergeWidget(false);
   };
-  const [showMergeWidget, setShowMergeWidget] = useState(false);
+
   const handleMergeClick = () => {
     setShowMergeWidget(!showMergeWidget);
+    setShowImageWidget(false);
   };
 
   const { getAllSelectedLabel } = useLabelSelection();

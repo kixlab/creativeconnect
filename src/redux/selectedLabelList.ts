@@ -10,6 +10,7 @@ export type SelectedLabelListItem = {
   type: string;
   fileid: string;
   keyword: string;
+  mask?: boolean[][];
 };
 
 export const selectedLabelListEpic: Epic = (action$, state$) =>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MergeWidget.css";
 import { Button, Col, Row } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
@@ -6,12 +6,16 @@ import ElementSelectButton from "../util/elements";
 import { sendElement } from "../../api/ImageElementAPI";
 
 const MergeWidget: React.FC = () => {
+  const [isLoading, setLoading] = useState(false);
+
   const { getAllSelectedLabel } = useLabelSelection();
   const allSelectedLabel = getAllSelectedLabel();
 
   // Send api request with allSelectedLabel in the body
   const handleMergeClick = () => {
+    setLoading(true);
     sendElement({ elements: allSelectedLabel }).then((res: any) => {
+      setLoading(false);
       console.log(res);
     });
   };
@@ -48,10 +52,10 @@ const MergeWidget: React.FC = () => {
         <Button
           className="w-100 ms-1"
           size="sm"
-          disabled={allSelectedLabel.length === 0}
-          onClick={handleMergeClick}
+          onClick={!isLoading ? handleMergeClick : () => {}}
+          disabled={allSelectedLabel.length === 0 || isLoading}
         >
-          Merge
+          {!isLoading ? "Merge keywords" : "Merging..."}
         </Button>
       </div>
     </Col>

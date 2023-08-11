@@ -16,6 +16,7 @@ const useLabelSelection = () => {
         type: label.type,
         fileid: label.fileid,
         keyword: label.keyword,
+        mask: label.mask ?? "",
       })
     );
   };
