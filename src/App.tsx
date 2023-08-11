@@ -6,7 +6,6 @@ import { nanoid } from "nanoid";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import Header from "./header";
 import Layout from "./layout";
-import SettingBar from "./settingBar";
 import View from "./view";
 import { StageData } from "./redux/currentStageData";
 import useItem from "./hook/useItem";

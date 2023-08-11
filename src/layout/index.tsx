@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import colorStyles from "../style/color.module.css";
-import ImageWidget from "../settingBar/ImageWidget";
+import ImageWidget from "../widgets/ImageWidget";
 import useLabelSelection from "../hook/useLabelSelection";
-import MergeWidget from "../settingBar/MergeWidget";
+import MergeWidget from "../widgets/MergeWidget";
 
 import "./layout.css";
 

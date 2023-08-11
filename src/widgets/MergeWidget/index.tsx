@@ -3,10 +3,18 @@ import "./MergeWidget.css";
 import { Button, Col, Row } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
+import { sendElement } from "../../api/ImageElementAPI";
 
 const MergeWidget: React.FC = () => {
   const { getAllSelectedLabel } = useLabelSelection();
   const allSelectedLabel = getAllSelectedLabel();
+
+  // Send api request with allSelectedLabel in the body
+  const handleMergeClick = () => {
+    sendElement({ elements: allSelectedLabel }).then((res: any) => {
+      console.log(res);
+    });
+  };
 
   return (
     <Col className="mergeWidgetWrapper">
@@ -27,10 +35,22 @@ const MergeWidget: React.FC = () => {
       <hr />
 
       <div className="d-flex mt-3">
-        <Button className="w-100 me-1" size="sm" disabled={allSelectedLabel.length === 0}>
+        <Button
+          className="w-100 me-1"
+          size="sm"
+          disabled={allSelectedLabel.length === 0}
+          onClick={() => {
+            console.log("Expand");
+          }}
+        >
           Expand
         </Button>
-        <Button className="w-100 ms-1" size="sm" disabled={allSelectedLabel.length === 0}>
+        <Button
+          className="w-100 ms-1"
+          size="sm"
+          disabled={allSelectedLabel.length === 0}
+          onClick={handleMergeClick}
+        >
           Merge
         </Button>
       </div>
