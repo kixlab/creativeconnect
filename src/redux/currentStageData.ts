@@ -12,6 +12,7 @@ export type StageData = {
   className: string;
   children?: StageData[];
   keywords?: any[];
+  filename?: string;
 };
 
 export const stageDataEpic: Epic = (action$, state$) =>

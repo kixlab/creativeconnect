@@ -13,7 +13,7 @@ const MergeWidget: React.FC = () => {
       <div className="d-flex flex-wrap justify-content-center">
         {allSelectedLabel.map((label) => (
           <ElementSelectButton
-            id={label.fileid + "-" + label.type + "-" + label.keyword}
+            filename={label.fileid}
             key={label.fileid + "-" + label.type + "-" + label.keyword}
             elementName={label.keyword}
             elementType={label.type}

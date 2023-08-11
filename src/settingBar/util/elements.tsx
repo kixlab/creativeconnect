@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import colorMapping from "../../config/colorMapping";
 
 const ElementSelectButton: React.FC<{
-  id: string;
+  filename: string;
   elementType: string;
   elementName: string | undefined;
   onChange: (e: any) => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   button: boolean;
-}> = ({ id, elementType, elementName, onChange, onMouseEnter, onMouseLeave, button }) => {
+}> = ({ filename, elementType, elementName, onChange, onMouseEnter, onMouseLeave, button }) => {
   const [hovered, setHovered] = useState(false);
   const [selected, setSelected] = useState(false);
   const handleChange = (e: any) => {
@@ -22,7 +22,7 @@ const ElementSelectButton: React.FC<{
       <input
         type="checkbox"
         className="btn-check"
-        id={id + "-" + elementType + "-" + elementName}
+        id={filename + "-" + elementType + "-" + elementName}
         onChange={handleChange}
         autoComplete="off"
         checked={selected}
@@ -30,7 +30,7 @@ const ElementSelectButton: React.FC<{
       />
       <label
         className="btn btn-outline-primary btn-sm me-1 mb-1"
-        htmlFor={id + "-" + elementType + "-" + elementName}
+        htmlFor={filename + "-" + elementType + "-" + elementName}
         onMouseEnter={() => {
           setHovered(true);
           onMouseEnter();

@@ -11,6 +11,7 @@ export type ImageAssetListItem = {
   name: string;
   src: string;
   keywords: any[];
+  filename: string;
 };
 
 export const imageAssetListEpic: Epic = (action$, state$) =>

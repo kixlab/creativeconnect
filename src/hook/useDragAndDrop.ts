@@ -77,6 +77,7 @@ const useDragAndDrop = (
         className: "sample-image",
         children: [],
         keywords: data.keywords,
+        filename: data.filename,
       };
 
       createItem(newImage);

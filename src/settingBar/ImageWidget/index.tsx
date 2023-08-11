@@ -35,9 +35,9 @@ const ImageWidget: React.FC = () => {
             {
               type: "image",
               id: nanoid(),
-              name: res.data.filename,
               src: fileReader.result as string,
               keywords: res.data.keywords,
+              filename: res.data.filename,
             },
             ...prev,
           ];
@@ -82,6 +82,7 @@ const ImageWidget: React.FC = () => {
               src: _data.src ?? `find:${_data.id}`,
               name: _data.name,
               keywords: _data.keywords,
+              filename: _data.filename,
               "data-item-type": _data.type,
             }}
           />
@@ -95,7 +96,7 @@ export default ImageWidget;
 
 const ImageThumbnail: React.FC<{
   data: Omit<ImageItemKind, "image">;
-}> = ({ data: { id, ...data } }) => {
+}> = ({ data: { id, filename, ...data } }) => {
   const [selectedKeywords, setSelectedKeywords] = useState<any[]>([]);
   const [segmentMask, setSegmentMask] = useState<HTMLImageElement | null>(null);
   return (
@@ -110,6 +111,7 @@ const ImageThumbnail: React.FC<{
               ? data.src
               : `${process.env.PUBLIC_URL}/assets/image/${data.src}`,
             keywords: selectedKeywords,
+            filename: filename,
           }}
         >
           <div className="position-relative">
@@ -143,8 +145,8 @@ const ImageThumbnail: React.FC<{
 
         {data.keywords?.map((keyword) => (
           <ElementSelectButton
-            id={id}
-            key={id + "-" + keyword.type + "-" + keyword.keyword}
+            filename={filename}
+            key={filename + "-" + keyword.type + "-" + keyword.keyword}
             elementName={keyword.keyword}
             elementType={keyword.type}
             onChange={(e) => {

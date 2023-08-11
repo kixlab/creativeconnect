@@ -24,6 +24,7 @@ export type ImageItemKind = {
     };
     mask: boolean[][];
   }[];
+  filename: string;
   image: typeof Image;
 };
 
@@ -33,6 +34,7 @@ export type ImageItemProps = OverrideItemProps<{
 }>;
 
 const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
+  console.log(data);
   const { attrs } = data;
   const imageRef = useRef() as RefObject<Konva.Image>;
   const [imageSrc, setImageSrc] = useState<CanvasImageSource>(new Image());
@@ -134,7 +136,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
           <ImageLabel
             xpos={xpos}
             ypos={ypos}
-            imageId={data.id}
+            filename={data.filename ?? ""}
             type={keyword.type}
             keyword={keyword.keyword ?? ""}
           />
@@ -151,7 +153,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
           <ImageLabel
             xpos={xpos}
             ypos={ypos}
-            imageId={data.id}
+            filename={data.filename ?? ""}
             type={keyword.type}
             keyword={keyword.keyword ?? ""}
           />
@@ -164,22 +166,23 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
 const ImageLabel: React.FC<{
   xpos: number;
   ypos: number;
-  imageId: string;
+  filename: string;
   type: string;
   keyword: string;
-}> = ({ xpos, ypos, imageId, type, keyword }) => {
+}> = ({ xpos, ypos, filename, type, keyword }) => {
+  console.log(filename);
   const { addSelectedLabel, removeSelectedLabel, getAllSelectedLabel } = useLabelSelection();
   const allSelectedLabel = getAllSelectedLabel();
   const isSelected = useMemo(() => {
     return allSelectedLabel.some((label) => {
-      return label.id === imageId + "-" + type + "-" + keyword;
+      return label.id === filename + "-" + type + "-" + keyword;
     });
-  }, [allSelectedLabel, imageId, type, keyword]);
+  }, [allSelectedLabel, filename, type, keyword]);
 
   const labelEntity: SelectedLabelListItem = {
-    id: imageId + "-" + type + "-" + keyword,
+    id: filename + "-" + type + "-" + keyword,
     type,
-    fileid: imageId,
+    fileid: filename,
     keyword,
   };
 
@@ -187,7 +190,7 @@ const ImageLabel: React.FC<{
     <Label
       x={xpos}
       y={ypos}
-      key={imageId + "-" + type + ": " + keyword}
+      key={filename + "-" + type + ": " + keyword}
       onClick={() => {
         if (isSelected) removeSelectedLabel(labelEntity.id);
         else addSelectedLabel(labelEntity);
