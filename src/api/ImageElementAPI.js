@@ -13,10 +13,10 @@ const imageElement = axios.create({
 });
 
 export const sendImage = (data) => {
-  return Promise.resolve(dummydata);
-  // return imageElement.post("/sendImage", {
-  //   image: data.image,
-  // });
+  // return Promise.resolve(dummydata);
+  return imageElement.post("/sendImage", {
+    image: data.image,
+  });
 };
 
 export const sendElement = (data) => {

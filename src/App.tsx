@@ -4,16 +4,13 @@ import { Node, NodeConfig } from "konva/lib/Node";
 import { useHotkeys } from "react-hotkeys-hook";
 import { nanoid } from "nanoid";
 import { Button, Col, Modal, Row } from "react-bootstrap";
-import Header from "./header";
 import Layout from "./layout";
 import View from "./view";
 import { StageData } from "./redux/currentStageData";
 import useItem from "./hook/useItem";
-import { StageDataListItem } from "./redux/StageDataList";
 import useStageDataList from "./hook/useStageDataList";
 import ImageItem, { ImageItemProps } from "./view/object/image";
 import useSelection from "./hook/useSelection";
-import useTab from "./hook/useTab";
 import useTransformer from "./hook/useTransformer";
 import useStage from "./hook/useStage";
 import TextItem, { TextItemProps } from "./view/object/text";
@@ -21,7 +18,7 @@ import hotkeyList from "./config/hotkey.json";
 import useHotkeyFunc from "./hook/useHotkeyFunc";
 import useWorkHistory from "./hook/useWorkHistory";
 import useI18n from "./hook/usei18n";
-import { initialStageDataList } from "./redux/initilaStageDataList";
+import Header from "./header";
 
 export type FileKind = {
   "file-id": string;
@@ -34,18 +31,11 @@ export type FileData = Record<string, FileKind>;
 function App() {
   const [past, setPast] = useState<StageData[][]>([]);
   const [future, setFuture] = useState<StageData[][]>([]);
-  const { goToFuture, goToPast, recordPast, clearHistory } = useWorkHistory(
-    past,
-    future,
-    setPast,
-    setFuture
-  );
+  const { goToFuture, goToPast } = useWorkHistory(past, future, setPast, setFuture);
   const transformer = useTransformer();
   const { selectedItems, onSelectItem, setSelectedItems, clearSelection } =
     useSelection(transformer);
-  const { tabList, onClickTab, onCreateTab, onDeleteTab } = useTab(transformer, clearHistory);
   const { stageData } = useItem();
-  const { initializeFileDataList, updateFileData } = useStageDataList();
   const stage = useStage();
   const { deleteItems, copyItems, selectAll, pasteItems, layerDown, layerUp } = useHotkeyFunc();
   const { getTranslation } = useI18n();
@@ -63,8 +53,6 @@ function App() {
       children: [],
     };
   };
-
-  const currentTabId = useMemo(() => tabList.find((tab) => tab.active)?.id ?? null, [tabList]);
 
   const sortedStageData = useMemo(
     () =>
@@ -214,8 +202,6 @@ function App() {
       e.preventDefault();
       e.returnValue = "";
     });
-    onCreateTab(undefined, initialStageDataList[0] as StageDataListItem);
-    initializeFileDataList(initialStageDataList);
     stage.stageRef.current.setPosition({
       x: Math.max(Math.ceil(stage.stageRef.current.width() - 1280) / 2, 0),
       y: Math.max(Math.ceil(stage.stageRef.current.height() - 760) / 2, 0),
@@ -223,28 +209,8 @@ function App() {
     stage.stageRef.current.batchDraw();
   }, []);
 
-  useEffect(() => {
-    if (currentTabId) {
-      updateFileData({
-        id: currentTabId,
-        data: stageData,
-      });
-    }
-    recordPast(stageData);
-  }, [stageData]);
-
   return (
-    <Layout
-      header={
-        <Header
-          onClickTab={onClickTab}
-          tabList={tabList}
-          onCreateTab={onCreateTab}
-          onDeleteTab={onDeleteTab}
-          showModal={() => setShowHotkeyModal(true)}
-        />
-      }
-    >
+    <Layout header={<Header showModal={() => setShowHotkeyModal(true)} />}>
       {hotkeyModal}
       <View onSelect={onSelectItem} stage={stage}>
         {stageData.length ? sortedStageData.map((item) => renderObject(item)) : null}

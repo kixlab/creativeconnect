@@ -8,13 +8,6 @@ import {
 } from "../redux/StageDataList";
 import useItem from "./useItem";
 
-export type TAB_CONTEXT = {
-  selectedFileId: Konva.Node[];
-  onCreate: (newFile: StageDataListItem) => void;
-  onDelete: (targetFileId: StageDataListItem["id"]) => void;
-  onUpdate: (StageDataListItem: StageDataListItem) => void;
-};
-
 export const STAGE_DATA_LIST_KEY = "koditorStageDataList";
 
 const useStageDataList = () => {
@@ -59,7 +52,7 @@ const useStageDataList = () => {
   const changeStageData = (
     prevFileId: string,
     nextFileId: string,
-    targetStageData?: StageData[],
+    targetStageData?: StageData[]
   ) => {
     if (prevFileId && prevFileId !== nextFileId) {
       updateFileData({ id: prevFileId, data: stageData });

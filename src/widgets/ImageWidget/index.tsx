@@ -1,27 +1,24 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { nanoid } from "nanoid";
-import { ImageItemKind } from "../../view/object/image";
 import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
-import useImageAsset from "../../hook/useImageAsset";
 import { sendImage } from "../../api/ImageElementAPI";
 import { onnxMaskToImage } from "../../util/maskUtils";
 import ElementSelectButton from "../util/elements";
 
 import "./ImageWidget.css";
 
-export const IMAGE_LIST_KEY = "importedImage";
+type UploadedImage = {
+  id: string;
+  keywords?: any[];
+  filename: string;
+  src: string;
+};
 
 const ImageWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
-  const { setImageAsset, getAllImageAsset } = useImageAsset();
-  const [imageAssetList, setImageAssetList] = useState(() => {
-    if (getAllImageAsset().length) {
-      return [...getAllImageAsset()!];
-    }
-    return [];
-  });
+  const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(null);
 
   const uploadImage = () => {
     const fileReader = new FileReader();
@@ -30,19 +27,11 @@ const ImageWidget: React.FC = () => {
       const fileContent = e.target?.result;
       sendImage({ image: fileContent }).then((res: any) => {
         console.log(res);
-        setImageAssetList((prev) => {
-          const result = [
-            {
-              type: "image",
-              id: nanoid(),
-              src: fileReader.result as string,
-              keywords: res.data.keywords,
-              filename: res.data.filename,
-            },
-            ...prev,
-          ];
-          setImageAsset(result);
-          return result;
+        setUploadedImage({
+          id: nanoid(),
+          src: fileReader.result as string,
+          keywords: res.data.keywords,
+          filename: res.data.filename,
         });
         setLoading(false);
       });
@@ -74,19 +63,9 @@ const ImageWidget: React.FC = () => {
       </Button>
 
       <Row xs={1}>
-        {imageAssetList.map((_data) => (
-          <ImageThumbnail
-            key={`image-thumbnail-${_data.id}`}
-            data={{
-              id: _data.id,
-              src: _data.src ?? `find:${_data.id}`,
-              name: _data.name,
-              keywords: _data.keywords,
-              filename: _data.filename,
-              "data-item-type": _data.type,
-            }}
-          />
-        ))}
+        {uploadedImage && (
+          <ImageThumbnail key={`image-thumbnail-${uploadedImage.id}`} data={uploadedImage} />
+        )}
       </Row>
     </Col>
   );
@@ -95,7 +74,7 @@ const ImageWidget: React.FC = () => {
 export default ImageWidget;
 
 const ImageThumbnail: React.FC<{
-  data: Omit<ImageItemKind, "image">;
+  data: Omit<UploadedImage, "image">;
 }> = ({ data: { id, filename, ...data } }) => {
   const [selectedKeywords, setSelectedKeywords] = useState<any[]>([]);
   const [segmentMask, setSegmentMask] = useState<HTMLImageElement | null>(null);
@@ -106,7 +85,7 @@ const ImageThumbnail: React.FC<{
           dragType="copyMove"
           dragSrc={{
             trigger: TRIGGER.INSERT.IMAGE,
-            "data-item-type": data["data-item-type"],
+            "data-item-type": "image",
             src: data.src.startsWith("data:")
               ? data.src
               : `${process.env.PUBLIC_URL}/assets/image/${data.src}`,
@@ -116,7 +95,7 @@ const ImageThumbnail: React.FC<{
         >
           <div className="position-relative">
             <img
-              alt={data.name}
+              alt={id}
               style={{ maxHeight: "300px", objectFit: "contain" }}
               className="w-100"
               src={
@@ -127,7 +106,7 @@ const ImageThumbnail: React.FC<{
             />
             {segmentMask && (
               <img
-                alt={data.name}
+                alt={id}
                 style={{
                   maxHeight: "300px",
                   objectFit: "contain",

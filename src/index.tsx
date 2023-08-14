@@ -6,8 +6,9 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import configureKonvaEditorStore from "./redux/store";
 import "./i18n";
+import { PersistGate } from "redux-persist/integration/react";
 
-const store = configureKonvaEditorStore();
+const { store, persistor } = configureKonvaEditorStore();
 
 const rootElement = document.getElementById("root");
 if (rootElement === null) {
@@ -17,6 +18,8 @@ if (rootElement === null) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <Provider store={store}>
-    <App />
-  </Provider>,
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>
 );

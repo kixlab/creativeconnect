@@ -19,29 +19,6 @@ const useDragAndDrop = (
 ) => {
   const { createItem, updateItem } = useItem();
 
-  const insertFrame = (e: DragEvent, data: { [key: string]: any }) => {
-    const position = getFramePos(stageRef.current, e, data.width, data.height);
-    const newFrame: StageData = {
-      id: nanoid(),
-      attrs: {
-        name: "label-target",
-        "data-item-type": "frame",
-        "data-frame-type": data["data-frame-type"],
-        width: data.width,
-        height: data.height,
-        fill: "#ffffff",
-        x: position.x,
-        y: position.y,
-        zIndex: 0,
-        brightness: 0,
-        updatedAt: Date.now(),
-      },
-      className: "sample-frame",
-      children: [],
-    };
-    createItem(newFrame);
-  };
-
   const insertImage = (e: DragEvent, data: { [key: string]: any }) => {
     const imageSrc = new Image();
     let source = data.src;
@@ -85,120 +62,6 @@ const useDragAndDrop = (
     imageSrc.src = source;
   };
 
-  const insertText = (e: DragEvent, data: { [key: string]: any }) => {
-    const position = getFramePos(stageRef.current, e, data.width, data.height);
-    const newText: StageData = {
-      id: nanoid(),
-      attrs: {
-        name: "label-target",
-        "data-item-type": "text",
-        width: data.text
-          .split("")
-          .reduce(
-            (acc: number, curr: string) =>
-              curr.charCodeAt(0) >= 32 && curr.charCodeAt(0) <= 126
-                ? acc + data.fontSize * (3 / 5)
-                : acc + data.fontSize,
-            0
-          ),
-        height: data.height,
-        fill: "#00000",
-        x: position.x,
-        y: position.y,
-        fontSize: data.fontSize,
-        fontFamily: data.fontFamily,
-        text: data.text,
-        textAlign: "left",
-        verticalAlign: "top",
-        zIndex: 0,
-        brightness: 0,
-        updatedAt: Date.now(),
-      },
-      className: "sample-text",
-      children: [],
-    };
-    createItem(newText);
-  };
-
-  const insertShape = (e: DragEvent, data: { [key: string]: any }) => {
-    const width = Math.sqrt(data.radius);
-    const position = getFramePos(stageRef.current, e, width, width);
-    const newShape: StageData = {
-      id: nanoid(),
-      attrs: {
-        name: "label-target",
-        "data-item-type": "shape",
-        fill: "#00000",
-        x: position.x,
-        y: position.y,
-        width,
-        height: width,
-        sides: data.sides,
-        radius: data.radius,
-        zIndex: 0,
-        brightness: 0,
-        updatedAt: Date.now(),
-      },
-      className: "sample-shape",
-      children: [],
-    };
-    createItem(newShape);
-  };
-
-  const insertIcon = (e: DragEvent, data: { [key: string]: any }) => {
-    const position = getFramePos(stageRef.current, e, 100, 100);
-    const newIcon: StageData = {
-      id: nanoid(),
-      attrs: {
-        name: "label-target",
-        "data-item-type": "icon",
-        width: 100,
-        height: 100,
-        fill: "#00000",
-        x: position.x,
-        y: position.y,
-        icon: data.icon,
-        brightness: 0,
-        zIndex: 0,
-        updatedAt: Date.now(),
-      },
-      className: "sample-icon",
-      children: [],
-    };
-    createItem(newIcon);
-  };
-
-  const insertLine = (e: DragEvent, data: { [key: string]: any }) => {
-    const position = getFramePos(stageRef.current, e, 100, 100);
-    const curvePoints =
-      data.name.indexOf("curve") !== -1
-        ? data.name.indexOf("one") !== -1
-          ? [110, -10]
-          : [80, -10, 10, 110]
-        : [];
-    const newLine: StageData = {
-      id: nanoid(),
-      attrs: {
-        name: "label-target",
-        "data-item-type": "line",
-        stroke: "#00000",
-        x: position.x,
-        y: position.y,
-        width: 100,
-        height: 100,
-        points: [0, 0, ...curvePoints, 100, 100],
-        arrow: data.name.indexOf("arrow") !== -1,
-        curve: data.name.indexOf("curve") !== -1,
-        zIndex: 0,
-        brightness: 0,
-        updatedAt: Date.now(),
-      },
-      className: "sample-line",
-      children: [],
-    };
-    createItem(newLine);
-  };
-
   const onDropOnStage: DropCallback = (dragSrc, e) => {
     if (!stageRef.current) {
       return;
@@ -207,18 +70,8 @@ const useDragAndDrop = (
 
     data.id = nanoid();
     switch (trigger) {
-      case TRIGGER.INSERT.FRAME:
-        return insertFrame(e, data);
       case TRIGGER.INSERT.IMAGE:
         return insertImage(e, data);
-      case TRIGGER.INSERT.TEXT:
-        return insertText(e, data);
-      case TRIGGER.INSERT.SHAPE:
-        return insertShape(e, data);
-      case TRIGGER.INSERT.ICON:
-        return insertIcon(e, data);
-      case TRIGGER.INSERT.LINE:
-        return insertLine(e, data);
       default:
     }
   };
