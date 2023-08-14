@@ -96,8 +96,8 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
     imageRef.current!.cache();
   }, []);
 
-  const objectKeywords = data.keywords?.filter((keyword) => keyword.type === "object");
-  const otherKeywords = data.keywords?.filter((keyword) => keyword.type !== "object");
+  // const objectKeywords = data.keywords?.filter((keyword) => keyword.type === "object");
+  // const otherKeywords = data.keywords?.filter((keyword) => keyword.type !== "object");
 
   return (
     <>
@@ -122,7 +122,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
         onDragMove={onDragMoveFrame}
         onDragEnd={onDragEndFrame}
       />
-      {objectKeywords?.map((keyword) => {
+      {/* {objectKeywords?.map((keyword) => {
         const xpos =
           (imageRef.current?.x() ?? 0) +
           keyword.position.x * (imageRef.current?.width() ?? 0) * (imageRef.current?.scaleX() ?? 0);
@@ -141,14 +141,14 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
             mask={keyword.mask ?? undefined}
           />
         );
-      })}
-      {otherKeywords?.map((keyword, i) => {
+      })} */}
+      {data.keywords?.map((keyword, i) => {
         const xpos = imageRef.current?.x() ?? 0;
         const ypos =
           (imageRef.current?.y() ?? 0) +
           (imageRef.current?.height() ?? 0) * (imageRef.current?.scaleY() ?? 0) +
           30 * i +
-          20;
+          30;
         return (
           <ImageLabel
             xpos={xpos}

@@ -1,10 +1,10 @@
 import axios from "axios";
-import { dummydata } from "./dummydata";
+import { dummydata, dummydata2 } from "./dummydata";
 
-const BASEURL = "http://localhost:52000";
+const BASEURL = "http://192.168.50.123:52000";
 
 const imageElement = axios.create({
-  baseURL: BASEURL + "/imageElement",
+  baseURL: BASEURL,
   //   withCredentials: true,
   //   headers: {
   //     "Access-Control-Allow-Origin": "true",
@@ -14,13 +14,14 @@ const imageElement = axios.create({
 
 export const sendImage = (data) => {
   // return Promise.resolve(dummydata);
-  return imageElement.post("/sendImage", {
+  return imageElement.post("/getElement", {
     image: data.image,
   });
 };
 
-export const sendElement = (data) => {
-  return imageElement.post("/sendElement", {
+export const getDescriptions = (data) => {
+  return Promise.resolve(dummydata2);
+  return imageElement.post("/getDescriptions", {
     elements: data,
   });
 };

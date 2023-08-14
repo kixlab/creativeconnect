@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import "./MergeWidget.css";
-import { Button, Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
-import { sendElement } from "../../api/ImageElementAPI";
+import { getDescriptions } from "../../api/ImageElementAPI";
+import LayoutDrawer from "./layoutDrawer";
 
 const MergeWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
+  const [descriptions, setDescriptions] = useState<any[]>([]);
+  const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
 
   const { getAllSelectedLabel } = useLabelSelection();
   const allSelectedLabel = getAllSelectedLabel();
@@ -14,9 +17,9 @@ const MergeWidget: React.FC = () => {
   // Send api request with allSelectedLabel in the body
   const handleMergeClick = () => {
     setLoading(true);
-    sendElement({ elements: allSelectedLabel }).then((res: any) => {
+    getDescriptions({ elements: allSelectedLabel }).then((res: any) => {
       setLoading(false);
-      console.log(res);
+      setDescriptions(res.data.descriptions);
     });
   };
 
@@ -36,28 +39,39 @@ const MergeWidget: React.FC = () => {
           />
         ))}
       </div>
-      <hr />
 
-      <div className="d-flex mt-3">
-        <Button
-          className="w-100 me-1"
-          size="sm"
-          disabled={allSelectedLabel.length === 0}
-          onClick={() => {
-            console.log("Expand");
-          }}
-        >
-          Expand
-        </Button>
-        <Button
-          className="w-100 ms-1"
-          size="sm"
-          onClick={!isLoading ? handleMergeClick : () => {}}
-          disabled={allSelectedLabel.length === 0 || isLoading}
-        >
-          {!isLoading ? "Merge keywords" : "Merging..."}
-        </Button>
+      <div className="text-center my-3">
+        <div className="btn mergeButton" onClick={!isLoading ? handleMergeClick : () => {}}>
+          {isLoading ? (
+            "Merging..."
+          ) : (
+            <img
+              width={25}
+              height={25}
+              src={`${process.env.PUBLIC_URL}/assets/merge-icon.svg`}
+              alt="konva"
+            />
+          )}
+        </div>
+        <hr style={{ marginTop: "-20px" }} />
       </div>
+      {descriptions.length > 0 && (
+        <div className="mt-5">
+          <h6>Merge results : Select the one you like</h6>
+          {descriptions.map((des) => (
+            <button
+              className="btn btn-outline-dark text-start my-1"
+              onClick={() => setSelectedDescription(des)}
+            >
+              <div style={{ fontSize: "small" }}>
+                <b>Background</b>: {des.background} <br />
+                <b>Scene</b>: {des.scene}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+      {selectedDescription && <LayoutDrawer description={selectedDescription} />}
     </Col>
   );
 };

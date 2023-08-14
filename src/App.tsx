@@ -12,7 +12,6 @@ import ImageItem, { ImageItemProps } from "./view/object/image";
 import useSelection from "./hook/useSelection";
 import useTransformer from "./hook/useTransformer";
 import useStage from "./hook/useStage";
-import TextItem, { TextItemProps } from "./view/object/text";
 import hotkeyList from "./config/hotkey.json";
 import useHotkeyFunc from "./hook/useHotkeyFunc";
 import useWorkHistory from "./hook/useWorkHistory";
@@ -97,15 +96,6 @@ function App() {
           <ImageItem
             key={`image-${item.id}`}
             data={item as ImageItemProps["data"]}
-            onSelect={onSelectItem}
-          />
-        );
-      case "text":
-        return (
-          <TextItem
-            key={`text-${item.id}`}
-            data={item as TextItemProps["data"]}
-            transformer={transformer}
             onSelect={onSelectItem}
           />
         );
