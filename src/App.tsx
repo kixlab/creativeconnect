@@ -8,7 +8,6 @@ import Layout from "./layout";
 import View from "./view";
 import { StageData } from "./redux/currentStageData";
 import useItem from "./hook/useItem";
-import useStageDataList from "./hook/useStageDataList";
 import ImageItem, { ImageItemProps } from "./view/object/image";
 import useSelection from "./hook/useSelection";
 import useTransformer from "./hook/useTransformer";
@@ -17,7 +16,6 @@ import TextItem, { TextItemProps } from "./view/object/text";
 import hotkeyList from "./config/hotkey.json";
 import useHotkeyFunc from "./hook/useHotkeyFunc";
 import useWorkHistory from "./hook/useWorkHistory";
-import useI18n from "./hook/usei18n";
 import Header from "./header";
 
 export type FileKind = {
@@ -38,7 +36,6 @@ function App() {
   const { stageData } = useItem();
   const stage = useStage();
   const { deleteItems, copyItems, selectAll, pasteItems, layerDown, layerUp } = useHotkeyFunc();
-  const { getTranslation } = useI18n();
   const [clipboard, setClipboard] = useState<StageData[]>([]);
   const [showHotkeyModal, setShowHotkeyModal] = useState(false);
   const createStageDataObject = (item: Node<NodeConfig>): StageData => {
@@ -74,7 +71,7 @@ function App() {
       <Modal.Body>
         {hotkeyList.map((hotkey) => (
           <div key={hotkey.name} className="d-flex justify-content-between mb-2">
-            <h6>{getTranslation("hotkey", hotkey.id, "name")}</h6>
+            <h6>{hotkey.name}</h6>
             <Row className="justify-content-end" xs={4}>
               {hotkey.keys.map((key, idx) => (
                 <React.Fragment key={hotkey.name + key}>
