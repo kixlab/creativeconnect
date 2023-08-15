@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
@@ -121,8 +121,31 @@ const colors = [
 ];
 
 const LayoutDrawer = ({ description }) => {
-  const [rectangles, setRectangles] = React.useState([]);
-  const [selectedId, selectShape] = React.useState(null);
+  const [background, setBackground] = useState(description.background);
+  const [objects, setObjects] = useState([]);
+  const [selectedId, selectShape] = useState(null);
+
+  useEffect(() => {
+    setBackground(description.background);
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    const newObjects = description.objects.map((obj) => ({
+      ...obj,
+      color: colors.find((c) => c.id === obj.id).color,
+      rectangle: {
+        x: getRandomInt(120),
+        y: getRandomInt(120),
+        width: getRandomInt(40) + 40,
+        height: getRandomInt(40) + 40,
+        stroke: colors.find((c) => c.id === obj.id).color,
+        strokeWidth: 2,
+        id: obj.id,
+      },
+    }));
+    setObjects(newObjects);
+  }, [description]);
 
   const checkDeselect = (e) => {
     // deselect when clicked on empty area
@@ -132,64 +155,92 @@ const LayoutDrawer = ({ description }) => {
     }
   };
 
-  const addRectangle = () => {
-    const unusedColor = colors.find((c) => !rectangles.find((r) => r.id === c.id));
-    if (unusedColor === undefined) return;
-    console.log("Adding " + unusedColor);
-    setRectangles([
-      ...rectangles,
-      {
-        x: 20,
-        y: 20,
-        width: 80,
-        height: 80,
-        stroke: unusedColor.color,
-        strokeWidth: 2,
-        id: unusedColor.id,
-      },
-    ]);
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  // TODO: Add a button to remove a rectangle
+    const data = {
+      background: background,
+      objects: objects,
+    };
+
+    console.log(data);
+  };
 
   return (
     <div className="mt-3">
-      <h6>Draw arrangement of your drawing</h6>
-      <div style={{ width: "200px", height: "200px", margin: "10px 0" }}>
-        <Stage
-          width={200}
-          height={200}
-          style={{ backgroundColor: "#fef7ef" }}
-          onMouseDown={checkDeselect}
-          onTouchStart={checkDeselect}
-        >
-          <Layer>
-            {rectangles.map((rect, i) => {
+      <h6>Add details</h6>
+      <div className="d-flex mt-1 mb-5">
+        <div className="me-2" style={{ width: "200px", height: "200px" }}>
+          <Stage
+            width={200}
+            height={200}
+            style={{ backgroundColor: "#fef7ef" }}
+            onMouseDown={checkDeselect}
+            onTouchStart={checkDeselect}
+          >
+            <Layer>
+              {objects.map((obj, i) => {
+                const rect = obj.rectangle;
+                return (
+                  <Rectangle
+                    key={i}
+                    shapeProps={rect}
+                    isSelected={rect.id === selectedId}
+                    onSelect={() => {
+                      selectShape(rect.id);
+                    }}
+                    onChange={(newAttrs) => {
+                      setObjects(
+                        objects.map((obj) => {
+                          return obj.id === rect.id ? { ...obj, rectangle: newAttrs } : obj;
+                        })
+                      );
+                    }}
+                  />
+                );
+              })}
+            </Layer>
+          </Stage>
+        </div>
+        <div className="w-100">
+          <form onSubmit={handleSubmit}>
+            {objects.map((obj) => {
               return (
-                <Rectangle
-                  key={i}
-                  shapeProps={rect}
-                  isSelected={rect.id === selectedId}
-                  onSelect={() => {
-                    selectShape(rect.id);
-                  }}
-                  onChange={(newAttrs) => {
-                    const rects = rectangles.slice();
-                    rects[i] = newAttrs;
-                    setRectangles(rects);
-                  }}
-                />
+                <div key={obj.id} className="mt-2">
+                  <div className="d-flex align-items-center mb-2">
+                    <div
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "4px",
+                        backgroundColor: obj.color,
+                      }}
+                    ></div>
+                    <div style={{ fontWeight: "bold" }}>{obj.object}</div>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    style={{ fontSize: "0.9rem" }}
+                    id={obj.id}
+                    value={obj.detail}
+                    onChange={(e) => {
+                      setObjects(
+                        objects.map((o) => {
+                          return o.id === obj.id ? { ...o, detail: e.target.value } : o;
+                        })
+                      );
+                    }}
+                  />
+                </div>
               );
             })}
-          </Layer>
-        </Stage>
+            <button type="submit" className="btn btn-custom mt-3">
+              Generate sketch
+            </button>
+          </form>
+        </div>
       </div>
-      <button className="btn btn-outline-dark btn-sm" onClick={addRectangle}>
-        +
-      </button>
-      <button className="btn btn-outline-dark btn-sm" onClick={() => setRectangles([])}>
-        Clear
-      </button>
     </div>
   );
 };

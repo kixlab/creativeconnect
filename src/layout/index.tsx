@@ -52,7 +52,11 @@ function Layout(data: LayoutProps) {
         )}
         <div className="bottomButtonWrapper">
           <a
-            className={showImageWidget ? "customButton customButton-selected" : "customButton"}
+            className={
+              showImageWidget
+                ? "btn btn-custom-round-icon btn-custom-round-icon-selected"
+                : "btn btn-custom-round-icon"
+            }
             onClick={handleImportClick}
             href="#"
           >
@@ -66,7 +70,11 @@ function Layout(data: LayoutProps) {
         )}
         <div className="topButtonWrapper">
           <a
-            className={showMergeWidget ? "customButton customButton-selected" : "customButton"}
+            className={
+              showMergeWidget
+                ? "btn btn-custom-round-icon btn-custom-round-icon-selected"
+                : "btn btn-custom-round-icon"
+            }
             onClick={handleMergeClick}
             href="#"
           >

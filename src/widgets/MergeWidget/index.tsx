@@ -41,18 +41,26 @@ const MergeWidget: React.FC = () => {
       </div>
 
       <div className="text-center my-3">
-        <div className="btn mergeButton" onClick={!isLoading ? handleMergeClick : () => {}}>
+        <button
+          className="btn btn-custom-round-icon m-auto"
+          onClick={!isLoading ? handleMergeClick : () => {}}
+        >
           {isLoading ? (
-            "Merging..."
+            <>
+              <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              <span className="visually-hidden" role="status">
+                Loading...
+              </span>
+            </>
           ) : (
             <img
               width={25}
               height={25}
               src={`${process.env.PUBLIC_URL}/assets/merge-icon.svg`}
-              alt="konva"
+              alt="merge"
             />
           )}
-        </div>
+        </button>
         <hr style={{ marginTop: "-20px" }} />
       </div>
       {descriptions.length > 0 && (
@@ -60,12 +68,20 @@ const MergeWidget: React.FC = () => {
           <h6>Merge results : Select the one you like</h6>
           {descriptions.map((des) => (
             <button
-              className="btn btn-outline-dark text-start my-1"
+              className={
+                selectedDescription === des
+                  ? "btn btn-custom text-start my-1"
+                  : "btn btn-outline-custom text-start my-1"
+              }
               onClick={() => setSelectedDescription(des)}
             >
               <div style={{ fontSize: "small" }}>
                 <b>Background</b>: {des.background} <br />
-                <b>Scene</b>: {des.scene}
+                {des.objects.map((obj: any) => (
+                  <>
+                    <b>{obj.object}</b>: {obj.detail} <br />
+                  </>
+                ))}
               </div>
             </button>
           ))}
