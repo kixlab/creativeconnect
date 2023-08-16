@@ -1,0 +1,13 @@
+.starredWidget {
+  max-height: 80vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 20px;
+
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.starredWidget::-webkit-scrollbar {
+  display: none;
+}

@@ -3,24 +3,51 @@ import "./MergeWidget.css";
 import { Col } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
-import { getDescriptions } from "../../api/ImageElementAPI";
+import { getDescriptions, getImages } from "../../api/ImageElementAPI";
 import LayoutDrawer from "./layoutDrawer";
+import useStarredImageList from "../../hook/useStarredImageList";
+import { nanoid } from "nanoid";
+import { find } from "rxjs";
 
 const MergeWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
   const [descriptions, setDescriptions] = useState<any[]>([]);
   const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
+  const [imageId, setImageId] = useState<string>("");
+  const [imageData, setImageData] = useState<any | null>(null);
+  const [imageSrc, setImageSrc] = useState<string>("");
 
   const { getAllSelectedLabel } = useLabelSelection();
+  const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
   const allSelectedLabel = getAllSelectedLabel();
 
-  // Send api request with allSelectedLabel in the body
   const handleMergeClick = () => {
     setLoading(true);
     getDescriptions({ elements: allSelectedLabel }).then((res: any) => {
       setLoading(false);
       setDescriptions(res.data.descriptions);
     });
+  };
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+    setImageData(data);
+    getImages(data).then((res: any) => {
+      console.log(res);
+      const url = URL.createObjectURL(res.data);
+      setImageSrc(url);
+      setImageId(new Date().getTime().toString());
+    });
+  };
+
+  const handleStarClick = () => {
+    if (findStarredImage(imageId)) removeStarredImage(imageId);
+    else
+      addStarredImage({
+        id: imageId,
+        src: imageSrc,
+        data: imageData,
+      });
   };
 
   return (
@@ -87,7 +114,41 @@ const MergeWidget: React.FC = () => {
           ))}
         </div>
       )}
-      {selectedDescription && <LayoutDrawer description={selectedDescription} />}
+      {selectedDescription && (
+        <>
+          <LayoutDrawer description={selectedDescription} onSubmit={onSubmit} />
+          {imageSrc && (
+            <div
+              className="position-relative w-50"
+              style={{
+                borderRadius: "0.25rem",
+              }}
+            >
+              <button
+                type="button"
+                className="btn btn-lg position-absolute top-0 end-0"
+                style={{ color: "#FFC107" }}
+                onClick={handleStarClick}
+              >
+                {findStarredImage(imageId) ? (
+                  <i className="bi bi-star-fill"></i>
+                ) : (
+                  <i className="bi bi-star"></i>
+                )}
+              </button>
+              <img
+                className="w-100"
+                style={{
+                  borderRadius: "0.25rem",
+                }}
+                alt="result"
+                src={imageSrc}
+                id={imageId}
+              />
+            </div>
+          )}
+        </>
+      )}
     </Col>
   );
 };

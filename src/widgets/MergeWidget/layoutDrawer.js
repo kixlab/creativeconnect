@@ -120,7 +120,7 @@ const colors = [
   },
 ];
 
-const LayoutDrawer = ({ description }) => {
+const LayoutDrawer = ({ description, onSubmit }) => {
   const [background, setBackground] = useState(description.background);
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
@@ -157,13 +157,12 @@ const LayoutDrawer = ({ description }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const data = {
       background: background,
       objects: objects,
     };
 
-    console.log(data);
+    onSubmit(data);
   };
 
   return (

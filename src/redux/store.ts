@@ -14,6 +14,7 @@ import fileMetaReducer, { FileMeta } from "./fileMeta";
 import stageDataReducer, { StageData, stageDataEpic } from "./currentStageData";
 import stageDataListReducer, { StageDataListItem } from "./StageDataList";
 import selectedLabelListReducer, { SelectedLabelListItem } from "./selectedLabelList";
+import starredImageListReducer, { StarredImageListItem } from "./starredImageList";
 import persistStore from "redux-persist/es/persistStore";
 
 export type StoreState = {
@@ -21,6 +22,7 @@ export type StoreState = {
   currentStageData: EntityState<StageData["attrs"]>;
   stageDataList: EntityState<StageDataListItem>;
   selectedLabelList: EntityState<SelectedLabelListItem>;
+  starredImageList: EntityState<StarredImageListItem>;
 };
 
 const epicMiddleware = createEpicMiddleware();
@@ -31,6 +33,7 @@ const rootReducer = combineReducers({
   currentStageData: stageDataReducer,
   stageDataList: stageDataListReducer,
   selectedLabelList: selectedLabelListReducer,
+  starredImageList: starredImageListReducer,
 });
 
 const persistConfig = {

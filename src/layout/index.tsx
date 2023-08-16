@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import colorStyles from "../style/color.module.css";
 import ImageWidget from "../widgets/ImageWidget";
-import useLabelSelection from "../hook/useLabelSelection";
 import MergeWidget from "../widgets/MergeWidget";
 
 import "./layout.css";
+import StarredWidget from "../widgets/StarredWidget";
 
 type LayoutProps = {
   header?: React.ReactNode;
@@ -14,73 +14,70 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
+type WidgetProps = {
+  name: "image" | "merge" | "starred";
+  icon: string;
+  position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  className: string;
+  widget: React.ReactNode;
+};
+
+const widgets: WidgetProps[] = [
+  {
+    name: "image",
+    icon: "bi bi-plus",
+    position: "bottom-left",
+    className: "imageWidget",
+    widget: <ImageWidget />,
+  },
+  {
+    name: "merge",
+    icon: "bi bi-union",
+    position: "top-right",
+    className: "mergeWidget",
+    widget: <MergeWidget />,
+  },
+  {
+    name: "starred",
+    icon: "bi bi-star-fill",
+    position: "bottom-right",
+    className: "starredWidget",
+    widget: <StarredWidget />,
+  },
+];
+
 function Layout(data: LayoutProps) {
-  const [showImageWidget, setShowImageWidget] = useState(false);
-  const [showMergeWidget, setShowMergeWidget] = useState(false);
+  const [shownWidget, setShownWidget] = useState<"image" | "merge" | "starred" | "">("");
 
-  const handleImportClick = () => {
-    setShowImageWidget(!showImageWidget);
-    setShowMergeWidget(false);
+  const handleButtonClick = (name: "image" | "merge" | "starred") => {
+    if (shownWidget === name) setShownWidget("");
+    else setShownWidget(name);
   };
-
-  const handleMergeClick = () => {
-    setShowMergeWidget(!showMergeWidget);
-    setShowImageWidget(false);
-  };
-
-  const { getAllSelectedLabel } = useLabelSelection();
-  const allSelectedLabel = getAllSelectedLabel();
-  useEffect(() => {
-    if (allSelectedLabel.length === 0) {
-      setShowImageWidget(true);
-      setShowMergeWidget(false);
-    } else {
-      setShowImageWidget(false);
-      setShowMergeWidget(true);
-    }
-  }, [allSelectedLabel]);
 
   return (
     <Container fluid className="overflow-hidden">
       {data.header}
       <div className={[colorStyles.lightTheme, "position-relative z-1 h-100"].join(" ")}>
         <div className="h-100">{data.children}</div>
-        {showImageWidget && (
-          <div className="imageWidget">
-            <ImageWidget />
+
+        {widgets.map((widget: WidgetProps) => (
+          <div className={"wrapper-" + widget.position}>
+            <a
+              className={
+                shownWidget === widget.name
+                  ? "btn btn-custom-round-icon btn-custom-round-icon-selected"
+                  : "btn btn-custom-round-icon"
+              }
+              onClick={handleButtonClick.bind(null, widget.name)}
+              href="#"
+            >
+              <i className={widget.icon}></i>
+            </a>
+            {shownWidget === widget.name && (
+              <div className={"custom-widget " + widget.className}>{widget.widget}</div>
+            )}
           </div>
-        )}
-        <div className="bottomButtonWrapper">
-          <a
-            className={
-              showImageWidget
-                ? "btn btn-custom-round-icon btn-custom-round-icon-selected"
-                : "btn btn-custom-round-icon"
-            }
-            onClick={handleImportClick}
-            href="#"
-          >
-            <i className="bi bi-plus"></i>
-          </a>
-        </div>
-        {showMergeWidget && (
-          <div className="mergeWidget">
-            <MergeWidget />
-          </div>
-        )}
-        <div className="topButtonWrapper">
-          <a
-            className={
-              showMergeWidget
-                ? "btn btn-custom-round-icon btn-custom-round-icon-selected"
-                : "btn btn-custom-round-icon"
-            }
-            onClick={handleMergeClick}
-            href="#"
-          >
-            <i className="bi bi-union"></i>
-          </a>
-        </div>
+        ))}
       </div>
     </Container>
   );
