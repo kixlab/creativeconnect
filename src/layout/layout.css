@@ -3,7 +3,7 @@
   flex-direction: column-reverse;
   position: fixed;
 
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   left: 20px;
   z-index: 1000;
@@ -14,7 +14,7 @@
   flex-direction: column-reverse;
   align-items: flex-end;
 
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   right: 20px;
   z-index: 1000;
@@ -27,7 +27,7 @@
 
   position: absolute;
   top: 20px;
-  right: 8px;
+  right: 20px;
   z-index: 1000;
 }
 

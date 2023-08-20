@@ -6,6 +6,7 @@ import MergeWidget from "../widgets/MergeWidget";
 
 import "./layout.css";
 import StarredWidget from "../widgets/StarredWidget";
+import ExpandWidget from "../widgets/ExpandWidget";
 
 type LayoutProps = {
   header?: React.ReactNode;
@@ -55,10 +56,13 @@ function Layout(data: LayoutProps) {
   };
 
   return (
-    <Container fluid className="overflow-hidden">
+    <Container fluid className="h-100 overflow-hidden py-2 d-flex flex-column">
       {data.header}
-      <div className={[colorStyles.lightTheme, "position-relative z-1 h-100"].join(" ")}>
-        <div className="h-100">{data.children}</div>
+      <div
+        className={[colorStyles.lightTheme, "position-relative z-1"].join(" ")}
+        style={{ flex: 1 }}
+      >
+        {data.children}
 
         {widgets.map((widget: WidgetProps) => (
           <div className={"wrapper-" + widget.position}>
@@ -78,6 +82,10 @@ function Layout(data: LayoutProps) {
             )}
           </div>
         ))}
+
+        <div className="position-absolute bottom-0 w-100">
+          <ExpandWidget />
+        </div>
       </div>
     </Container>
   );

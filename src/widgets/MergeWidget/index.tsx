@@ -3,7 +3,7 @@ import "./MergeWidget.css";
 import { Col } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
-import { getDescriptions, getImages } from "../../api/ImageElementAPI";
+import { getDescriptions, getImage } from "../../api/ImageElementAPI";
 import LayoutDrawer from "./layoutDrawer";
 import useStarredImageList from "../../hook/useStarredImageList";
 import { nanoid } from "nanoid";
@@ -30,9 +30,8 @@ const MergeWidget: React.FC = () => {
   };
 
   const onSubmit = (data: any) => {
-    console.log(data);
     setImageData(data);
-    getImages(data).then((res: any) => {
+    getImage(data).then((res: any) => {
       console.log(res);
       const url = URL.createObjectURL(res.data);
       setImageSrc(url);
@@ -103,6 +102,7 @@ const MergeWidget: React.FC = () => {
               onClick={() => setSelectedDescription(des)}
             >
               <div style={{ fontSize: "small" }}>
+                <b>Scene</b>: {des.scene} <br />
                 <b>Background</b>: {des.background} <br />
                 {des.objects.map((obj: any) => (
                   <>

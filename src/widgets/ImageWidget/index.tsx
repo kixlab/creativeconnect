@@ -58,8 +58,17 @@ const ImageWidget: React.FC = () => {
         onClick={!isLoading ? uploadImage : () => {}}
         disabled={isLoading}
       >
-        <i className="bi-plus" />
-        {!isLoading ? "Upload Image" : "Uploading..."}
+        {!isLoading ? (
+          <>
+            <i className="bi-plus" />
+            <span>Upload Image</span>
+          </>
+        ) : (
+          <>
+            <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            <span role="status">Loading the image...</span>
+          </>
+        )}
       </Button>
 
       <Row xs={1}>

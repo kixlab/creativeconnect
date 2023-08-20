@@ -1,7 +1,7 @@
 import axios from "axios";
 import { dummydata, dummydata2 } from "./dummydata";
 
-const BASEURL = "http://192.168.50.123:52000";
+const BASEURL = "http://143.248.48.96:7887";
 
 const imageElement = axios.create({
   baseURL: BASEURL,
@@ -21,12 +21,35 @@ export const getDescriptions = (data) => {
   });
 };
 
-export const getImages = (data) => {
+export const getImage = (data) => {
+  let prompt = "";
+  prompt += "Caption: " + data.scene + "\n";
+  prompt += "Objects: [";
+  for (let i = 0; i < data.objects.length; i++) {
+    prompt += "('" + data.objects[i].object + "', [";
+    prompt += Math.ceil((data.objects[i].rectangle.x * 512) / 200) + ", ";
+    prompt += Math.ceil((data.objects[i].rectangle.y * 512) / 200) + ", ";
+    prompt += Math.ceil((data.objects[i].rectangle.width * 512) / 200) + ", ";
+    prompt += Math.ceil((data.objects[i].rectangle.height * 512) / 200) + "])";
+    if (i !== data.objects.length - 1) {
+      prompt += ", ";
+    }
+  }
+  prompt += "]\n";
+  prompt += "Background prompt: " + data.background;
+  console.log(prompt);
+
   return imageElement.post(
-    "/getImages",
+    "/getImage",
     {
-      data: data,
+      prompt: prompt,
     },
     { responseType: "blob" }
   );
+};
+
+export const expandElements = (data) => {
+  return imageElement.post("/expandElements", {
+    elements: data,
+  });
 };

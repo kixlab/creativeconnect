@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Konva from "konva";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -248,8 +248,6 @@ const View: React.FC<ViewProps> = ({
       {({ store }) => (
         <Stage
           ref={stageRef}
-          width={window.innerWidth}
-          height={window.innerHeight}
           draggable={false}
           onWheel={zoomOnWheel}
           onMouseDown={onMouseDownOnStage}

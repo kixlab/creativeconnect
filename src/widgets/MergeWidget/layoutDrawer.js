@@ -121,11 +121,13 @@ const colors = [
 ];
 
 const LayoutDrawer = ({ description, onSubmit }) => {
+  const [scene, setScene] = useState(description.scene);
   const [background, setBackground] = useState(description.background);
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
 
   useEffect(() => {
+    setScene(description.scene);
     setBackground(description.background);
     function getRandomInt(max) {
       return Math.floor(Math.random() * max);
@@ -160,6 +162,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
     const data = {
       background: background,
       objects: objects,
+      scene: scene,
     };
 
     onSubmit(data);

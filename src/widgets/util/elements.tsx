@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import colorMapping from "../../config/colorMapping";
 
 const ElementSelectButton: React.FC<{
-  filename: string;
+  filename: string | undefined;
   elementType: string;
   elementName: string | undefined;
   onChange: (e: any) => void;
