@@ -15,9 +15,29 @@ const ExpandWidget: React.FC = () => {
       });
   }, [allSelectedLabel]);
   return (
-    <div className="d-flex align-items-center justify-content-center">
+    <div
+      className="d-flex align-items-center justify-content-center text-center
+  "
+    >
       <div style={{ width: "30vw" }}>
-        <h6>Related Keyword</h6>
+        <h6>Related to your keywords</h6>
+        <div className="d-flex flex-wrap justify-content-center">
+          {expandedElements.map((element) => (
+            <ElementSelectButton
+              filename={undefined}
+              key={"suggested-" + element.type + "-" + element.keyword}
+              elementName={element.keyword}
+              elementType={element.type}
+              onChange={(e) => {}}
+              onMouseEnter={() => {}}
+              onMouseLeave={() => {}}
+              button={false}
+            />
+          ))}
+        </div>
+      </div>
+      <div style={{ width: "30vw" }}>
+        <h6>Related to selected keywords</h6>
         <div className="d-flex flex-wrap justify-content-center">
           {expandedElements.map((element) => (
             <ElementSelectButton
