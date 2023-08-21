@@ -51,7 +51,6 @@ const useDragAndDrop = (
           _filters: ["Brighten"],
           updatedAt: Date.now(),
         },
-        className: "sample-image",
         children: [],
         keywords: data.keywords,
         filename: data.filename,
@@ -60,6 +59,26 @@ const useDragAndDrop = (
       createItem(newImage);
     };
     imageSrc.src = source;
+  };
+
+  const insertKeyword = (e: DragEvent, data: { [key: string]: any }) => {
+    const position = getFramePos(stageRef!.current!, e, 0, 0);
+    const newKeyword: StageData = {
+      id: nanoid(),
+      attrs: {
+        name: "label-target",
+        "data-item-type": "keyword",
+        x: position.x,
+        y: position.y,
+        zIndex: 0,
+        brightness: 0,
+        updatedAt: Date.now(),
+      },
+      children: [],
+      keyword: data.keyword,
+    };
+
+    createItem(newKeyword);
   };
 
   const onDropOnStage: DropCallback = (dragSrc, e) => {
@@ -72,6 +91,8 @@ const useDragAndDrop = (
     switch (trigger) {
       case TRIGGER.INSERT.IMAGE:
         return insertImage(e, data);
+      case TRIGGER.INSERT.KEYWORD:
+        return insertKeyword(e, data);
       default:
     }
   };

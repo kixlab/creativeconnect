@@ -2,8 +2,8 @@ import { KonvaEventObject } from "konva/lib/Node";
 import React from "react";
 import { DragSrc } from "../Drag";
 
-export const onDragStart
-  = (dataTransferType: DataTransfer["effectAllowed"]) => (e: React.DragEvent<HTMLElement>) => {
+export const onDragStart =
+  (dataTransferType: DataTransfer["effectAllowed"]) => (e: React.DragEvent<HTMLElement>) => {
     if (!e.currentTarget.dataset.dragSrc) {
       return;
     }

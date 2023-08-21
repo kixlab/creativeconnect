@@ -9,6 +9,7 @@ import View from "./view";
 import { StageData } from "./redux/currentStageData";
 import useItem from "./hook/useItem";
 import ImageItem, { ImageItemProps } from "./view/object/image";
+import KeywordItem, { KeywordItemProps } from "./view/object/keyword";
 import useSelection from "./hook/useSelection";
 import useTransformer from "./hook/useTransformer";
 import useStage from "./hook/useStage";
@@ -97,6 +98,14 @@ function App() {
             key={`image-${item.id}`}
             data={item as ImageItemProps["data"]}
             onSelect={onSelectItem}
+          />
+        );
+      case "keyword":
+        return (
+          <KeywordItem
+            key={`keyword-${item.id}`}
+            data={item as KeywordItemProps["data"]}
+            onSelect={() => {}}
           />
         );
       default:

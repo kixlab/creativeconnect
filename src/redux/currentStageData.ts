@@ -9,10 +9,15 @@ export const STAGE_PREFIX = "STAGE";
 export type StageData = {
   id: string;
   attrs: OverrideItemData<any>;
-  className: string;
+  className?: string;
   children?: StageData[];
+
+  // For image
   keywords?: any[];
   filename?: string;
+
+  // For keyword
+  keyword?: any;
 };
 
 export const stageDataEpic: Epic = (action$, state$) =>
