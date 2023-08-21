@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
+import { getLayout } from "../../api/ImageElementAPI";
+import useItem from "../../hook/useItem";
 
-const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
+const Rectangle = ({ shapeProps, isSelected, onSelect, onChange, draggable }) => {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
 
@@ -19,7 +21,7 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
         onTap={onSelect}
         ref={shapeRef}
         {...shapeProps}
-        draggable
+        draggable={draggable}
         onDragEnd={(e) => {
           const node = e.target;
           var x = node.x();
@@ -125,6 +127,22 @@ const LayoutDrawer = ({ description, onSubmit }) => {
   const [background, setBackground] = useState(description.background);
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
+  const [originalBboxes, setOriginalBboxes] = useState([]);
+  const [suggestedLayout, setSuggestedLayout] = useState([]);
+
+  const { stageData } = useItem();
+  useEffect(() => {
+    let layoutImage = stageData.filter((item) => item.attrs["data-item-type"] === "image")[0];
+    getLayout(layoutImage.filename).then((res) => {
+      console.log(res.data.bboxes);
+      setOriginalBboxes(res.data.bboxes);
+    });
+  }, [stageData]);
+
+  useEffect(() => {
+    setSuggestedLayout(originalBboxes.slice(0, objects.length));
+    console.log(suggestedLayout);
+  }, [originalBboxes, objects]);
 
   useEffect(() => {
     setScene(description.scene);
@@ -164,8 +182,20 @@ const LayoutDrawer = ({ description, onSubmit }) => {
       objects: objects,
       scene: scene,
     };
-
     onSubmit(data);
+  };
+
+  const shapeProps = {
+    // x: bbox[0],
+    // y: bbox[1],
+    // width: bbox[2],
+    // height: bbox[3],
+    x: 12,
+    y: 12,
+    width: 40,
+    height: 40,
+    stroke: "gray",
+    strokeWidth: 2,
   };
 
   return (
@@ -181,6 +211,26 @@ const LayoutDrawer = ({ description, onSubmit }) => {
             onTouchStart={checkDeselect}
           >
             <Layer>
+              {suggestedLayout.map((bbox, i) => {
+                const shapeProps = {
+                  x: bbox[0],
+                  y: bbox[1],
+                  width: bbox[2],
+                  height: bbox[3],
+                  stroke: "gray",
+                  strokeWidth: 2,
+                };
+                return (
+                  <Rectangle
+                    key={"custom"}
+                    shapeProps={shapeProps}
+                    isSelected={false}
+                    onSelect={() => {}}
+                    onChange={() => {}}
+                    draggable={false}
+                  />
+                );
+              })}
               {objects.map((obj, i) => {
                 const rect = obj.rectangle;
                 return (
@@ -198,6 +248,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
                         })
                       );
                     }}
+                    draggable={true}
                   />
                 );
               })}

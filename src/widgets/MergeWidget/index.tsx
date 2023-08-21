@@ -6,8 +6,6 @@ import ElementSelectButton from "../util/elements";
 import { getDescriptions, getImage } from "../../api/ImageElementAPI";
 import LayoutDrawer from "./layoutDrawer";
 import useStarredImageList from "../../hook/useStarredImageList";
-import { nanoid } from "nanoid";
-import { find } from "rxjs";
 
 const MergeWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);

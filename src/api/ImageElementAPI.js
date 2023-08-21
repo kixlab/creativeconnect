@@ -14,6 +14,12 @@ export const sendImage = (data) => {
   });
 };
 
+export const getLayout = (filename) => {
+  return imageElement.post("/getLayout", {
+    filename: filename,
+  });
+};
+
 export const getDescriptions = (data) => {
   // return Promise.resolve(dummydata2);
   return imageElement.post("/getDescriptions", {
@@ -26,7 +32,7 @@ export const getImage = (data) => {
   prompt += "Caption: " + data.scene + "\n";
   prompt += "Objects: [";
   for (let i = 0; i < data.objects.length; i++) {
-    prompt += "('" + data.objects[i].object + "', [";
+    prompt += "('" + data.objects[i].detail + "', [";
     prompt += Math.ceil((data.objects[i].rectangle.x * 512) / 200) + ", ";
     prompt += Math.ceil((data.objects[i].rectangle.y * 512) / 200) + ", ";
     prompt += Math.ceil((data.objects[i].rectangle.width * 512) / 200) + ", ";
