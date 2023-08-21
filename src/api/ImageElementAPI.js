@@ -20,6 +20,12 @@ export const getLayout = (filename) => {
   });
 };
 
+export const getSuggestedLayout = (layout) => {
+  return imageElement.post("/listLayouts", {
+    layout: layout,
+  });
+};
+
 export const getDescriptions = (data) => {
   // return Promise.resolve(dummydata2);
   return imageElement.post("/getDescriptions", {

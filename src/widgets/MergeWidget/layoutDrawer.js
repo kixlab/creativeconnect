@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
-import { getLayout } from "../../api/ImageElementAPI";
+import { getLayout, getSuggestedLayout } from "../../api/ImageElementAPI";
 import useItem from "../../hook/useItem";
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange, draggable }) => {
@@ -127,22 +127,36 @@ const LayoutDrawer = ({ description, onSubmit }) => {
   const [background, setBackground] = useState(description.background);
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
-  const [originalBboxes, setOriginalBboxes] = useState([]);
-  const [suggestedLayout, setSuggestedLayout] = useState([]);
+
+  const [originalLayout, setOriginalLayout] = useState([]);
+  const [suggestedLayouts, setSuggestedLayouts] = useState([]);
+  const [shownLayout, setShownLayout] = useState(0);
 
   const { stageData } = useItem();
   useEffect(() => {
-    let layoutImage = stageData.filter((item) => item.attrs["data-item-type"] === "image")[0];
-    getLayout(layoutImage.filename).then((res) => {
-      console.log(res.data.bboxes);
-      setOriginalBboxes(res.data.bboxes);
-    });
+    let layoutImage = stageData
+      .filter((item) => item.attrs["data-item-type"] === "image")
+      .filter((item) => item.keywords?.find((k) => k.type === "Layout") !== undefined)[0];
+    console.log(layoutImage);
+    if (layoutImage !== undefined)
+      getLayout(layoutImage.filename).then((res) => {
+        console.log(res.data.bboxes);
+        setOriginalLayout(res.data.bboxes);
+        getSuggestedLayout(res.data.bboxes).then((res) => {
+          let adjustedLayouts = res.data.map((layout) =>
+            layout.map((item) => ({
+              x: (item[0] * 200) / 512,
+              y: (item[1] * 200) / 512,
+              width: (item[2] * 200) / 512,
+              height: (item[3] * 200) / 512,
+            }))
+          );
+          setSuggestedLayouts(adjustedLayouts);
+          setShownLayout(0);
+          console.log(suggestedLayouts);
+        });
+      });
   }, [stageData]);
-
-  useEffect(() => {
-    setSuggestedLayout(originalBboxes.slice(0, objects.length));
-    console.log(suggestedLayout);
-  }, [originalBboxes, objects]);
 
   useEffect(() => {
     setScene(description.scene);
@@ -185,19 +199,6 @@ const LayoutDrawer = ({ description, onSubmit }) => {
     onSubmit(data);
   };
 
-  const shapeProps = {
-    // x: bbox[0],
-    // y: bbox[1],
-    // width: bbox[2],
-    // height: bbox[3],
-    x: 12,
-    y: 12,
-    width: 40,
-    height: 40,
-    stroke: "gray",
-    strokeWidth: 2,
-  };
-
   return (
     <div className="mt-3">
       <h6>Add details</h6>
@@ -211,13 +212,33 @@ const LayoutDrawer = ({ description, onSubmit }) => {
             onTouchStart={checkDeselect}
           >
             <Layer>
-              {suggestedLayout.map((bbox, i) => {
+              {/* {originalLayout?.map((bbox, i) => {
                 const shapeProps = {
                   x: bbox[0],
                   y: bbox[1],
                   width: bbox[2],
                   height: bbox[3],
                   stroke: "gray",
+                  strokeWidth: 2,
+                };
+                return (
+                  <Rectangle
+                    key={"custom"}
+                    shapeProps={shapeProps}
+                    isSelected={false}
+                    onSelect={() => {}}
+                    onChange={() => {}}
+                    draggable={false}
+                  />
+                );
+              })} */}
+              {suggestedLayouts[shownLayout]?.map((bbox, i) => {
+                const shapeProps = {
+                  x: bbox.x,
+                  y: bbox.y,
+                  width: bbox.width,
+                  height: bbox.height,
+                  stroke: "#F5C6AA",
                   strokeWidth: 2,
                 };
                 return (
@@ -254,6 +275,23 @@ const LayoutDrawer = ({ description, onSubmit }) => {
               })}
             </Layer>
           </Stage>
+          <button
+            className="btn"
+            onClick={() => {
+              setShownLayout((shownLayout + 1) % suggestedLayouts.length);
+            }}
+          >
+            <i class="bi bi-arrow-left-short"></i>
+          </button>
+          Other Layouts
+          <button
+            className="btn"
+            onClick={() => {
+              setShownLayout((shownLayout + 1) % suggestedLayouts.length);
+            }}
+          >
+            <i class="bi bi-arrow-right-short"></i>
+          </button>
         </div>
         <div className="w-100">
           <form onSubmit={handleSubmit}>

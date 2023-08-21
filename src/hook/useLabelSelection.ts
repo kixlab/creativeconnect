@@ -25,14 +25,10 @@ const useLabelSelection = () => {
     dispatch(selectedLabelListAction.removeItem(id));
   };
 
-  const getAllSelectedLabel = (): SelectedLabelListItem[] => {
-    return selectedLabelList;
-  };
-
   return {
+    selectedLabelList,
     addSelectedLabel,
     removeSelectedLabel,
-    getAllSelectedLabel,
   };
 };
 

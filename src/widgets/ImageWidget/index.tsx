@@ -30,7 +30,7 @@ const ImageWidget: React.FC = () => {
         setUploadedImage({
           id: nanoid(),
           src: fileReader.result as string,
-          keywords: res.data.keywords,
+          keywords: [...res.data.keywords, { keyword: "", type: "Layout" }],
           filename: res.data.filename,
         });
         setLoading(false);

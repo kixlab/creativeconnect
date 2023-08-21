@@ -23,13 +23,12 @@ const KeywordItem: React.FC<KeywordItemProps> = ({ data, e }) => {
     mask: undefined,
   };
 
-  const { addSelectedLabel, removeSelectedLabel, getAllSelectedLabel } = useLabelSelection();
-  const allSelectedLabel = getAllSelectedLabel();
+  const { addSelectedLabel, removeSelectedLabel, selectedLabelList } = useLabelSelection();
   const isSelected = useMemo(() => {
-    return allSelectedLabel.some((label) => {
+    return selectedLabelList.some((label) => {
       return label.id === labelEntity.id;
     });
-  }, [allSelectedLabel, labelEntity.id]);
+  }, [selectedLabelList, labelEntity.id]);
 
   return (
     <Label

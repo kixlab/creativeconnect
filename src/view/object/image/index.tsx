@@ -172,13 +172,12 @@ const ImageLabel: React.FC<{
   keyword: string;
   mask?: boolean[][];
 }> = ({ xpos, ypos, filename, type, keyword, mask }) => {
-  const { addSelectedLabel, removeSelectedLabel, getAllSelectedLabel } = useLabelSelection();
-  const allSelectedLabel = getAllSelectedLabel();
+  const { addSelectedLabel, removeSelectedLabel, selectedLabelList } = useLabelSelection();
   const isSelected = useMemo(() => {
-    return allSelectedLabel.some((label) => {
+    return selectedLabelList.some((label) => {
       return label.id === filename + "-" + type + "-" + keyword;
     });
-  }, [allSelectedLabel, filename, type, keyword]);
+  }, [selectedLabelList, filename, type, keyword]);
 
   const labelEntity: SelectedLabelListItem = {
     id: filename + "-" + type + "-" + keyword,

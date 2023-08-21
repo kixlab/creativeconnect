@@ -15,13 +15,12 @@ const MergeWidget: React.FC = () => {
   const [imageData, setImageData] = useState<any | null>(null);
   const [imageSrc, setImageSrc] = useState<string>("");
 
-  const { getAllSelectedLabel } = useLabelSelection();
+  const { selectedLabelList } = useLabelSelection();
   const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
-  const allSelectedLabel = getAllSelectedLabel();
 
   const handleMergeClick = () => {
     setLoading(true);
-    getDescriptions({ elements: allSelectedLabel }).then((res: any) => {
+    getDescriptions({ elements: selectedLabelList }).then((res: any) => {
       setLoading(false);
       setDescriptions(res.data.descriptions);
     });
@@ -50,7 +49,7 @@ const MergeWidget: React.FC = () => {
   return (
     <Col className="mergeWidgetWrapper">
       <div className="d-flex flex-wrap justify-content-center">
-        {allSelectedLabel.map((label) => (
+        {selectedLabelList.map((label) => (
           <ElementSelectButton
             filename={label.fileid}
             key={label.fileid + "-" + label.type + "-" + label.keyword}
