@@ -295,6 +295,29 @@ const LayoutDrawer = ({ description, onSubmit }) => {
         </div>
         <div className="w-100">
           <form onSubmit={handleSubmit}>
+            <div key={"background"} className="mt-2">
+              <div className="d-flex align-items-center mb-2">
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    marginRight: "4px",
+                    backgroundColor: "#fef7ef",
+                  }}
+                ></div>
+                <div style={{ fontWeight: "bold" }}>Background</div>
+              </div>
+              <input
+                type="text"
+                className="form-control"
+                style={{ fontSize: "0.9rem" }}
+                id={"Background"}
+                value={background}
+                onChange={(e) => {
+                  setBackground(e.target.value);
+                }}
+              />
+            </div>
             {objects.map((obj) => {
               return (
                 <div key={obj.id} className="mt-2">

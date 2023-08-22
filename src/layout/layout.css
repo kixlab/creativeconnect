@@ -37,9 +37,6 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: var(--color-dark) 1px solid;
-
-  animation: 0.2s ease-out 0s 1 fadeIn;
-  transition: all 0.3s;
 }
 
 .imageWidget {

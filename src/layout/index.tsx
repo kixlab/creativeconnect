@@ -77,9 +77,13 @@ function Layout(data: LayoutProps) {
             >
               <i className={widget.icon}></i>
             </a>
-            {shownWidget === widget.name && (
-              <div className={"custom-widget " + widget.className}>{widget.widget}</div>
-            )}
+
+            <div
+              className={"custom-widget " + widget.className}
+              style={{ visibility: shownWidget === widget.name ? "visible" : "hidden" }}
+            >
+              {widget.widget}
+            </div>
           </div>
         ))}
 

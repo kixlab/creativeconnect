@@ -89,26 +89,31 @@ const MergeWidget: React.FC = () => {
       {descriptions.length > 0 && (
         <div className="mt-5">
           <h6>Merge results : Select the one you like</h6>
-          {descriptions.map((des) => (
-            <button
-              className={
-                selectedDescription === des
-                  ? "btn btn-custom text-start my-1"
-                  : "btn btn-outline-custom text-start my-1"
-              }
-              onClick={() => setSelectedDescription(des)}
-            >
-              <div style={{ fontSize: "small" }}>
-                <b>Scene</b>: {des.scene} <br />
+          <div className="w-100 d-flex justify-content-between">
+            {descriptions.map((des) => (
+              <button
+                className={
+                  selectedDescription === des
+                    ? "btn btn-custom text-start my-1"
+                    : "btn btn-outline-custom text-start my-1"
+                }
+                style={{ width: "32%" }}
+                onClick={() => setSelectedDescription(des)}
+              >
+                <div style={{ fontSize: "small" }}>
+                  {/* <b>Scene</b>:  */}
+                  {des.scene}
+                  {/* <br />
                 <b>Background</b>: {des.background} <br />
                 {des.objects.map((obj: any) => (
                   <>
                     <b>{obj.object}</b>: {obj.detail} <br />
                   </>
-                ))}
-              </div>
-            </button>
-          ))}
+                ))} */}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
       {selectedDescription && (
