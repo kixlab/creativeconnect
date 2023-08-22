@@ -1,14 +1,14 @@
 import Konva from "konva";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { Image as KonvaImage, Label, Tag, Text } from "react-konva";
+import { Image as KonvaImage } from "react-konva";
 import useDragAndDrop from "../../../hook/useDragAndDrop";
 import { OverrideItemProps } from "../../../hook/useItem";
 import useStage from "../../../hook/useStage";
 import { StageData } from "../../../redux/currentStageData";
 import { decimalUpToSeven } from "../../../util/decimalUpToSeven";
-import colorMapping from "../../../config/keywordTypes";
 import useLabelSelection from "../../../hook/useLabelSelection";
 import { SelectedLabelListItem } from "../../../redux/selectedLabelList";
+import { KeywordLabel } from "../keyword";
 
 export type ImageItemKind = {
   "data-item-type": string;
@@ -22,7 +22,6 @@ export type ImageItemKind = {
       x: number;
       y: number;
     };
-    mask: boolean[][];
   }[];
   filename: string;
   image: typeof Image;
@@ -96,9 +95,6 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
     imageRef.current!.cache();
   }, []);
 
-  // const objectKeywords = data.keywords?.filter((keyword) => keyword.type === "object");
-  // const otherKeywords = data.keywords?.filter((keyword) => keyword.type !== "object");
-
   return (
     <>
       <KonvaImage
@@ -122,32 +118,12 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
         onDragMove={onDragMoveFrame}
         onDragEnd={onDragEndFrame}
       />
-      {/* {objectKeywords?.map((keyword) => {
-        const xpos =
-          (imageRef.current?.x() ?? 0) +
-          keyword.position.x * (imageRef.current?.width() ?? 0) * (imageRef.current?.scaleX() ?? 0);
-        const ypos =
-          (imageRef.current?.y() ?? 0) +
-          keyword.position.y *
-            (imageRef.current?.height() ?? 0) *
-            (imageRef.current?.scaleY() ?? 0);
-        return (
-          <ImageLabel
-            xpos={xpos}
-            ypos={ypos}
-            filename={data.filename ?? ""}
-            type={keyword.type}
-            keyword={keyword.keyword ?? ""}
-            mask={keyword.mask ?? undefined}
-          />
-        );
-      })} */}
       {data.keywords?.map((keyword, i) => {
         const xpos = imageRef.current?.x() ?? 0;
         const ypos =
           (imageRef.current?.y() ?? 0) +
           (imageRef.current?.height() ?? 0) * (imageRef.current?.scaleY() ?? 0) +
-          30 * i +
+          40 * i +
           30;
         return (
           <ImageLabel
@@ -156,7 +132,6 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
             filename={data.filename ?? ""}
             type={keyword.type}
             keyword={keyword.keyword ?? ""}
-            mask={keyword.mask ?? undefined}
           />
         );
       })}
@@ -170,8 +145,7 @@ const ImageLabel: React.FC<{
   filename: string;
   type: string;
   keyword: string;
-  mask?: boolean[][];
-}> = ({ xpos, ypos, filename, type, keyword, mask }) => {
+}> = ({ xpos, ypos, filename, type, keyword }) => {
   const { addSelectedLabel, removeSelectedLabel, selectedLabelList } = useLabelSelection();
   const isSelected = useMemo(() => {
     return selectedLabelList.some((label) => {
@@ -184,36 +158,26 @@ const ImageLabel: React.FC<{
     type,
     fileid: filename,
     keyword,
-    mask: mask ?? undefined,
   };
 
   return (
-    <Label
-      x={xpos}
-      y={ypos}
+    <KeywordLabel
       key={filename + "-" + type + ": " + keyword}
+      xpos={xpos}
+      ypos={ypos}
       onClick={() => {
         if (isSelected) removeSelectedLabel(labelEntity.id);
         else addSelectedLabel(labelEntity);
       }}
-    >
-      <Tag
-        name="label-tag"
-        pointerDirection="left"
-        fill={isSelected ? colorMapping[type] : "transparent"}
-        strokeWidth={1}
-        stroke={colorMapping[type]}
-        cornerRadius={5}
-      />
-      <Text
-        text={type + ": " + keyword}
-        name="label-text"
-        fontSize={14}
-        lineHeight={1.2}
-        padding={6}
-        fill={isSelected ? "white" : colorMapping[type]}
-      />
-    </Label>
+      isSelected={isSelected}
+      type={labelEntity.type}
+      text={
+        labelEntity.type === "Arrangement"
+          ? labelEntity.type
+          : labelEntity.type + ": " + labelEntity.keyword
+      }
+      draggable={false}
+    />
   );
 };
 
