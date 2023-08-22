@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { Label, Tag, Text } from "react-konva";
 import { OverrideItemProps } from "../../../hook/useItem";
 import { StageData } from "../../../redux/currentStageData";
-import colorMapping from "../../../config/colorMapping";
+import colorMapping from "../../../config/keywordTypes";
 import useLabelSelection from "../../../hook/useLabelSelection";
 import { SelectedLabelListItem } from "../../../redux/selectedLabelList";
 

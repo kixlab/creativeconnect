@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { nanoid } from "nanoid";
 import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
+import colorMapping, { keywordTypes } from "../../config/keywordTypes";
 import { sendImage } from "../../api/ImageElementAPI";
-import { onnxMaskToImage } from "../../util/maskUtils";
-import ElementSelectButton from "../util/elements";
+import { CustomSelectButton } from "../util/elements";
 
 import "./ImageWidget.css";
 
@@ -30,7 +30,7 @@ const ImageWidget: React.FC = () => {
         setUploadedImage({
           id: nanoid(),
           src: fileReader.result as string,
-          keywords: [...res.data.keywords, { keyword: "", type: "Layout" }],
+          keywords: [...res.data.keywords, { keyword: "", type: "Arrangement" }],
           filename: res.data.filename,
         });
         setLoading(false);
@@ -52,24 +52,20 @@ const ImageWidget: React.FC = () => {
 
   return (
     <Col className="imageWidgetWrapper">
-      <Button
-        className="w-100 mb-3"
-        size="sm"
+      <button
+        className="btn btn-custom w-100 mb-3"
         onClick={!isLoading ? uploadImage : () => {}}
         disabled={isLoading}
       >
         {!isLoading ? (
-          <>
-            <i className="bi-plus" />
-            <span>Upload Image</span>
-          </>
+          <span>Upload new image</span>
         ) : (
           <>
             <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-            <span role="status">Loading the image...</span>
+            <span role="status">Analyzing your image...</span>
           </>
         )}
-      </Button>
+      </button>
 
       <Row xs={1}>
         {uploadedImage && (
@@ -85,80 +81,133 @@ export default ImageWidget;
 const ImageThumbnail: React.FC<{
   data: Omit<UploadedImage, "image">;
 }> = ({ data: { id, filename, ...data } }) => {
+  const [customKeywords, setCustomKeywords] = useState<any[]>([]);
   const [selectedKeywords, setSelectedKeywords] = useState<any[]>([]);
-  const [segmentMask, setSegmentMask] = useState<HTMLImageElement | null>(null);
+
+  const [showKeywords, setShowKeywords] = useState(
+    keywordTypes.reduce((acc, cur) => {
+      acc[cur] = false;
+      return acc;
+    }, {} as { [key: string]: boolean })
+  );
+
+  const handleCustomInputSubmit = (e: React.FormEvent<HTMLFormElement>, type: string) => {
+    e.preventDefault();
+    const keyword = (e.target as any).keywordName.value;
+    if (type && keyword) {
+      setCustomKeywords((prev) => [
+        ...prev,
+        {
+          keyword: keyword as string,
+          type: type as string,
+        },
+      ]);
+    }
+  };
+
   return (
     <div>
-      <Form>
-        <Drag
-          dragType="copyMove"
-          dragSrc={{
-            trigger: TRIGGER.INSERT.IMAGE,
-            "data-item-type": "image",
-            src: data.src.startsWith("data:")
-              ? data.src
-              : `${process.env.PUBLIC_URL}/assets/image/${data.src}`,
-            keywords: selectedKeywords,
-            filename: filename,
-          }}
-        >
-          <div className="position-relative">
-            <img
-              alt={id}
-              style={{ maxHeight: "300px", objectFit: "contain" }}
-              className="w-100"
-              src={
-                data.src.startsWith("data:")
-                  ? data.src
-                  : `${process.env.PUBLIC_URL}/assets/image/${data.src}`
-              }
-            />
-            {segmentMask && (
-              <img
-                alt={id}
-                style={{
-                  maxHeight: "300px",
-                  objectFit: "contain",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                }}
-                className="w-100"
-                src={segmentMask.src}
-              />
-            )}
-          </div>
-        </Drag>
-        <h5 className="my-3">Select why you liked this reference</h5>
-
-        {data.keywords?.map((keyword) => (
-          <ElementSelectButton
-            filename={filename}
-            key={filename + "-" + keyword.type + "-" + keyword.keyword}
-            elementName={keyword.keyword}
-            elementType={keyword.type}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedKeywords((prev) => [...prev, keyword]);
-              } else
-                setSelectedKeywords((prev) =>
-                  prev.filter((prevKeyword) => prevKeyword !== keyword)
-                );
-            }}
-            onMouseEnter={() => {
-              if (keyword.mask)
-                setSegmentMask(
-                  onnxMaskToImage(keyword.mask.flat(), keyword.mask.length, keyword.mask[0].length)
-                );
-            }}
-            onMouseLeave={() => {
-              setSegmentMask(null);
-            }}
-            button={true}
+      <Drag
+        dragType="copyMove"
+        dragSrc={{
+          trigger: TRIGGER.INSERT.IMAGE,
+          "data-item-type": "image",
+          src: data.src.startsWith("data:")
+            ? data.src
+            : `${process.env.PUBLIC_URL}/assets/image/${data.src}`,
+          keywords: selectedKeywords,
+          filename: filename,
+        }}
+      >
+        <div className="position-relative mb-3">
+          <img
+            alt={id}
+            style={{ maxHeight: "300px", objectFit: "contain" }}
+            className="w-100"
+            src={
+              data.src.startsWith("data:")
+                ? data.src
+                : `${process.env.PUBLIC_URL}/assets/image/${data.src}`
+            }
           />
-        ))}
-      </Form>
+        </div>
+      </Drag>
       <hr />
+      <h5 className="mb-1">Why do you like this reference?</h5>
+      <p className="mb-4 subtitle">
+        Choose the keywords that you like about this reference . Then, drag the image to the canvas.
+      </p>
+      {keywordTypes
+        .filter((type) => type !== "Arrangement")
+        .map((type) => (
+          <>
+            <div>
+              <CustomSelectButton
+                id={"category-" + type}
+                name={`I like the ${type} of this reference`}
+                type={type}
+                onChange={(e) => {
+                  setShowKeywords((prev) => ({ ...prev, [type]: e.target.checked }));
+                }}
+              />
+            </div>
+            <div className="ms-3">
+              {showKeywords[type] &&
+                customKeywords
+                  .concat(data.keywords)
+                  .filter((keyword) => keyword.type === type)
+                  .map((keyword) => (
+                    <CustomSelectButton
+                      id={filename + "-" + keyword.type + "-" + keyword.keyword}
+                      name={keyword.keyword}
+                      type={keyword.type}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedKeywords((prev) => [...prev, keyword]);
+                        } else
+                          setSelectedKeywords((prev) =>
+                            prev.filter((prevKeyword) => prevKeyword !== keyword)
+                          );
+                      }}
+                    />
+                  ))}
+              {showKeywords[type] && (
+                <form
+                  style={{ display: "inline-block", width: "120px" }}
+                  onSubmit={(e) => handleCustomInputSubmit(e, type)}
+                >
+                  <div className="input-group input-group-sm mb-3">
+                    <input
+                      id="keywordName"
+                      type="text"
+                      className="form-control"
+                      style={{ borderColor: "gray" }}
+                    />
+                    <button className="btn btn-outline-secondary" type="submit">
+                      +
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </>
+        ))}
+      <div>
+        <CustomSelectButton
+          id={"category-Arrangement"}
+          name={`I like the Arrangement of this reference`}
+          type={"Arrangement"}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedKeywords((prev) => [...prev, { keyword: "", type: "Arrangement" }]);
+            } else
+              setSelectedKeywords((prev) =>
+                prev.filter((prevKeyword) => prevKeyword.type !== "Arrangement")
+              );
+          }}
+        />
+      </div>
+      <div className="d-flex flex-wrap mb-3"></div>
     </div>
   );
 };

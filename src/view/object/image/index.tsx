@@ -6,7 +6,7 @@ import { OverrideItemProps } from "../../../hook/useItem";
 import useStage from "../../../hook/useStage";
 import { StageData } from "../../../redux/currentStageData";
 import { decimalUpToSeven } from "../../../util/decimalUpToSeven";
-import colorMapping from "../../../config/colorMapping";
+import colorMapping from "../../../config/keywordTypes";
 import useLabelSelection from "../../../hook/useLabelSelection";
 import { SelectedLabelListItem } from "../../../redux/selectedLabelList";
 

@@ -4,7 +4,7 @@ import { expandElements } from "../../api/ImageElementAPI";
 import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
 import useItem from "../../hook/useItem";
-import colorMapping from "../../config/colorMapping";
+import colorMapping from "../../config/keywordTypes";
 
 const ExpandWidget: React.FC = () => {
   return (

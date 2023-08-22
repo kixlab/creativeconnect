@@ -1,5 +1,50 @@
 import React, { useState } from "react";
-import colorMapping from "../../config/colorMapping";
+import colorMapping from "../../config/keywordTypes";
+
+export const CustomSelectButton: React.FC<{
+  id: string;
+  name: string | undefined;
+  type: string;
+  onChange: (e: any) => void;
+}> = ({ id, name, type, onChange }) => {
+  const [hovered, setHovered] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const handleChange = (e: any) => {
+    setSelected(e.target.checked);
+    onChange(e);
+  };
+  const color = colorMapping[type];
+
+  return (
+    <>
+      <input
+        type="checkbox"
+        className="btn-check"
+        id={id}
+        onChange={handleChange}
+        autoComplete="off"
+        checked={selected}
+      />
+      <label
+        className="btn btn-outline-primary btn-sm me-1 mb-1"
+        htmlFor={id}
+        onMouseEnter={() => {
+          setHovered(true);
+        }}
+        onMouseLeave={() => {
+          setHovered(false);
+        }}
+        style={{
+          color: selected || hovered ? "white" : color,
+          borderColor: color,
+          backgroundColor: selected || hovered ? color : "transparent",
+        }}
+      >
+        {name}
+      </label>
+    </>
+  );
+};
 
 const ElementSelectButton: React.FC<{
   filename: string | undefined;

@@ -12,6 +12,16 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-dark: #2c2c2c;
+  --color-white: #ffffff;
+  --color-light: #e4e4e4;
+  --color-grey: #e3e6e8;
+  --color-contrast: #608d85;
+  --color-main: #508abe;
+  --color-main-dark: #3b668c;
+}
+
 html,
 body,
 #root {
@@ -75,4 +85,10 @@ body,
   to {
     opacity: 1;
   }
+}
+
+p.subtitle {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--color-dark);
 }

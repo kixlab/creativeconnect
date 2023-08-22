@@ -1,5 +1,3 @@
-@import "./theme.module.css";
-
 .darkTheme {
   background-color: var(--color-dark) !important;
   color: var(--color-light) !important;
