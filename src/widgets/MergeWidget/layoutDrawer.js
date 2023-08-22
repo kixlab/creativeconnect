@@ -136,7 +136,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
   useEffect(() => {
     let layoutImage = stageData
       .filter((item) => item.attrs["data-item-type"] === "image")
-      .filter((item) => item.keywords?.find((k) => k.type === "Layout") !== undefined)[0];
+      .filter((item) => item.keywords?.find((k) => k.type === "Arrangement") !== undefined)[0];
     console.log(layoutImage);
     if (layoutImage !== undefined)
       getLayout(layoutImage.filename).then((res) => {
