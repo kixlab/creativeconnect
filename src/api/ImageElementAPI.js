@@ -1,35 +1,34 @@
 import axios from "axios";
-import { dummydata, dummydata2 } from "./dummydata";
+import { dummyDesc } from "./dummyDesc";
 
-const BASEURL = "http://143.248.48.96:7887";
+export const BACKEND_BASEURL = "http://143.248.48.96:7887/";
 
 const imageElement = axios.create({
-  baseURL: BASEURL,
+  baseURL: BACKEND_BASEURL,
 });
 
 export const sendImage = (data) => {
-  // return Promise.resolve(dummydata);
-  return imageElement.post("/getElement", {
+  return imageElement.post("imageToKeywords", {
     image: data.image,
   });
 };
 
 export const getLayout = (filename) => {
-  return imageElement.post("/getLayout", {
+  return imageElement.post("imageToLayout", {
     filename: filename,
   });
 };
 
 export const getSuggestedLayout = (layout) => {
-  return imageElement.post("/listLayouts", {
+  return imageElement.post("getRecommendedLayouts", {
     layout: layout,
   });
 };
 
 export const getDescriptions = (data) => {
-  // return Promise.resolve(dummydata2);
-  return imageElement.post("/getDescriptions", {
-    elements: data,
+  // return Promise.resolve(dummyDesc);
+  return imageElement.post("mergeKeywords", {
+    keywords: data,
   });
 };
 
@@ -49,19 +48,14 @@ export const getImage = (data) => {
   }
   prompt += "]\n";
   prompt += "Background prompt: " + data.background;
-  console.log(prompt);
 
-  return imageElement.post(
-    "/getImage",
-    {
-      prompt: prompt,
-    },
-    { responseType: "blob" }
-  );
+  return imageElement.post("generateImage", {
+    prompt: prompt,
+  });
 };
 
 export const expandElements = (data) => {
-  return imageElement.post("/expandElements", {
-    elements: data,
+  return imageElement.post("expandElements", {
+    originalKeywords: data,
   });
 };

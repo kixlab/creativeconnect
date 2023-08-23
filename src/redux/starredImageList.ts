@@ -8,7 +8,6 @@ export const STARRED_IMAGE_LIST_PREFIX = "STARRED_IMAGE_LIST";
 export type StarredImageListItem = {
   id: string;
   src: string;
-  data: any;
 };
 
 export const starredImageListEpic: Epic = (action$, state$) =>

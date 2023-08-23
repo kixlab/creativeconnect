@@ -26,7 +26,6 @@ const ImageWidget: React.FC = () => {
       setLoading(true);
       const fileContent = e.target?.result;
       sendImage({ image: fileContent }).then((res: any) => {
-        console.log(res);
         setUploadedImage({
           id: nanoid(),
           src: fileReader.result as string,

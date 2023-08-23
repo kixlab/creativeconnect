@@ -45,10 +45,9 @@ const KeywordPanel: React.FC<{
 
   const getNewKeywords = () => {
     setExpandedElements("loading");
-    console.log("allSelectedLabel", allSelectedLabel);
     expandElements(allSelectedLabel)
       .then((res) => {
-        setExpandedElements(res.data.descriptions);
+        setExpandedElements(res.data.suggestedKeywords);
       })
       .catch((err) => {
         console.log(err);
@@ -123,11 +122,9 @@ const KeywordPanel2: React.FC<{
 
   const [expandedElements, setExpandedElements] = useState<any[] | "loading" | "error">([]);
   const getNewKeywords = () => {
-    setExpandedElements("loading");
-    console.log("allKeywords", allKeywords);
     expandElements(allKeywords)
       .then((res) => {
-        setExpandedElements(res.data.descriptions);
+        setExpandedElements(res.data.suggestedKeywords);
       })
       .catch((err) => {
         console.log(err);

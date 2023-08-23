@@ -14,7 +14,6 @@ const useStarredImageList = () => {
       starredImageListAction.addItem({
         id: newImg.id,
         src: newImg.src,
-        data: newImg.data,
       })
     );
   };

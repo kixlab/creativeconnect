@@ -3,7 +3,7 @@ import "./MergeWidget.css";
 import { Col } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
-import { getDescriptions, getImage } from "../../api/ImageElementAPI";
+import { BACKEND_BASEURL, getDescriptions, getImage } from "../../api/ImageElementAPI";
 import LayoutDrawer from "./layoutDrawer";
 import useStarredImageList from "../../hook/useStarredImageList";
 
@@ -12,7 +12,6 @@ const MergeWidget: React.FC = () => {
   const [descriptions, setDescriptions] = useState<any[]>([]);
   const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
   const [imageId, setImageId] = useState<string>("");
-  const [imageData, setImageData] = useState<any | null>(null);
   const [imageSrc, setImageSrc] = useState<string>("");
 
   const { selectedLabelList } = useLabelSelection();
@@ -20,18 +19,15 @@ const MergeWidget: React.FC = () => {
 
   const handleMergeClick = () => {
     setLoading(true);
-    getDescriptions({ elements: selectedLabelList }).then((res: any) => {
+    getDescriptions(selectedLabelList).then((res: any) => {
       setLoading(false);
       setDescriptions(res.data.descriptions);
     });
   };
 
   const onSubmit = (data: any) => {
-    setImageData(data);
     getImage(data).then((res: any) => {
-      console.log(res);
-      const url = URL.createObjectURL(res.data);
-      setImageSrc(url);
+      setImageSrc(BACKEND_BASEURL + res.data.image_path_sketch);
       setImageId(new Date().getTime().toString());
     });
   };
@@ -42,7 +38,6 @@ const MergeWidget: React.FC = () => {
       addStarredImage({
         id: imageId,
         src: imageSrc,
-        data: imageData,
       });
   };
 
@@ -101,15 +96,8 @@ const MergeWidget: React.FC = () => {
                 onClick={() => setSelectedDescription(des)}
               >
                 <div style={{ fontSize: "small" }}>
-                  {/* <b>Scene</b>:  */}
+                  <img className="w-100" src={BACKEND_BASEURL + des.image_path_sketch} />
                   {des.scene}
-                  {/* <br />
-                <b>Background</b>: {des.background} <br />
-                {des.objects.map((obj: any) => (
-                  <>
-                    <b>{obj.object}</b>: {obj.detail} <br />
-                  </>
-                ))} */}
                 </div>
               </button>
             ))}

@@ -6,7 +6,7 @@
   position: absolute;
   bottom: 20px;
   left: 20px;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .wrapper-bottom-right {
@@ -17,7 +17,7 @@
   position: absolute;
   bottom: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .wrapper-top-right {
@@ -28,7 +28,7 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .custom-widget {
@@ -37,6 +37,8 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: var(--color-dark) 1px solid;
+
+  z-index: 1000;
 }
 
 .imageWidget {

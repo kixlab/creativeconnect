@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
 import { getLayout, getSuggestedLayout } from "../../api/ImageElementAPI";
 import useItem from "../../hook/useItem";
+import useLabelSelection from "../../hook/useLabelSelection";
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange, draggable }) => {
   const shapeRef = React.useRef();
@@ -89,6 +90,10 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange, draggable }) =>
 
 const colors = [
   {
+    id: 0,
+    color: "#6C7059",
+  },
+  {
     id: 1,
     color: "red",
   },
@@ -116,10 +121,6 @@ const colors = [
     id: 7,
     color: "#FFAE03",
   },
-  {
-    id: 8,
-    color: "#6C7059",
-  },
 ];
 
 const LayoutDrawer = ({ description, onSubmit }) => {
@@ -132,18 +133,20 @@ const LayoutDrawer = ({ description, onSubmit }) => {
   const [suggestedLayouts, setSuggestedLayouts] = useState([]);
   const [shownLayout, setShownLayout] = useState(0);
 
-  const { stageData } = useItem();
+  const { selectedLabelList } = useLabelSelection();
+
   useEffect(() => {
-    let layoutImage = stageData
-      .filter((item) => item.attrs["data-item-type"] === "image")
-      .filter((item) => item.keywords?.find((k) => k.type === "Arrangement") !== undefined)[0];
-    console.log(layoutImage);
-    if (layoutImage !== undefined)
-      getLayout(layoutImage.filename).then((res) => {
-        console.log(res.data.bboxes);
+    let layoutReferenceImages = selectedLabelList.filter(
+      (keyword) => keyword.type === "Arrangement"
+    );
+    if (layoutReferenceImages.length === 0) return;
+    else {
+      let layoutImage =
+        layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
+      getLayout(layoutImage).then((res) => {
         setOriginalLayout(res.data.bboxes);
         getSuggestedLayout(res.data.bboxes).then((res) => {
-          let adjustedLayouts = res.data.map((layout) =>
+          let adjustedLayouts = res.data.layouts.map((layout) =>
             layout.map((item) => ({
               x: (item[0] * 200) / 512,
               y: (item[1] * 200) / 512,
@@ -153,32 +156,39 @@ const LayoutDrawer = ({ description, onSubmit }) => {
           );
           setSuggestedLayouts(adjustedLayouts);
           setShownLayout(0);
-          console.log(suggestedLayouts);
         });
       });
-  }, [stageData]);
+    }
+  }, [selectedLabelList]);
 
   useEffect(() => {
     setScene(description.scene);
     setBackground(description.background);
-    function getRandomInt(max) {
-      return Math.floor(Math.random() * max);
-    }
 
-    const newObjects = description.objects.map((obj) => ({
-      ...obj,
-      color: colors.find((c) => c.id === obj.id).color,
-      rectangle: {
-        x: getRandomInt(120),
-        y: getRandomInt(120),
-        width: getRandomInt(40) + 40,
-        height: getRandomInt(40) + 40,
-        stroke: colors.find((c) => c.id === obj.id).color,
-        strokeWidth: 2,
-        id: obj.id,
-      },
-    }));
+    const newObjects = description.layout.map((l, i) => {
+      let object = l[0];
+      let bbox = l[1];
+      let detail = description.objects[object];
+
+      return {
+        id: i,
+        object: object,
+        detail: detail,
+        color: colors.find((c) => c.id === i).color,
+        rectangle: {
+          x: (bbox[0] * 200) / 512,
+          y: (bbox[1] * 200) / 512,
+          width: (bbox[2] * 200) / 512,
+          height: (bbox[3] * 200) / 512,
+          stroke: colors.find((c) => c.id === i).color,
+          strokeWidth: 2,
+          id: i,
+        },
+      };
+    });
+
     setObjects(newObjects);
+    console.log(objects);
   }, [description]);
 
   const checkDeselect = (e) => {
@@ -212,7 +222,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
             onTouchStart={checkDeselect}
           >
             <Layer>
-              {/* {originalLayout?.map((bbox, i) => {
+              {originalLayout?.map((bbox, i) => {
                 const shapeProps = {
                   x: bbox[0],
                   y: bbox[1],
@@ -231,8 +241,8 @@ const LayoutDrawer = ({ description, onSubmit }) => {
                     draggable={false}
                   />
                 );
-              })} */}
-              {suggestedLayouts[shownLayout]?.map((bbox, i) => {
+              })}
+              {/* {suggestedLayouts[shownLayout]?.map((bbox, i) => {
                 const shapeProps = {
                   x: bbox.x,
                   y: bbox.y,
@@ -251,7 +261,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
                     draggable={false}
                   />
                 );
-              })}
+              })} */}
               {objects.map((obj, i) => {
                 const rect = obj.rectangle;
                 return (
@@ -295,66 +305,76 @@ const LayoutDrawer = ({ description, onSubmit }) => {
         </div>
         <div className="w-100">
           <form onSubmit={handleSubmit}>
-            <div key={"background"} className="mt-2">
-              <div className="d-flex align-items-center mb-2">
-                <div
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    marginRight: "4px",
-                    backgroundColor: "#fef7ef",
-                  }}
-                ></div>
-                <div style={{ fontWeight: "bold" }}>Background</div>
-              </div>
-              <input
-                type="text"
-                className="form-control"
-                style={{ fontSize: "0.9rem" }}
-                id={"Background"}
-                value={background}
-                onChange={(e) => {
-                  setBackground(e.target.value);
-                }}
-              />
-            </div>
+            <InputOnImage
+              key={"scene"}
+              name={"Scene"}
+              color={"white"}
+              value={scene}
+              onChange={(e) => {
+                setScene(e.target.value);
+              }}
+            />
+            <InputOnImage
+              key={"background"}
+              name={"Background"}
+              color={"#fef7ef"}
+              value={background}
+              onChange={(e) => {
+                setBackground(e.target.value);
+              }}
+            />
             {objects.map((obj) => {
+              console.log(obj);
               return (
-                <div key={obj.id} className="mt-2">
-                  <div className="d-flex align-items-center mb-2">
-                    <div
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        marginRight: "4px",
-                        backgroundColor: obj.color,
-                      }}
-                    ></div>
-                    <div style={{ fontWeight: "bold" }}>{obj.object}</div>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    style={{ fontSize: "0.9rem" }}
-                    id={obj.id}
-                    value={obj.detail}
-                    onChange={(e) => {
-                      setObjects(
-                        objects.map((o) => {
-                          return o.id === obj.id ? { ...o, detail: e.target.value } : o;
-                        })
-                      );
-                    }}
-                  />
-                </div>
+                <InputOnImage
+                  key={obj.id}
+                  name={obj.object}
+                  color={obj.color}
+                  value={obj.detail}
+                  onChange={(e) => {
+                    setObjects(
+                      objects.map((o) => {
+                        return o.id === obj.id ? { ...o, detail: e.target.value } : o;
+                      })
+                    );
+                  }}
+                />
               );
             })}
+
             <button type="submit" className="btn btn-custom mt-3">
               Generate sketch
             </button>
           </form>
         </div>
       </div>
+    </div>
+  );
+};
+
+const InputOnImage = ({ key, name, color, value, onChange }) => {
+  return (
+    <div key={key} className="mb-2">
+      <div className="d-flex align-items-center mb-2">
+        <div
+          style={{
+            width: "12px",
+            height: "12px",
+            borderRadius: "50%",
+            marginRight: "4px",
+            backgroundColor: color,
+          }}
+        ></div>
+        <div style={{ fontSize: "0.9rem" }}>{name}</div>
+      </div>
+      <input
+        type="text"
+        className="form-control"
+        style={{ fontSize: "0.8rem" }}
+        id={key}
+        value={value}
+        onChange={onChange}
+      />
     </div>
   );
 };
