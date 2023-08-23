@@ -56,7 +56,10 @@ function Layout(data: LayoutProps) {
   };
 
   return (
-    <Container fluid className="h-100 overflow-hidden py-2 d-flex flex-column">
+    <div
+      className="position-relative d-flex flex-column"
+      style={{ height: "100vh", overflow: "hidden" }}
+    >
       {data.header}
       <div
         className={[colorStyles.lightTheme, "position-relative z-1"].join(" ")}
@@ -65,7 +68,7 @@ function Layout(data: LayoutProps) {
         {data.children}
 
         {widgets.map((widget: WidgetProps) => (
-          <div className={"wrapper-" + widget.position}>
+          <div className={"wrapper-" + widget.position} style={{ zIndex: 1 }}>
             <a
               className={
                 shownWidget === widget.name
@@ -80,18 +83,23 @@ function Layout(data: LayoutProps) {
 
             <div
               className={"custom-widget " + widget.className}
-              style={{ visibility: shownWidget === widget.name ? "visible" : "hidden" }}
+              style={{
+                visibility: shownWidget === widget.name ? "visible" : "hidden",
+              }}
             >
               {widget.widget}
             </div>
           </div>
         ))}
 
-        <div className="position-absolute bottom-0 w-100">
+        <div
+          className="position-fixed bottom-0"
+          style={{ left: "50%", transform: "translateX(-50%)" }}
+        >
           <ExpandWidget />
         </div>
       </div>
-    </Container>
+    </div>
   );
 }
 

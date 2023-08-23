@@ -25,10 +25,15 @@
 html,
 body,
 #root {
-  height: 100%;
   background-color: var(--color-dark) !important;
-  overflow: hidden;
   font-family: "Noto Sans", sans-serif;
+}
+
+body {
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .btn.btn-custom {

@@ -1,7 +1,7 @@
 import Konva from "konva";
 import React, { useMemo } from "react";
 import { Label, Tag, Text } from "react-konva";
-import { OverrideItemProps } from "../../../hook/useItem";
+import useItem, { OverrideItemProps } from "../../../hook/useItem";
 import { StageData } from "../../../redux/currentStageData";
 import colorMapping from "../../../config/keywordTypes";
 import useLabelSelection from "../../../hook/useLabelSelection";
@@ -13,6 +13,7 @@ export type KeywordItemProps = OverrideItemProps<{
 }>;
 
 const KeywordItem: React.FC<KeywordItemProps> = ({ data, e }) => {
+  const { updateItem } = useItem();
   const { attrs, keyword } = data;
 
   const labelEntity: SelectedLabelListItem = {
@@ -31,6 +32,7 @@ const KeywordItem: React.FC<KeywordItemProps> = ({ data, e }) => {
 
   return (
     <KeywordLabel
+      id={data.id}
       key={labelEntity.id}
       xpos={attrs.x}
       ypos={attrs.y}
@@ -46,11 +48,18 @@ const KeywordItem: React.FC<KeywordItemProps> = ({ data, e }) => {
           : labelEntity.type + ": " + labelEntity.keyword
       }
       draggable={true}
+      onDragEnd={(e) => {
+        updateItem(e.currentTarget.id(), () => ({
+          ...e.currentTarget.attrs,
+          updatedAt: Date.now(),
+        }));
+      }}
     />
   );
 };
 
 export const KeywordLabel: React.FC<{
+  id?: string;
   key: string;
   xpos: number;
   ypos: number;
@@ -59,9 +68,18 @@ export const KeywordLabel: React.FC<{
   type: string;
   text: string;
   draggable?: boolean;
-}> = ({ key, xpos, ypos, onClick, isSelected, type, text, draggable }) => {
+  onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
+}> = ({ id, key, xpos, ypos, onClick, isSelected, type, text, draggable, onDragEnd }) => {
   return (
-    <Label x={xpos} y={ypos} key={key} onClick={onClick} draggable={draggable}>
+    <Label
+      id={id}
+      x={xpos}
+      y={ypos}
+      key={key}
+      onClick={onClick}
+      draggable={draggable}
+      onDragEnd={onDragEnd}
+    >
       <Tag
         name="label-tag"
         pointerDirection="left"
