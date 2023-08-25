@@ -5,6 +5,7 @@ const colorMapping: { [key: string]: string } = {
   "Subject matter": "#7c3aed",
   Arrangement: "#EFAB44",
   "Theme & mood": "#ED4C45",
+  Note: "#555555",
 };
 
 export default colorMapping;

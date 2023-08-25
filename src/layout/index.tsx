@@ -7,6 +7,7 @@ import MergeWidget from "../widgets/MergeWidget";
 import "./layout.css";
 import StarredWidget from "../widgets/StarredWidget";
 import ExpandWidget from "../widgets/ExpandWidget";
+import CustomKeywordWidget from "../widgets/CustomKeywordWidget";
 
 type LayoutProps = {
   header?: React.ReactNode;
@@ -39,6 +40,8 @@ function Layout(data: LayoutProps) {
       <div className="d-flex w-100">
         <div style={{ background: "white", width: "360px" }}>
           <ImageWidget selectedItems={data.selectedItems} />
+          <hr />
+          <CustomKeywordWidget />
         </div>
 
         <div
