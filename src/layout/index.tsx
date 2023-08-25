@@ -17,28 +17,17 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
-type WidgetProps = {
-  name: "image" | "merge" | "starred";
-  icon: string;
-  position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  className: string;
-  widget: React.ReactNode;
-};
-
 function Layout(data: LayoutProps) {
   const [sidebarMenu, setSidebarMenu] = useState<"merge" | "starred">("merge");
-  const [shownWidget, setShownWidget] = useState<"image" | "merge" | "starred" | "">("");
-
-  const handleButtonClick = (name: "image" | "merge" | "starred") => {
-    if (shownWidget === name) setShownWidget("");
-    else setShownWidget(name);
-  };
 
   return (
     <>
       {data.header}
-      <div className="d-flex w-100">
-        <div style={{ background: "white", width: "360px" }}>
+      <div className="d-flex w-100" style={{ height: "calc(100vh - 40px)" }}>
+        <div
+          style={{ background: "white", width: "360px", maxHeight: "100%", overflowY: "scroll" }}
+          className="hide-scrollbar"
+        >
           <ImageWidget selectedItems={data.selectedItems} />
           <hr />
           <CustomKeywordWidget />
@@ -46,7 +35,7 @@ function Layout(data: LayoutProps) {
 
         <div
           className="position-relative d-flex flex-column"
-          style={{ flex: 1, height: "100vh", overflow: "hidden" }}
+          style={{ flex: 1, maxHeight: "100%", overflow: "hidden" }}
         >
           <div
             className={[colorStyles.lightTheme, "position-relative z-1"].join(" ")}
@@ -61,7 +50,10 @@ function Layout(data: LayoutProps) {
             </div>
           </div>
         </div>
-        <div style={{ background: "white", width: "400px" }}>
+        <div
+          style={{ background: "white", width: "400px", maxHeight: "100%", overflowY: "scroll" }}
+          className="hide-scrollbar"
+        >
           <div className="d-flex align-items-center justify-content-center">
             <div
               className={

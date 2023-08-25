@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
 import { getLayout, getSuggestedLayout } from "../../api/ImageElementAPI";
-import useItem from "../../hook/useItem";
 import useLabelSelection from "../../hook/useLabelSelection";
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange, draggable }) => {
@@ -123,9 +122,8 @@ const colors = [
   },
 ];
 
-const LayoutDrawer = ({ description, onSubmit }) => {
-  const [scene, setScene] = useState(description.scene);
-  const [background, setBackground] = useState(description.background);
+const LayoutDrawer = ({ description, onSubmit, loading }) => {
+  const [caption, setCaption] = useState(description.caption);
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
 
@@ -162,8 +160,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
   }, [selectedLabelList, objects.length]);
 
   useEffect(() => {
-    setScene(description.scene);
-    setBackground(description.background);
+    setCaption(description.caption);
 
     const newObjects = description.layout.map((l, i) => {
       let object = l[0];
@@ -176,10 +173,10 @@ const LayoutDrawer = ({ description, onSubmit }) => {
         detail: detail,
         color: colors.find((c) => c.id === i).color,
         rectangle: {
-          x: (bbox[0] * 200) / 512,
-          y: (bbox[1] * 200) / 512,
-          width: (bbox[2] * 200) / 512,
-          height: (bbox[3] * 200) / 512,
+          x: bbox[0] * 200,
+          y: bbox[1] * 200,
+          width: bbox[2] * 200,
+          height: bbox[3] * 200,
           stroke: colors.find((c) => c.id === i).color,
           strokeWidth: 2,
           id: i,
@@ -201,16 +198,15 @@ const LayoutDrawer = ({ description, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
-      background: background,
       objects: objects,
-      scene: scene,
+      caption: caption,
     };
     onSubmit(data);
   };
 
   return (
     <div className="mt-3">
-      <h6>Add details</h6>
+      <h6>Edit details</h6>
       <div className="d-flex mt-1 mb-5">
         <div className="me-2" style={{ width: "200px", height: "200px" }}>
           <Stage
@@ -305,21 +301,12 @@ const LayoutDrawer = ({ description, onSubmit }) => {
         <div className="w-100">
           <form onSubmit={handleSubmit}>
             <InputOnImage
-              key={"scene"}
-              name={"Scene"}
+              key={"caption"}
+              name={"Caption"}
               color={"white"}
-              value={scene}
+              value={caption}
               onChange={(e) => {
-                setScene(e.target.value);
-              }}
-            />
-            <InputOnImage
-              key={"background"}
-              name={"Background"}
-              color={"#fef7ef"}
-              value={background}
-              onChange={(e) => {
-                setBackground(e.target.value);
+                setCaption(e.target.value);
               }}
             />
             {objects.map((obj) => {
@@ -340,8 +327,8 @@ const LayoutDrawer = ({ description, onSubmit }) => {
               );
             })}
 
-            <button type="submit" className="btn btn-custom mt-3">
-              Generate sketch
+            <button type="submit" className="btn btn-custom mt-3" disabled={loading}>
+              {loading ? "Generating..." : "Generate sketch"}
             </button>
           </form>
         </div>

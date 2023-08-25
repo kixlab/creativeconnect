@@ -9,10 +9,10 @@ import useStarredImageList from "../../hook/useStarredImageList";
 
 const MergeWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [descriptions, setDescriptions] = useState<any[]>([]);
   const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
-  const [imageId, setImageId] = useState<string>("");
-  const [imageSrc, setImageSrc] = useState<string>("");
+  const [imageSrcs, setImageSrcs] = useState<string[]>([]);
 
   const { selectedLabelList } = useLabelSelection();
   const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
@@ -24,25 +24,31 @@ const MergeWidget: React.FC = () => {
 
   const handleMergeClick = () => {
     setLoading(true);
-    getDescriptions(selectedLabelList).then((res: any) => {
-      setLoading(false);
-      setDescriptions(res.data.descriptions);
-    });
+    getDescriptions(selectedLabelList)
+      .then((res: any) => {
+        setLoading(false);
+        setDescriptions(res.data.descriptions);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
 
   const onSubmit = (data: any) => {
+    setRegenerating(true);
     getImage(data).then((res: any) => {
-      setImageSrc(BACKEND_BASEURL + res.data.image_path_sketch);
-      setImageId(new Date().getTime().toString());
+      setImageSrcs(res.data.image_path_sketch);
+      setRegenerating(false);
     });
   };
 
-  const handleStarClick = () => {
+  const handleStarClick = (imageId: string) => {
     if (findStarredImage(imageId)) removeStarredImage(imageId);
     else
       addStarredImage({
         id: imageId,
-        src: imageSrc,
+        src: BACKEND_BASEURL + imageId,
       });
   };
 
@@ -89,59 +95,80 @@ const MergeWidget: React.FC = () => {
       {descriptions.length > 0 && (
         <div className="mt-5">
           <h6>Merge results : Select the one you like</h6>
-          <div className="w-100 d-flex justify-content-between">
-            {descriptions.map((des) => (
-              <button
-                className={
-                  selectedDescription === des
-                    ? "btn btn-custom text-start my-1"
-                    : "btn btn-outline-custom text-start my-1"
-                }
-                style={{ width: "32%" }}
-                onClick={() => setSelectedDescription(des)}
-              >
-                <div style={{ fontSize: "small" }}>
-                  <img className="w-100" src={BACKEND_BASEURL + des.image_path_sketch} />
-                  {des.scene}
-                </div>
-              </button>
-            ))}
-          </div>
+          {descriptions.map((des) => (
+            <div className="d-flex align-items-center">
+              <div className="position-relative" style={{ width: "150px", marginRight: "1rem" }}>
+                <button
+                  type="button"
+                  className="btn btn-lg position-absolute top-0 end-0"
+                  style={{ color: "#FFC107" }}
+                  onClick={() => handleStarClick(des.image_path_sketch[0])}
+                >
+                  {findStarredImage(des.image_path_sketch[0]) ? (
+                    <i className="bi bi-star-fill"></i>
+                  ) : (
+                    <i className="bi bi-star"></i>
+                  )}
+                </button>
+                <img
+                  style={{ width: "150px" }}
+                  src={BACKEND_BASEURL + des.image_path_sketch[0]}
+                  alt="result"
+                />
+              </div>
+
+              <div style={{ fontSize: "small" }}>
+                <p>{des.caption}</p>
+                <button
+                  onClick={() => setSelectedDescription(des)}
+                  className="btn btn-custom btn-sm"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
       {selectedDescription && (
         <>
-          <LayoutDrawer description={selectedDescription} onSubmit={onSubmit} />
-          {imageSrc && (
-            <div
-              className="position-relative w-50"
-              style={{
-                borderRadius: "0.25rem",
-              }}
-            >
-              <button
-                type="button"
-                className="btn btn-lg position-absolute top-0 end-0"
-                style={{ color: "#FFC107" }}
-                onClick={handleStarClick}
-              >
-                {findStarredImage(imageId) ? (
-                  <i className="bi bi-star-fill"></i>
-                ) : (
-                  <i className="bi bi-star"></i>
-                )}
-              </button>
-              <img
-                className="w-100"
+          <LayoutDrawer
+            description={selectedDescription}
+            onSubmit={onSubmit}
+            loading={regenerating}
+          />
+          <div className="d-flex">
+            {imageSrcs.map((src) => (
+              <div
+                className="position-relative w-50"
                 style={{
                   borderRadius: "0.25rem",
                 }}
-                alt="result"
-                src={imageSrc}
-                id={imageId}
-              />
-            </div>
-          )}
+              >
+                <button
+                  type="button"
+                  className="btn btn-lg position-absolute top-0 end-0"
+                  style={{ color: "#FFC107" }}
+                  onClick={() => handleStarClick(src)}
+                >
+                  {findStarredImage(src) ? (
+                    <i className="bi bi-star-fill"></i>
+                  ) : (
+                    <i className="bi bi-star"></i>
+                  )}
+                </button>
+                <img
+                  className="w-100"
+                  style={{
+                    borderRadius: "0.25rem",
+                  }}
+                  alt="result"
+                  src={BACKEND_BASEURL + src}
+                  id={src}
+                />
+              </div>
+            ))}
+          </div>
         </>
       )}
     </Col>

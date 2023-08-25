@@ -2,56 +2,52 @@ export const dummyDesc = {
   data: {
     descriptions: [
       {
-        background:
-          "A mystical landscape with floating islands, large waterfalls that seem like they're pouring from nowhere, and fluffy clouds in the sky.",
-        image_path_raw: "generated/20230823220952_raw.png",
-        image_path_sketch: "generated/20230823220952_sketch.png",
+        caption: "A person holding a dog's teeth, demonstrating proper dental hygiene for pets.",
+        image_path_raw: ["generated/20230826023008_0_raw.png"],
+        image_path_sketch: ["generated/20230826023008_0_sketch.png"],
         layout: [
-          ["boy", [82, 89, 198, 318]],
-          ["dino toys", [240, 235, 120, 70]],
-          ["dino toys", [350, 250, 100, 65]],
+          ["person", [0.187, 0.124, 0.279, 0.567]],
+          ["teeth", [0.314, 0.416, 0.236, 0.234]],
+          ["dog", [0.061, 0.288, 0.391, 0.501]],
+          ["hygiene", [0.051, 0.235, 0.428, 0.535]],
         ],
         objects: {
-          boy: "a small boy with curious eyes and unruly hair",
-          "dino toys":
-            "set of various colorful dinosaur playthings that the boy is seen interacting with",
+          dog: "a dog with its mouth open",
+          hygiene: "a toothbrush and toothpaste",
+          person: "a person wearing gloves holding a dog's teeth",
+          teeth: "a set of dog teeth",
         },
-        scene:
-          "A youthful boy lost in a dreamy imagination of prehistoric era while playing with his dinosaur toys.",
       },
       {
-        background:
-          "A comfortable playroom that gradually transforms into a lush, dreamy, prehistoric landscape with ancient trees and active volcanoes.",
-        image_path_raw: "generated/20230823221009_raw.png",
-        image_path_sketch: "generated/20230823221009_sketch.png",
+        caption:
+          "A person and a dog in a dentist's office, with the person holding a model of a dog's teeth.",
+        image_path_raw: ["generated/20230826023013_0_raw.png"],
+        image_path_sketch: ["generated/20230826023013_0_sketch.png"],
         layout: [
-          ["boy", [125, 101, 165, 289]],
-          ["dino toys", [301, 287, 70, 59]],
-          ["dino toys", [401, 302, 75, 64]],
+          ["person", [0.206, 0.417, 0.265, 0.527]],
+          ["teeth", [0.474, 0.445, 0.181, 0.189]],
+          ["dog", [0.647, 0.209, 0.256, 0.556]],
         ],
         objects: {
-          boy: "a young boy intensely involved with his toy dinos",
-          "dino toys": "a collection of vivid",
+          dog: "a dog sitting calmly on a dental chair",
+          person: "a person in a dentist's uniform holding a model of dog teeth",
+          teeth: "a model of dog teeth",
         },
-        scene:
-          "A boy pictured in a playroom, amidst an imagined Jurassic-era setting brought to life by dinosaur toys.",
       },
       {
-        background:
-          "A charming boy’s room with hand-drawn clouds on the wall, morphing into a dreamlike world of ancient monsters.",
-        image_path_raw: "generated/20230823221027_raw.png",
-        image_path_sketch: "generated/20230823221027_sketch.png",
+        caption: "A person holding a dog's teeth, emphasizing the importance of dental care.",
+        image_path_raw: ["generated/20230826023017_0_raw.png"],
+        image_path_sketch: ["generated/20230826023017_0_sketch.png"],
         layout: [
-          ["boy", [192, 108, 140, 235]],
-          ["dino toys", [54, 328, 112, 170]],
-          ["dino toys", [323, 339, 102, 112]],
+          ["person", [0.099, 0.046, 0.356, 0.656]],
+          ["teeth", [0.531, 0.04, 0.201, 0.362]],
+          ["dog", [0.287, 0.157, 0.279, 0.532]],
         ],
         objects: {
-          boy: "an adorable boy playing with toy dinosaurs",
-          "dino toys": "a range of prehistoric dinosaur toys with various shapes and colors",
+          dog: "a dog with its mouth open",
+          person: "a person holding a dog's teeth with a magnifying glass",
+          teeth: "a set of dog teeth illuminated by the magnifying glass",
         },
-        scene:
-          " A little boy is playing carefree in his world of ancient creatures, amidst a dreamy landscape.",
       },
     ],
   },
