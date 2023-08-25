@@ -5,14 +5,10 @@ export const CustomSelectButton: React.FC<{
   id: string;
   name: string | undefined;
   type: string;
+  selected: boolean;
   onChange: (e: any) => void;
-}> = ({ id, name, type, onChange }) => {
+}> = ({ id, name, type, selected, onChange }) => {
   const [hovered, setHovered] = useState(false);
-  const [selected, setSelected] = useState(false);
-  const handleChange = (e: any) => {
-    setSelected(e.target.checked);
-    onChange(e);
-  };
   const color = colorMapping[type];
 
   return (
@@ -21,7 +17,7 @@ export const CustomSelectButton: React.FC<{
         type="checkbox"
         className="btn-check"
         id={id}
-        onChange={handleChange}
+        onChange={onChange}
         autoComplete="off"
         checked={selected}
       />

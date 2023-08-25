@@ -15,7 +15,7 @@ const useHotkeyFunc = () => {
 
   const selectAll = (
     stage: ReturnType<typeof useStage>,
-    onSelectItem: ReturnType<typeof useSelection>["onSelectItem"],
+    onSelectItem: ReturnType<typeof useSelection>["onSelectItem"]
   ) => {
     const frameGroups = stage.stageRef.current
       .getChildren()[0]
@@ -25,7 +25,7 @@ const useHotkeyFunc = () => {
     const items = stage.stageRef.current
       .getChildren()[0]
       .getChildren(
-        (_item) => _item.attrs.name === "label-target" && _item.attrs["data-item-type"] !== "frame",
+        (_item) => _item.attrs.name === "label-target" && _item.attrs["data-item-type"] !== "frame"
       );
     const newSelections = [...frameGroups, ...items];
     onSelectItem(undefined, newSelections);
@@ -34,7 +34,7 @@ const useHotkeyFunc = () => {
   const copyItems = (
     selectedItems: Node<NodeConfig>[],
     setClipboard: (value: React.SetStateAction<StageData[]>) => void,
-    createStageDataObject: (item: Node<NodeConfig>) => StageData,
+    createStageDataObject: (item: Node<NodeConfig>) => StageData
   ) => {
     const newClips = selectedItems
       .map((item) => createStageDataObject(item))
@@ -69,7 +69,7 @@ const useHotkeyFunc = () => {
 
   const duplicateItems = (
     selectedItems: Node<NodeConfig>[],
-    createStageDataObject: (item: Node<NodeConfig>) => StageData,
+    createStageDataObject: (item: Node<NodeConfig>) => StageData
   ) => {
     selectedItems
       .map((item) => createStageDataObject(item))
@@ -100,7 +100,7 @@ const useHotkeyFunc = () => {
   const deleteItems = (
     selectedItems: Node<NodeConfig>[],
     setSelectedItems: (value: React.SetStateAction<Node<NodeConfig>[]>) => void,
-    transformerRef: ReturnType<typeof useTransformer>["transformerRef"],
+    transformerRef: ReturnType<typeof useTransformer>["transformerRef"]
   ) => {
     setSelectedItems([]);
     transformerRef.current?.nodes([]);

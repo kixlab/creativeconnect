@@ -10,23 +10,6 @@ import useLabelSelection from "../../../hook/useLabelSelection";
 import { SelectedLabelListItem } from "../../../redux/selectedLabelList";
 import { KeywordLabel } from "../keyword";
 
-export type ImageItemKind = {
-  "data-item-type": string;
-  id: string;
-  name: string;
-  src: string;
-  keywords?: {
-    type: string;
-    keyword?: string;
-    position?: {
-      x: number;
-      y: number;
-    };
-  }[];
-  filename: string;
-  image: typeof Image;
-};
-
 export type ImageItemProps = OverrideItemProps<{
   data: StageData;
   e?: DragEvent;
@@ -114,6 +97,8 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
         fill={attrs.fill ?? "transparent"}
         opacity={attrs.opacity ?? 1}
         rotation={attrs.rotation ?? 0}
+        keywords={data.keywords}
+        allKeywords={data.allKeywords}
         draggable
         onDragMove={onDragMoveFrame}
         onDragEnd={onDragEndFrame}

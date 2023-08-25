@@ -14,6 +14,7 @@ export type StageData = {
 
   // For image
   keywords?: any[];
+  allKeywords?: any[];
   filename?: string;
 
   // For keyword

@@ -10,7 +10,6 @@ const StarredWidget: React.FC = () => {
 
   return (
     <Col className="starredWidgetWrapper">
-      <h6>Starred Recombinations</h6>
       <div className="d-flex flex-wrap justify-content-center">
         {starredImages.map((image) => (
           <div

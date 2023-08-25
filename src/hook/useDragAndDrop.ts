@@ -53,6 +53,7 @@ const useDragAndDrop = (
         },
         children: [],
         keywords: data.keywords,
+        allKeywords: data.allKeywords,
         filename: data.filename,
       };
 
@@ -88,6 +89,7 @@ const useDragAndDrop = (
     const { trigger, ...data } = dragSrc;
 
     data.id = nanoid();
+    console.log("trigger", trigger);
     switch (trigger) {
       case TRIGGER.INSERT.IMAGE:
         return insertImage(e, data);

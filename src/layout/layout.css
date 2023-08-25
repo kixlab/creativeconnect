@@ -50,3 +50,18 @@
   width: 400px;
   margin-bottom: 1rem;
 }
+
+.sidebar-menu {
+  text-align: center;
+  color: var(--color-dark);
+  font-weight: 400;
+
+  margin: 1rem;
+  cursor: pointer;
+}
+.sidebar-menu-selected {
+  font-weight: bold;
+
+  display: inline;
+  box-shadow: inset 0 -6px 0 var(--color-main-light);
+}

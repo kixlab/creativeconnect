@@ -206,7 +206,10 @@ function App() {
   }, []);
 
   return (
-    <Layout header={<Header showModal={() => setShowHotkeyModal(true)} />}>
+    <Layout
+      header={<Header showModal={() => setShowHotkeyModal(true)} />}
+      selectedItems={selectedItems}
+    >
       {hotkeyModal}
       <View onSelect={onSelectItem} stage={stage}>
         {stageData.length ? sortedStageData.map((item) => renderObject(item)) : null}

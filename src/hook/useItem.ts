@@ -41,6 +41,17 @@ const useItem = () => {
     dispatch(stageDataAction.addItem(newItem));
   };
 
+  const updateKeywords = (id: string, keywords: any[], allKeywords: any[]) => {
+    const targetItem = stageData.find((data) => data.id === id || data.attrs.id === id);
+
+    const updatedObject = {
+      ...(targetItem ?? {}),
+      keywords: keywords,
+      allKeywords: allKeywords,
+    } as StageData;
+    dispatch(stageDataAction.updateItem(updatedObject));
+  };
+
   const updateItem = (id: string, attrsFunc: (attrs: StageData["attrs"]) => StageData["attrs"]) => {
     const targetItem = stageData.find((data) => data.id === id || data.attrs.id === id);
 
@@ -69,6 +80,7 @@ const useItem = () => {
     stageData,
     createItem,
     updateItem,
+    updateKeywords,
     removeItem,
     alterItems,
     clearItems,
