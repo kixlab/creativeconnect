@@ -19,9 +19,19 @@ export const getLayout = (filename) => {
   });
 };
 
-export const getSuggestedLayout = (layout) => {
+export const getSuggestedLayout = (layout, target_bbox_num) => {
+  let adjustedLayout = [];
+  for (let i = 0; i < layout.length; i++) {
+    adjustedLayout.push([
+      (layout[i][0] * 512) / 200,
+      (layout[i][1] * 512) / 200,
+      (layout[i][2] * 512) / 200,
+      (layout[i][3] * 512) / 200,
+    ]);
+  }
   return imageElement.post("getRecommendedLayouts", {
-    layout: layout,
+    layout: adjustedLayout,
+    target_bbox_num: target_bbox_num,
   });
 };
 
@@ -37,7 +47,7 @@ export const getImage = (data) => {
   prompt += "Caption: " + data.scene + "\n";
   prompt += "Objects: [";
   for (let i = 0; i < data.objects.length; i++) {
-    prompt += "('" + data.objects[i].detail + "', [";
+    prompt += '("' + data.objects[i].detail + '", [';
     prompt += Math.ceil((data.objects[i].rectangle.x * 512) / 200) + ", ";
     prompt += Math.ceil((data.objects[i].rectangle.y * 512) / 200) + ", ";
     prompt += Math.ceil((data.objects[i].rectangle.width * 512) / 200) + ", ";
@@ -48,7 +58,6 @@ export const getImage = (data) => {
   }
   prompt += "]\n";
   prompt += "Background prompt: " + data.background;
-
   return imageElement.post("generateImage", {
     prompt: prompt,
   });

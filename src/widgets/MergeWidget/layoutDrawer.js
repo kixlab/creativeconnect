@@ -145,21 +145,21 @@ const LayoutDrawer = ({ description, onSubmit }) => {
         layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
       getLayout(layoutImage).then((res) => {
         setOriginalLayout(res.data.bboxes);
-        getSuggestedLayout(res.data.bboxes).then((res) => {
-          let adjustedLayouts = res.data.layouts.map((layout) =>
-            layout.map((item) => ({
+        getSuggestedLayout(res.data.bboxes, objects.length).then((res) => {
+          let adjustedLayouts = res.data.layouts.map((layout) => {
+            return layout.map((item) => ({
               x: (item[0] * 200) / 512,
               y: (item[1] * 200) / 512,
               width: (item[2] * 200) / 512,
               height: (item[3] * 200) / 512,
-            }))
-          );
+            }));
+          });
           setSuggestedLayouts(adjustedLayouts);
           setShownLayout(0);
         });
       });
     }
-  }, [selectedLabelList]);
+  }, [selectedLabelList, objects.length]);
 
   useEffect(() => {
     setScene(description.scene);
@@ -188,7 +188,6 @@ const LayoutDrawer = ({ description, onSubmit }) => {
     });
 
     setObjects(newObjects);
-    console.log(objects);
   }, [description]);
 
   const checkDeselect = (e) => {
@@ -222,7 +221,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
             onTouchStart={checkDeselect}
           >
             <Layer>
-              {originalLayout?.map((bbox, i) => {
+              {/* {originalLayout?.map((bbox, i) => {
                 const shapeProps = {
                   x: bbox[0],
                   y: bbox[1],
@@ -241,8 +240,8 @@ const LayoutDrawer = ({ description, onSubmit }) => {
                     draggable={false}
                   />
                 );
-              })}
-              {/* {suggestedLayouts[shownLayout]?.map((bbox, i) => {
+              })} */}
+              {suggestedLayouts[shownLayout]?.map((bbox, i) => {
                 const shapeProps = {
                   x: bbox.x,
                   y: bbox.y,
@@ -253,7 +252,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
                 };
                 return (
                   <Rectangle
-                    key={"custom"}
+                    key={`custom-${i}`}
                     shapeProps={shapeProps}
                     isSelected={false}
                     onSelect={() => {}}
@@ -261,7 +260,7 @@ const LayoutDrawer = ({ description, onSubmit }) => {
                     draggable={false}
                   />
                 );
-              })} */}
+              })}
               {objects.map((obj, i) => {
                 const rect = obj.rectangle;
                 return (
@@ -324,7 +323,6 @@ const LayoutDrawer = ({ description, onSubmit }) => {
               }}
             />
             {objects.map((obj) => {
-              console.log(obj);
               return (
                 <InputOnImage
                   key={obj.id}

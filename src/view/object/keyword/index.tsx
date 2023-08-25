@@ -33,7 +33,7 @@ const KeywordItem: React.FC<KeywordItemProps> = ({ data, e }) => {
   return (
     <KeywordLabel
       id={data.id}
-      key={labelEntity.id}
+      labelkey={labelEntity.id}
       xpos={attrs.x}
       ypos={attrs.y}
       onClick={() => {
@@ -60,7 +60,7 @@ const KeywordItem: React.FC<KeywordItemProps> = ({ data, e }) => {
 
 export const KeywordLabel: React.FC<{
   id?: string;
-  key: string;
+  labelkey: string;
   xpos: number;
   ypos: number;
   onClick?: (e: Konva.KonvaEventObject<MouseEvent>) => void;
@@ -69,13 +69,13 @@ export const KeywordLabel: React.FC<{
   text: string;
   draggable?: boolean;
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
-}> = ({ id, key, xpos, ypos, onClick, isSelected, type, text, draggable, onDragEnd }) => {
+}> = ({ id, labelkey, xpos, ypos, onClick, isSelected, type, text, draggable, onDragEnd }) => {
   return (
     <Label
       id={id}
       x={xpos}
       y={ypos}
-      key={key}
+      key={labelkey}
       onClick={onClick}
       draggable={draggable}
       onDragEnd={onDragEnd}

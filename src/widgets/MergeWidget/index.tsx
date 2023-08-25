@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MergeWidget.css";
 import { Col } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
@@ -16,6 +16,11 @@ const MergeWidget: React.FC = () => {
 
   const { selectedLabelList } = useLabelSelection();
   const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
+
+  useEffect(() => {
+    setDescriptions([]);
+    setSelectedDescription(null);
+  }, [selectedLabelList]);
 
   const handleMergeClick = () => {
     setLoading(true);

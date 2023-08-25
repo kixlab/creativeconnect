@@ -127,6 +127,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ data, e, onSelect }) => {
           30;
         return (
           <ImageLabel
+            key={data.filename + "-" + keyword.type + "-" + keyword.keyword}
             xpos={xpos}
             ypos={ypos}
             filename={data.filename ?? ""}
@@ -162,7 +163,7 @@ const ImageLabel: React.FC<{
 
   return (
     <KeywordLabel
-      key={filename + "-" + type + ": " + keyword}
+      labelkey={filename + "-" + type + ": " + keyword}
       xpos={xpos}
       ypos={ypos}
       onClick={() => {
