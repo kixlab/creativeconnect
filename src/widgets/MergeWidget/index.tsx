@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./MergeWidget.css";
-import { Col } from "react-bootstrap";
+import { Col, Modal } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
 import { BACKEND_BASEURL, getDescriptions, getImage } from "../../api/ImageElementAPI";
@@ -13,6 +13,13 @@ const MergeWidget: React.FC = () => {
   const [descriptions, setDescriptions] = useState<any[]>([]);
   const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
+
+  // Modal
+  const [show, setShow] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState<string>("");
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const { selectedLabelList } = useLabelSelection();
   const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
@@ -114,6 +121,10 @@ const MergeWidget: React.FC = () => {
                   style={{ width: "150px" }}
                   src={BACKEND_BASEURL + des.image_path_sketch[0]}
                   alt="result"
+                  onClick={() => {
+                    setModalImageSrc(BACKEND_BASEURL + des.image_path_sketch[0]);
+                    handleShow();
+                  }}
                 />
               </div>
 
@@ -165,12 +176,21 @@ const MergeWidget: React.FC = () => {
                   alt="result"
                   src={BACKEND_BASEURL + src}
                   id={src}
+                  onClick={() => {
+                    setModalImageSrc(BACKEND_BASEURL + src);
+                    handleShow();
+                  }}
                 />
               </div>
             ))}
           </div>
         </>
       )}
+      <Modal show={show} onHide={handleClose} style={{ marginTop: "20vh" }}>
+        <Modal.Body>
+          <img className="w-100" src={modalImageSrc} alt="modal" />
+        </Modal.Body>
+      </Modal>
     </Col>
   );
 };
