@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import React, { useState } from "react";
 import colorStyles from "../style/color.module.css";
 import ImageWidget from "../widgets/ImageWidget";
 import MergeWidget from "../widgets/MergeWidget";
@@ -26,7 +25,7 @@ function Layout(data: LayoutProps) {
       <div className="d-flex w-100" style={{ height: "calc(100vh - 40px)" }}>
         <div
           style={{ background: "white", width: "360px", maxHeight: "100%", overflowY: "scroll" }}
-          className="hide-scrollbar"
+          className="hide-scrollbar d-flex flex-column"
         >
           <ImageWidget selectedItems={data.selectedItems} />
           <hr />

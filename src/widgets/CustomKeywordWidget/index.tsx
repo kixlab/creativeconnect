@@ -17,8 +17,30 @@ const CustomKeywordWidget: React.FC = () => {
   };
 
   return (
-    <div className="imageWidgetWrapper">
-      <h5 className="mb-4">Add notes</h5>
+    <div className="imageWidgetWrapper" style={{ height: "250px" }}>
+      <h5 className="mb-1">Add notes</h5>
+      <p className="mb-4 subtitle">Add the keywords and drag it into the canvas.</p>
+      <form
+        style={{ display: "inline-block", width: "100%" }}
+        onSubmit={(e) => handleCustomInputSubmit(e)}
+      >
+        <div className="input-group input-group-sm mb-3">
+          <select id="keywordType" className="form-select" aria-label="Default select example">
+            <option value="Subject matter">Subject matter</option>
+            <option value="Action & pose">Action & pose</option>
+            <option value="Theme & mood">Theme & mood</option>
+          </select>
+          <input
+            id="keywordName"
+            type="text"
+            className="form-control"
+            style={{ borderColor: "gray" }}
+          />
+          <button className="btn btn-outline-secondary" type="submit">
+            +
+          </button>
+        </div>
+      </form>
       <div className="mb-2">
         {keywordList.map((keyword) => (
           <Drag
@@ -46,27 +68,6 @@ const CustomKeywordWidget: React.FC = () => {
           </Drag>
         ))}
       </div>
-      <form
-        style={{ display: "inline-block", width: "100%" }}
-        onSubmit={(e) => handleCustomInputSubmit(e)}
-      >
-        <div className="input-group input-group-sm mb-3">
-          <select id="keywordType" className="form-select" aria-label="Default select example">
-            <option value="Subject matter">Subject matter</option>
-            <option value="Action & pose">Action & pose</option>
-            <option value="Theme & mood">Theme & mood</option>
-          </select>
-          <input
-            id="keywordName"
-            type="text"
-            className="form-control"
-            style={{ borderColor: "gray" }}
-          />
-          <button className="btn btn-outline-secondary" type="submit">
-            +
-          </button>
-        </div>
-      </form>
     </div>
   );
 };

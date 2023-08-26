@@ -8,8 +8,6 @@ import { sendImage } from "../../api/ImageElementAPI";
 import { CustomSelectButton } from "../util/elements";
 
 import "./ImageWidget.css";
-import useSelection from "../../hook/useSelection";
-import useTransformer from "../../hook/useTransformer";
 import useItem from "../../hook/useItem";
 
 type UploadedImage = {
@@ -26,6 +24,10 @@ interface ImageWidgetProp {
 const ImageWidget: React.FC<ImageWidgetProp> = ({ selectedItems }) => {
   const [isLoading, setLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(null);
+
+  useEffect(() => {
+    setUploadedImage(null);
+  }, [selectedItems]);
 
   const uploadImage = () => {
     const fileReader = new FileReader();
@@ -62,7 +64,7 @@ const ImageWidget: React.FC<ImageWidgetProp> = ({ selectedItems }) => {
   };
 
   return (
-    <Col className="imageWidgetWrapper">
+    <Col className="imageWidgetWrapper" style={{ flex: 1 }}>
       <button
         className="btn btn-custom w-100 mb-3"
         onClick={!isLoading ? uploadImage : () => {}}
