@@ -3,8 +3,8 @@ import { Col, Row } from "react-bootstrap";
 import { nanoid } from "nanoid";
 import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
-import colorMapping, { keywordTypes } from "../../config/keywordTypes";
-import { sendImage } from "../../api/ImageElementAPI";
+import { keywordTypes } from "../../config/keywordTypes";
+import { getLayout, sendImage } from "../../api/ImageElementAPI";
 import { CustomSelectButton } from "../util/elements";
 
 import "./ImageWidget.css";

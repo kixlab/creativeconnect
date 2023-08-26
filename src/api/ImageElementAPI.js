@@ -37,14 +37,36 @@ export const getSuggestedLayout = (layout, target_bbox_num) => {
 
 export const getDescriptions = (data) => {
   // return Promise.resolve(dummyDesc);
-  return imageElement.post("mergeKeywords", {
+  return imageElement.post("mergeKeywordsToDescriptions", {
     keywords: data,
+  });
+};
+
+export const getImageFromDescription = (data) => {
+  return imageElement.post("descriptionToSketch", {
+    description: data,
+  });
+};
+
+export const getMoreSketches = (description, layout) => {
+  let adjustedLayout = [];
+  for (let i = 0; i < layout.length; i++) {
+    adjustedLayout.push([
+      layout[i][0] * 512,
+      layout[i][1] * 512,
+      layout[i][2] * 512,
+      layout[i][3] * 512,
+    ]);
+  }
+  return imageElement.post("getMoreSketches", {
+    description: description,
+    layout: adjustedLayout,
   });
 };
 
 export const getImage = (data) => {
   let prompt = "";
-  prompt += "Caption: " + data.scene + "\n";
+  prompt += "Caption: " + data.caption + "\n";
   prompt += "Objects: [";
   for (let i = 0; i < data.objects.length; i++) {
     prompt += '("' + data.objects[i].detail + '", [';

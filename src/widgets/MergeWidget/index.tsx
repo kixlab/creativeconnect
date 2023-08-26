@@ -3,14 +3,27 @@ import "./MergeWidget.css";
 import { Col, Modal } from "react-bootstrap";
 import useLabelSelection from "../../hook/useLabelSelection";
 import ElementSelectButton from "../util/elements";
-import { BACKEND_BASEURL, getDescriptions, getImage } from "../../api/ImageElementAPI";
-import LayoutDrawer from "./layoutDrawer";
+import {
+  BACKEND_BASEURL,
+  getDescriptions,
+  getImage,
+  getImageFromDescription,
+  getLayout,
+  getMoreSketches,
+} from "../../api/ImageElementAPI";
+// import LayoutDrawer from "./layoutDrawer";
 import useStarredImageList from "../../hook/useStarredImageList";
 
 const MergeWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [descriptions, setDescriptions] = useState<any[]>([]);
+
+  const [sketches, setSketches] = useState(new Array(3).fill(null));
+  const [originalLayout, setOriginalLayout] = useState([]);
+  const [moresketches, setMoreSketches] = useState<string[]>([]);
+  const [generatingMore, setGeneratingMore] = useState(false);
+
   const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
 
@@ -27,6 +40,21 @@ const MergeWidget: React.FC = () => {
   useEffect(() => {
     setDescriptions([]);
     setSelectedDescription(null);
+    setMoreSketches([]);
+  }, [selectedLabelList]);
+
+  useEffect(() => {
+    let layoutReferenceImages = selectedLabelList.filter(
+      (keyword) => keyword.type === "Arrangement"
+    );
+    if (layoutReferenceImages.length === 0) setOriginalLayout([]);
+    else {
+      let layoutImage =
+        layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
+      getLayout(layoutImage).then((res) => {
+        setOriginalLayout(res.data.bboxes);
+      });
+    }
   }, [selectedLabelList]);
 
   const handleMergeClick = () => {
@@ -35,6 +63,20 @@ const MergeWidget: React.FC = () => {
       .then((res: any) => {
         setLoading(false);
         setDescriptions(res.data.descriptions);
+        setSketches(new Array(res.data.descriptions.length).fill(null));
+
+        const fetchImagesSequentially = async () => {
+          for (let i = 0; i < res.data.descriptions.length; i++) {
+            const des = res.data.descriptions[i];
+            const response = await getImageFromDescription(des);
+            setSketches((prev) => {
+              const newSketches = [...prev];
+              newSketches[i] = response.data.image_path_sketch[0];
+              return newSketches;
+            });
+          }
+        };
+        fetchImagesSequentially();
       })
       .catch((err) => {
         setLoading(false);
@@ -102,46 +144,103 @@ const MergeWidget: React.FC = () => {
       {descriptions.length > 0 && (
         <div className="mt-5">
           <h6>Merge results : Select the one you like</h6>
-          {descriptions.map((des) => (
+          {descriptions.map((des, i) => (
             <div className="d-flex align-items-center">
               <div className="position-relative" style={{ width: "150px", marginRight: "1rem" }}>
-                <button
-                  type="button"
-                  className="btn btn-lg position-absolute top-0 end-0"
-                  style={{ color: "#FFC107" }}
-                  onClick={() => handleStarClick(des.image_path_sketch[0])}
-                >
-                  {findStarredImage(des.image_path_sketch[0]) ? (
-                    <i className="bi bi-star-fill"></i>
-                  ) : (
-                    <i className="bi bi-star"></i>
-                  )}
-                </button>
-                <img
-                  style={{ width: "150px" }}
-                  src={BACKEND_BASEURL + des.image_path_sketch[0]}
-                  alt="result"
-                  onClick={() => {
-                    setModalImageSrc(BACKEND_BASEURL + des.image_path_sketch[0]);
-                    handleShow();
-                  }}
-                />
+                {sketches[i] ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-lg position-absolute top-0 end-0"
+                      style={{ color: "#FFC107" }}
+                      onClick={() => handleStarClick(sketches[i])}
+                    >
+                      {findStarredImage(sketches[i]) ? (
+                        <i className="bi bi-star-fill"></i>
+                      ) : (
+                        <i className="bi bi-star"></i>
+                      )}
+                    </button>
+                    <img
+                      style={{ width: "150px" }}
+                      src={BACKEND_BASEURL + sketches[i]}
+                      alt="result"
+                      onClick={() => {
+                        setModalImageSrc(BACKEND_BASEURL + sketches[i]);
+                        handleShow();
+                      }}
+                    />
+                  </>
+                ) : (
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ width: "150px" }}
+                  >
+                    <div className="spinner-border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div style={{ fontSize: "small" }}>
                 <p>{des.caption}</p>
                 <button
-                  onClick={() => setSelectedDescription(des)}
+                  onClick={() => {
+                    setGeneratingMore(true);
+                    getMoreSketches(des, originalLayout).then((res: any) => {
+                      setMoreSketches(res.data.image_path_sketch);
+                      setGeneratingMore(false);
+                    });
+                  }}
+                  disabled={generatingMore}
                   className="btn btn-custom btn-sm"
                 >
-                  Edit
+                  More sketches
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
-      {selectedDescription && (
+      <hr />
+      <div className="d-flex flex-wrap">
+        {moresketches.map((src) => (
+          <div
+            className="position-relative w-50"
+            style={{
+              borderRadius: "0.25rem",
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-lg position-absolute top-0 end-0"
+              style={{ color: "#FFC107" }}
+              onClick={() => handleStarClick(src)}
+            >
+              {findStarredImage(src) ? (
+                <i className="bi bi-star-fill"></i>
+              ) : (
+                <i className="bi bi-star"></i>
+              )}
+            </button>
+            <img
+              className="w-100"
+              style={{
+                borderRadius: "0.25rem",
+              }}
+              alt="result"
+              src={BACKEND_BASEURL + src}
+              id={src}
+              onClick={() => {
+                setModalImageSrc(BACKEND_BASEURL + src);
+                handleShow();
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      {/* {selectedDescription && (
         <>
           <LayoutDrawer
             description={selectedDescription}
@@ -185,7 +284,7 @@ const MergeWidget: React.FC = () => {
             ))}
           </div>
         </>
-      )}
+      )} */}
       <Modal show={show} onHide={handleClose} style={{ marginTop: "20vh" }}>
         <Modal.Body>
           <img className="w-100" src={modalImageSrc} alt="modal" />
