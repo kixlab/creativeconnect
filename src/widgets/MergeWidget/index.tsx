@@ -23,7 +23,8 @@ const MergeWidget: React.FC = () => {
   const [sketches, setSketches] = useState(new Array(3).fill(null));
   const [originalLayout, setOriginalLayout] = useState([]);
   const [moresketches, setMoreSketches] = useState<string[]>([]);
-  const [generatingMore, setGeneratingMore] = useState(false);
+  const [generatingMore, setGeneratingMore] = useState<null | number>(null);
+  const [generatingMoreAndMore, setGeneratingMoreAndMore] = useState<boolean>(false);
 
   const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
@@ -152,7 +153,7 @@ const MergeWidget: React.FC = () => {
         <div className="mt-5">
           <h6>Merge results : Select the one you like</h6>
           {descriptions.map((des, i) => (
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center mb-2">
               <div className="position-relative" style={{ width: "150px", marginRight: "1rem" }}>
                 {sketches[i] ? (
                   <>
@@ -169,7 +170,11 @@ const MergeWidget: React.FC = () => {
                       )}
                     </button>
                     <img
-                      style={{ width: "150px" }}
+                      style={{
+                        width: "150px",
+                        borderRadius: "0.25rem",
+                        border: "1px solid #cccccc",
+                      }}
                       src={BACKEND_BASEURL + sketches[i]}
                       alt="result"
                       onClick={() => {
@@ -197,16 +202,26 @@ const MergeWidget: React.FC = () => {
                     addLog("getMoreSketches", {
                       description: des,
                     });
-                    setGeneratingMore(true);
+                    setGeneratingMore(i);
+                    setSelectedDescription(des);
                     getMoreSketches(des, originalLayout).then((res: any) => {
                       setMoreSketches(res.data.image_path_sketch);
-                      setGeneratingMore(false);
+                      setGeneratingMore(null);
                     });
                   }}
-                  disabled={generatingMore}
+                  disabled={generatingMore !== null}
                   className="btn btn-custom btn-sm"
                 >
-                  More sketches
+                  {generatingMore === i ? (
+                    <div className="d-flex align-items-center justify-content-center">
+                      Generating...
+                      <div className="spinner-border spinner-border-sm" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    "More sketches"
+                  )}
                 </button>
               </div>
             </div>
@@ -220,6 +235,7 @@ const MergeWidget: React.FC = () => {
             className="position-relative w-50"
             style={{
               borderRadius: "0.25rem",
+              border: "1px solid #cccccc",
             }}
           >
             <button
@@ -238,6 +254,7 @@ const MergeWidget: React.FC = () => {
               className="w-100"
               style={{
                 borderRadius: "0.25rem",
+                border: "1px solid #cccccc",
               }}
               alt="result"
               src={BACKEND_BASEURL + src}
@@ -249,6 +266,33 @@ const MergeWidget: React.FC = () => {
             />
           </div>
         ))}
+        {moresketches.length > 0 && (
+          <div
+            className="position-relative w-50 d-flex align-items-center justify-content-center"
+            style={{
+              borderRadius: "0.25rem",
+              border: "1px solid #cccccc",
+              minHeight: "180px",
+            }}
+          >
+            <button
+              className="btn btn-outline-dark"
+              disabled={generatingMoreAndMore}
+              onClick={() => {
+                addLog("getMoreSketches", {
+                  description: selectedDescription,
+                });
+                setGeneratingMoreAndMore(true);
+                getMoreSketches(selectedDescription, originalLayout).then((res: any) => {
+                  setMoreSketches((prev) => [...prev, ...res.data.image_path_sketch]);
+                  setGeneratingMoreAndMore(false);
+                });
+              }}
+            >
+              {generatingMoreAndMore ? "Generating..." : "More sketches"}
+            </button>
+          </div>
+        )}
       </div>
       {/* {selectedDescription && (
         <>
@@ -263,6 +307,7 @@ const MergeWidget: React.FC = () => {
                 className="position-relative w-50"
                 style={{
                   borderRadius: "0.25rem",
+                  border: "1px solid #cccccc"
                 }}
               >
                 <button
@@ -281,6 +326,7 @@ const MergeWidget: React.FC = () => {
                   className="w-100"
                   style={{
                     borderRadius: "0.25rem",
+                    border: "1px solid #cccccc"
                   }}
                   alt="result"
                   src={BACKEND_BASEURL + src}
