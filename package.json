@@ -41,6 +41,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-cc": "PORT=7888 react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "serve": "serve -s -c ./serve.json -l 3000",
     "predeploy": "npm run build",
