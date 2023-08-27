@@ -12,6 +12,7 @@ import useItem from "./useItem";
 import TRIGGER from "../config/trigger";
 import { DropCallback } from "../util/eventHandler/dragAndDrop";
 import { StageData } from "../redux/currentStageData";
+import { addLog } from "../api/log";
 
 const useDragAndDrop = (
   stageRef: MutableRefObject<Konva.Stage>,
@@ -20,6 +21,12 @@ const useDragAndDrop = (
   const { createItem, updateItem } = useItem();
 
   const insertImage = (e: DragEvent, data: { [key: string]: any }) => {
+    addLog("insertImage", {
+      filename: data.filename,
+      keywords: data.keywords,
+      allKeywords: data.allKeywords,
+    });
+
     const imageSrc = new Image();
     let source = data.src;
 
@@ -63,6 +70,11 @@ const useDragAndDrop = (
   };
 
   const insertKeyword = (e: DragEvent, data: { [key: string]: any }) => {
+    addLog("insertKeyword", {
+      keyword: data.keyword,
+      source: data.source,
+    });
+
     const position = getFramePos(stageRef!.current!, e, 0, 0);
     const newKeyword: StageData = {
       id: nanoid(),
@@ -89,7 +101,6 @@ const useDragAndDrop = (
     const { trigger, ...data } = dragSrc;
 
     data.id = nanoid();
-    console.log("trigger", trigger);
     switch (trigger) {
       case TRIGGER.INSERT.IMAGE:
         return insertImage(e, data);

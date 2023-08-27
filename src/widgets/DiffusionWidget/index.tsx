@@ -4,6 +4,7 @@ import { Col, Modal } from "react-bootstrap";
 import { BACKEND_BASEURL, getImage } from "../../api/ImageElementAPI";
 import LayoutDrawer from "../MergeWidget/layoutDrawer";
 import useStarredImageList from "../../hook/useStarredImageList";
+import { addLog } from "../../api/log";
 
 const DiffusionWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
@@ -28,6 +29,11 @@ const DiffusionWidget: React.FC = () => {
 
   const onSubmit = (data: any) => {
     setLoading(true);
+    addLog("generateImageManually", {
+      layout: data.layout,
+      objects: data.objects,
+      caption: data.caption,
+    });
     getImage(data).then((res: any) => {
       setLoading(false);
       setSketches(res.data.image_path_sketch);
@@ -37,6 +43,9 @@ const DiffusionWidget: React.FC = () => {
   };
 
   const handleStarClick = (filename: string) => {
+    addLog("starImgae", {
+      filename: filename,
+    });
     if (findStarredImage(filename)) removeStarredImage(filename);
     else
       addStarredImage({

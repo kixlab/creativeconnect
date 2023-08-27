@@ -5,6 +5,7 @@ import Drag from "../../util/Drag";
 import TRIGGER from "../../config/trigger";
 import useItem from "../../hook/useItem";
 import colorMapping from "../../config/keywordTypes";
+import { addLog } from "../../api/log";
 
 const ExpandWidget: React.FC = () => {
   const { stageData } = useItem();
@@ -61,6 +62,10 @@ const KeywordPanel: React.FC<{
       .then((res) => {
         setExpandedElements(res.data.suggestedKeywords);
         setNeedReload(false);
+        addLog("getExpandedKeywords", {
+          keywords: keywords.map((k) => k.type + ":" + k.keyword),
+          suggestedKeywords: res.data.suggestedKeywords.map((k: any) => k.type + ":" + k.keyword),
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -125,6 +130,7 @@ const KeywordPanel: React.FC<{
                   keyword: element.keyword,
                   type: element.type,
                 },
+                source: "expansion",
               }}
             >
               <label

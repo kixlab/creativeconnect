@@ -13,6 +13,7 @@ import {
 } from "../../api/ImageElementAPI";
 // import LayoutDrawer from "./layoutDrawer";
 import useStarredImageList from "../../hook/useStarredImageList";
+import { addLog } from "../../api/log";
 
 const MergeWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
@@ -57,6 +58,10 @@ const MergeWidget: React.FC = () => {
   }, [selectedLabelList]);
 
   const handleMergeClick = () => {
+    addLog("mergeKeywords", {
+      keywords: selectedLabelList.map((label) => label.type + ":" + label.keyword),
+    });
+
     setLoading(true);
     getDescriptions(selectedLabelList)
       .then((res: any) => {
@@ -92,6 +97,9 @@ const MergeWidget: React.FC = () => {
   };
 
   const handleStarClick = (imageId: string) => {
+    addLog("starImgae", {
+      filename: imageId,
+    });
     if (findStarredImage(imageId)) removeStarredImage(imageId);
     else
       addStarredImage({
@@ -186,6 +194,9 @@ const MergeWidget: React.FC = () => {
                 <p>{des.caption}</p>
                 <button
                   onClick={() => {
+                    addLog("getMoreSketches", {
+                      description: des,
+                    });
                     setGeneratingMore(true);
                     getMoreSketches(des, originalLayout).then((res: any) => {
                       setMoreSketches(res.data.image_path_sketch);

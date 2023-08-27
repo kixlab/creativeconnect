@@ -64,6 +64,7 @@ const CustomKeywordWidget: React.FC = () => {
                 keyword: keyword.keyword,
                 type: keyword.type,
               },
+              source: "custom",
             }}
           >
             <label
