@@ -37,6 +37,10 @@ const useItem = () => {
   const dispatch = useDispatch();
   const stageData = useSelector(stageDataSelector.selectAll);
 
+  const initializeItems = (dataList: StageData[]) => {
+    dispatch(stageDataAction.setAllItems(dataList));
+  };
+
   const createItem = (newItem: StageData) => {
     dispatch(stageDataAction.addItem(newItem));
   };
@@ -78,6 +82,7 @@ const useItem = () => {
 
   return {
     stageData,
+    initializeItems,
     createItem,
     updateItem,
     updateKeywords,

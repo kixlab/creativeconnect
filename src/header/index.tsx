@@ -3,13 +3,14 @@ import colorStyles from "../style/color.module.css";
 import useItem from "../hook/useItem";
 import { addLog } from "../api/log";
 import { Modal } from "react-bootstrap";
+import { initialUnderwaterData, initialUniverseData } from "../config/initialStageData";
 
 type HeaderProps = {
   showModal: () => void;
 };
 
 const Header: React.FC<HeaderProps> = ({ showModal }) => {
-  const { clearItems } = useItem();
+  const { stageData, initializeItems, clearItems } = useItem();
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -38,6 +39,29 @@ const Header: React.FC<HeaderProps> = ({ showModal }) => {
               className="bi bi-arrow-clockwise"
               onClick={clearItems}
             ></i>
+          </div>
+          <div
+            onClick={() => {
+              console.log(stageData);
+            }}
+          >
+            <i className="bi bi-cloud-download-fill"></i>
+          </div>
+          <div
+            onClick={() => {
+              initializeItems(initialUnderwaterData);
+            }}
+          >
+            <i className="bi bi-droplet-fill"></i>
+            <i className="bi bi-tree-fill"></i>
+          </div>
+          <div
+            onClick={() => {
+              initializeItems(initialUniverseData);
+            }}
+          >
+            <i className="bi bi-moon-stars-fill"></i>
+            <i className="bi bi-binoculars-fill"></i>
           </div>
         </div>
       </header>

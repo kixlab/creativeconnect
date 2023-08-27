@@ -34,6 +34,9 @@ export const stageDataSlice = createSlice({
   name: STAGE_PREFIX,
   initialState: stageDataEntity.setAll(stageDataEntity.getInitialState(), []),
   reducers: {
+    setAllItems(state, action: PayloadAction<StageData[]>) {
+      stageDataEntity.setAll(state, action.payload);
+    },
     addItem(state, action) {
       if (Array.isArray(action.payload)) {
         stageDataEntity.addMany(state, action.payload);
