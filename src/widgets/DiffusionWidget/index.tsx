@@ -8,13 +8,6 @@ import { addLog } from "../../api/log";
 
 const DiffusionWidget: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
-  const [selectedDescription, setSelectedDescription] = useState<any | null>({
-    layout: [["object1", [0.42, 0.29, 0.198, 0.318]]],
-    objects: {
-      object1: "Example object",
-    },
-    caption: "Example caption",
-  });
   // const [imageId, setImageId] = useState<string>("");
   // const [imageSrc, setImageSrc] = useState<string>("");
   const [sketches, setSketches] = useState<any[]>([]);
@@ -56,7 +49,7 @@ const DiffusionWidget: React.FC = () => {
 
   return (
     <Col className="mergeWidgetWrapper">
-      <LayoutDrawer description={selectedDescription} onSubmit={onSubmit} loading={isLoading} />
+      <LayoutDrawer onSubmit={onSubmit} loading={isLoading} />
 
       {sketches.map((filename) => (
         <div

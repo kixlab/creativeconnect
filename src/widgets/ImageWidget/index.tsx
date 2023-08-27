@@ -147,7 +147,6 @@ const CurrImageThumbnail: React.FC<{
   }, [item]);
 
   useEffect(() => {
-    console.log("Selected Keywords changed");
     updateKeywords(item.id(), selectedKeywords, allKeywords);
   }, [selectedKeywords, allKeywords]);
 
@@ -208,13 +207,15 @@ const CurrImageThumbnail: React.FC<{
                   ).length > 0
                 }
                 onChange={(e) => {
-                  console.log(e.target.checked);
                   if (e.target.checked) {
                     setSelectedKeywords((prev) => [...prev, keyword]);
                   } else
                     setSelectedKeywords((prev) => {
-                      console.log(prev.filter((prevKeyword) => prevKeyword !== keyword));
-                      return prev.filter((prevKeyword) => prevKeyword !== keyword);
+                      return prev.filter(
+                        (prevKeyword) =>
+                          prevKeyword.type !== keyword.type ||
+                          prevKeyword.keyword !== keyword.keyword
+                      );
                     });
                 }}
               />
@@ -257,9 +258,13 @@ const CurrImageThumbnail: React.FC<{
                             if (e.target.checked) {
                               setSelectedKeywords((prev) => [...prev, keyword]);
                             } else
-                              setSelectedKeywords((prev) =>
-                                prev.filter((prevKeyword) => prevKeyword !== keyword)
-                              );
+                              setSelectedKeywords((prev) => {
+                                return prev.filter(
+                                  (prevKeyword) =>
+                                    prevKeyword.type !== keyword.type ||
+                                    prevKeyword.keyword !== keyword.keyword
+                                );
+                              });
                           }}
                         />
                       ))}

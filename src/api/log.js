@@ -8,7 +8,6 @@ const search = Axios.create({
 });
 
 const addLog = (action, data) => {
-  console.log("addLog", action, data);
   return search.post("/add", {
     userId: USERID,
     action: action,

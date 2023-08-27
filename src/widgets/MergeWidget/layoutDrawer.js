@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Layer, Rect, Stage, Transformer } from "react-konva";
-import { getLayout, getSuggestedLayout } from "../../api/ImageElementAPI";
-import useLabelSelection from "../../hook/useLabelSelection";
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange, draggable }) => {
   const shapeRef = React.useRef();
@@ -122,50 +120,25 @@ const colors = [
   },
 ];
 
-const LayoutDrawer = ({ description, onSubmit, loading }) => {
-  const [caption, setCaption] = useState(description.caption);
+const initialDescription = {
+  layout: [["object1", [0.42, 0.29, 0.198, 0.318]]],
+  objects: {
+    object1: "!! Enter the description of the object here",
+  },
+  caption: "!! Enter the description of the image here",
+};
+
+const LayoutDrawer = ({ onSubmit, loading }) => {
+  const [caption, setCaption] = useState("");
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
 
-  // const [originalLayout, setOriginalLayout] = useState([]);
-  // const [suggestedLayouts, setSuggestedLayouts] = useState([]);
-  // const [shownLayout, setShownLayout] = useState(0);
-
-  // const { selectedLabelList } = useLabelSelection();
-
-  // useEffect(() => {
-  //   let layoutReferenceImages = selectedLabelList.filter(
-  //     (keyword) => keyword.type === "Arrangement"
-  //   );
-  //   if (layoutReferenceImages.length === 0) return;
-  //   else {
-  //     let layoutImage =
-  //       layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
-  //     getLayout(layoutImage).then((res) => {
-  //       setOriginalLayout(res.data.bboxes);
-  //       getSuggestedLayout(res.data.bboxes, objects.length).then((res) => {
-  //         let adjustedLayouts = res.data.layouts.map((layout) => {
-  //           return layout.map((item) => ({
-  //             x: (item[0] * 200) / 512,
-  //             y: (item[1] * 200) / 512,
-  //             width: (item[2] * 200) / 512,
-  //             height: (item[3] * 200) / 512,
-  //           }));
-  //         });
-  //         setSuggestedLayouts(adjustedLayouts);
-  //         setShownLayout(0);
-  //       });
-  //     });
-  //   }
-  // }, [selectedLabelList, objects.length]);
-
-  useEffect(() => {
-    setCaption(description.caption);
-
-    const newObjects = description.layout.map((l, i) => {
+  const resetDescriptions = () => {
+    setCaption(initialDescription.caption);
+    const newObjects = initialDescription.layout.map((l, i) => {
       let object = l[0];
       let bbox = l[1];
-      let detail = description.objects[object];
+      let detail = initialDescription.objects[object];
 
       return {
         id: i,
@@ -183,12 +156,14 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
         },
       };
     });
-
     setObjects(newObjects);
-  }, [description]);
+  };
+
+  useEffect(() => {
+    resetDescriptions();
+  }, []);
 
   const checkDeselect = (e) => {
-    // deselect when clicked on empty area
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectShape(null);
@@ -228,7 +203,16 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
 
   return (
     <div className="mt-3">
-      <h6>Add details</h6>
+      <div className="d-flex align-items-center mb-3">
+        <h6 className="mb-0 me-2">Add details</h6>
+        <div>
+          <i
+            style={{ cursor: "pointer" }}
+            className="bi bi-arrow-clockwise"
+            onClick={resetDescriptions}
+          ></i>
+        </div>
+      </div>
       <div className="mt-1 mb-5">
         <div className="mb-3" style={{ width: "200px", height: "200px" }}>
           <Stage
@@ -239,46 +223,6 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
             onTouchStart={checkDeselect}
           >
             <Layer>
-              {/* {originalLayout?.map((bbox, i) => {
-                const shapeProps = {
-                  x: bbox[0],
-                  y: bbox[1],
-                  width: bbox[2],
-                  height: bbox[3],
-                  stroke: "gray",
-                  strokeWidth: 2,
-                };
-                return (
-                  <Rectangle
-                    key={"custom"}
-                    shapeProps={shapeProps}
-                    isSelected={false}
-                    onSelect={() => {}}
-                    onChange={() => {}}
-                    draggable={false}
-                  />
-                );
-              })} */}
-              {/* {suggestedLayouts[shownLayout]?.map((bbox, i) => {
-                const shapeProps = {
-                  x: bbox.x,
-                  y: bbox.y,
-                  width: bbox.width,
-                  height: bbox.height,
-                  stroke: "#F5C6AA",
-                  strokeWidth: 2,
-                };
-                return (
-                  <Rectangle
-                    key={`custom-${i}`}
-                    shapeProps={shapeProps}
-                    isSelected={false}
-                    onSelect={() => {}}
-                    onChange={() => {}}
-                    draggable={false}
-                  />
-                );
-              })} */}
               {objects.map((obj, i) => {
                 const rect = obj.rectangle;
                 return (
@@ -302,23 +246,6 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
               })}
             </Layer>
           </Stage>
-          {/* <button
-            className="btn"
-            onClick={() => {
-              setShownLayout((shownLayout + 1) % suggestedLayouts.length);
-            }}
-          >
-            <i class="bi bi-arrow-left-short"></i>
-          </button>
-          Other Layouts
-          <button
-            className="btn"
-            onClick={() => {
-              setShownLayout((shownLayout + 1) % suggestedLayouts.length);
-            }}
-          >
-            <i class="bi bi-arrow-right-short"></i>
-          </button> */}
         </div>
         <div className="w-100">
           <form onSubmit={handleSubmit}>
