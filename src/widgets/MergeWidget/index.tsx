@@ -150,85 +150,88 @@ const MergeWidget: React.FC = () => {
         <hr style={{ marginTop: "-20px" }} />
       </div>
       {descriptions.length > 0 && (
-        <div className="mt-5">
-          <h6>Merge results : Select the one you like</h6>
-          {descriptions.map((des, i) => (
-            <div className="d-flex align-items-center mb-2">
-              <div className="position-relative" style={{ width: "150px", marginRight: "1rem" }}>
-                {sketches[i] ? (
-                  <>
-                    <button
-                      type="button"
-                      className="btn btn-lg position-absolute top-0 end-0"
-                      style={{ color: "#FFC107" }}
-                      onClick={() => handleStarClick(sketches[i])}
+        <>
+          <div className="mt-5">
+            <h6>Merge results : Select the one you like</h6>
+            {descriptions.map((des, i) => (
+              <div className="d-flex align-items-center mb-2" style={{ minHeight: "150px" }}>
+                <div className="position-relative" style={{ width: "150px", marginRight: "1rem" }}>
+                  {sketches[i] ? (
+                    <>
+                      <button
+                        type="button"
+                        className="btn btn-lg position-absolute top-0 end-0"
+                        style={{ color: "#FFC107" }}
+                        onClick={() => handleStarClick(sketches[i])}
+                      >
+                        {findStarredImage(sketches[i]) ? (
+                          <i className="bi bi-star-fill"></i>
+                        ) : (
+                          <i className="bi bi-star"></i>
+                        )}
+                      </button>
+                      <img
+                        style={{
+                          width: "150px",
+                          borderRadius: "0.25rem",
+                          border: "1px solid #cccccc",
+                        }}
+                        src={BACKEND_BASEURL + sketches[i]}
+                        alt="result"
+                        onClick={() => {
+                          setModalImageSrc(BACKEND_BASEURL + sketches[i]);
+                          handleShow();
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <div
+                      className="d-flex justify-content-center align-items-center"
+                      style={{ width: "150px" }}
                     >
-                      {findStarredImage(sketches[i]) ? (
-                        <i className="bi bi-star-fill"></i>
-                      ) : (
-                        <i className="bi bi-star"></i>
-                      )}
-                    </button>
-                    <img
-                      style={{
-                        width: "150px",
-                        borderRadius: "0.25rem",
-                        border: "1px solid #cccccc",
-                      }}
-                      src={BACKEND_BASEURL + sketches[i]}
-                      alt="result"
-                      onClick={() => {
-                        setModalImageSrc(BACKEND_BASEURL + sketches[i]);
-                        handleShow();
-                      }}
-                    />
-                  </>
-                ) : (
-                  <div
-                    className="d-flex justify-content-center align-items-center"
-                    style={{ width: "150px" }}
-                  >
-                    <div className="spinner-border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div style={{ fontSize: "small" }}>
-                <p>{des.caption}</p>
-                <button
-                  onClick={() => {
-                    addLog("getMoreSketches", {
-                      description: des,
-                    });
-                    setGeneratingMore(i);
-                    setSelectedDescription(des);
-                    getMoreSketches(des, originalLayout).then((res: any) => {
-                      setMoreSketches(res.data.image_path_sketch);
-                      setGeneratingMore(null);
-                    });
-                  }}
-                  disabled={generatingMore !== null}
-                  className="btn btn-custom btn-sm"
-                >
-                  {generatingMore === i ? (
-                    <div className="d-flex align-items-center justify-content-center">
-                      Generating...
-                      <div className="spinner-border spinner-border-sm" role="status">
+                      <div className="spinner-border" role="status">
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     </div>
-                  ) : (
-                    "More sketches"
                   )}
-                </button>
+                </div>
+
+                <div style={{ fontSize: "small" }}>
+                  <p>{des.caption}</p>
+                  <button
+                    onClick={() => {
+                      addLog("getMoreSketches", {
+                        description: des,
+                      });
+                      setGeneratingMore(i);
+                      setSelectedDescription(des);
+                      getMoreSketches(des, originalLayout).then((res: any) => {
+                        setMoreSketches(res.data.image_path_sketch);
+                        setGeneratingMore(null);
+                      });
+                    }}
+                    disabled={generatingMore !== null}
+                    className="btn btn-custom btn-sm"
+                  >
+                    {generatingMore === i ? (
+                      <div className="d-flex align-items-center justify-content-center">
+                        Generating...
+                        <div className="spinner-border spinner-border-sm" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      </div>
+                    ) : (
+                      "More sketches"
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          <hr />
+        </>
       )}
-      <hr />
+
       <div className="d-flex flex-wrap">
         {moresketches.map((src) => (
           <div
