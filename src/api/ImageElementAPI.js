@@ -6,8 +6,13 @@ export const BACKEND_BASEURL = "http://143.248.48.96:7887/";
 const imageElement = axios.create({
   baseURL: BACKEND_BASEURL,
 });
-
 export const sendImage = (data) => {
+  return imageElement.post("sendImage", {
+    image: data.image,
+  });
+};
+
+export const imageToKeywords = (data) => {
   return imageElement.post("imageToKeywords", {
     image: data.image,
   });

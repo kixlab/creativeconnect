@@ -4,6 +4,9 @@ import Drag from "../../util/Drag";
 import colorMapping from "../../config/keywordTypes";
 import trigger from "../../config/trigger";
 
+const urlParams = new URLSearchParams(window.location.search);
+const CONDITION = urlParams.get("c") === "C" ? "CONTROL" : "TREATMENT";
+
 const CustomKeywordWidget: React.FC = () => {
   const [keywordList, setKeywordList] = useState<any[]>([]);
 
@@ -26,9 +29,17 @@ const CustomKeywordWidget: React.FC = () => {
       >
         <div className="input-group input-group-sm mb-3">
           <select id="keywordType" className="form-select" aria-label="Default select example">
-            <option value="Subject matter">Subject matter</option>
-            <option value="Action & pose">Action & pose</option>
-            <option value="Theme & mood">Theme & mood</option>
+            {CONDITION === "CONTROL" ? (
+              <>
+                <option value="Note">Note</option>
+              </>
+            ) : (
+              <>
+                <option value="Subject matter">Subject matter</option>
+                <option value="Action & pose">Action & pose</option>
+                <option value="Theme & mood">Theme & mood</option>
+              </>
+            )}
           </select>
           <input
             id="keywordName"

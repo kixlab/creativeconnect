@@ -30,7 +30,6 @@ const MergeWidget: React.FC = () => {
   // Modal
   const [show, setShow] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState<string>("");
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

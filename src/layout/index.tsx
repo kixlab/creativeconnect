@@ -7,6 +7,7 @@ import "./layout.css";
 import StarredWidget from "../widgets/StarredWidget";
 import ExpandWidget from "../widgets/ExpandWidget";
 import CustomKeywordWidget from "../widgets/CustomKeywordWidget";
+import DiffusionWidget from "../widgets/DiffusionWidget";
 
 type LayoutProps = {
   header?: React.ReactNode;
@@ -16,8 +17,13 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
+const urlParams = new URLSearchParams(window.location.search);
+const CONDITION = urlParams.get("c") === "C" ? "CONTROL" : "TREATMENT";
+
 function Layout(data: LayoutProps) {
-  const [sidebarMenu, setSidebarMenu] = useState<"merge" | "starred">("merge");
+  const [sidebarMenu, setSidebarMenu] = useState<"merge" | "starred" | "diffusion">(
+    CONDITION === "CONTROL" ? "diffusion" : "merge"
+  );
 
   return (
     <>
@@ -45,7 +51,7 @@ function Layout(data: LayoutProps) {
               className="position-fixed bottom-0"
               style={{ left: "50%", transform: "translateX(-50%)" }}
             >
-              <ExpandWidget />
+              {CONDITION === "CONTROL" ? <></> : <ExpandWidget />}
             </div>
           </div>
         </div>
@@ -54,14 +60,28 @@ function Layout(data: LayoutProps) {
           className="hide-scrollbar"
         >
           <div className="d-flex align-items-center justify-content-center">
-            <div
-              className={
-                sidebarMenu === "merge" ? "sidebar-menu sidebar-menu-selected" : "sidebar-menu"
-              }
-              onClick={() => setSidebarMenu("merge")}
-            >
-              Merge Keywords
-            </div>
+            {CONDITION === "CONTROL" ? (
+              <div
+                className={
+                  sidebarMenu === "diffusion"
+                    ? "sidebar-menu sidebar-menu-selected"
+                    : "sidebar-menu"
+                }
+                onClick={() => setSidebarMenu("diffusion")}
+              >
+                Generate skteches
+              </div>
+            ) : (
+              <div
+                className={
+                  sidebarMenu === "merge" ? "sidebar-menu sidebar-menu-selected" : "sidebar-menu"
+                }
+                onClick={() => setSidebarMenu("merge")}
+              >
+                Merge Keywords
+              </div>
+            )}
+
             <div
               className={
                 sidebarMenu === "starred" ? "sidebar-menu sidebar-menu-selected" : "sidebar-menu"
@@ -72,6 +92,14 @@ function Layout(data: LayoutProps) {
             </div>
           </div>
 
+          <div
+            style={{
+              visibility: sidebarMenu === "diffusion" ? "visible" : "hidden",
+              display: sidebarMenu === "diffusion" ? "block" : "none",
+            }}
+          >
+            <DiffusionWidget />
+          </div>
           <div
             style={{
               visibility: sidebarMenu === "merge" ? "visible" : "hidden",

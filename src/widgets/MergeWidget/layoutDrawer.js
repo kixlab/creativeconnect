@@ -127,37 +127,37 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
   const [objects, setObjects] = useState([]);
   const [selectedId, selectShape] = useState(null);
 
-  const [originalLayout, setOriginalLayout] = useState([]);
-  const [suggestedLayouts, setSuggestedLayouts] = useState([]);
-  const [shownLayout, setShownLayout] = useState(0);
+  // const [originalLayout, setOriginalLayout] = useState([]);
+  // const [suggestedLayouts, setSuggestedLayouts] = useState([]);
+  // const [shownLayout, setShownLayout] = useState(0);
 
-  const { selectedLabelList } = useLabelSelection();
+  // const { selectedLabelList } = useLabelSelection();
 
-  useEffect(() => {
-    let layoutReferenceImages = selectedLabelList.filter(
-      (keyword) => keyword.type === "Arrangement"
-    );
-    if (layoutReferenceImages.length === 0) return;
-    else {
-      let layoutImage =
-        layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
-      getLayout(layoutImage).then((res) => {
-        setOriginalLayout(res.data.bboxes);
-        getSuggestedLayout(res.data.bboxes, objects.length).then((res) => {
-          let adjustedLayouts = res.data.layouts.map((layout) => {
-            return layout.map((item) => ({
-              x: (item[0] * 200) / 512,
-              y: (item[1] * 200) / 512,
-              width: (item[2] * 200) / 512,
-              height: (item[3] * 200) / 512,
-            }));
-          });
-          setSuggestedLayouts(adjustedLayouts);
-          setShownLayout(0);
-        });
-      });
-    }
-  }, [selectedLabelList, objects.length]);
+  // useEffect(() => {
+  //   let layoutReferenceImages = selectedLabelList.filter(
+  //     (keyword) => keyword.type === "Arrangement"
+  //   );
+  //   if (layoutReferenceImages.length === 0) return;
+  //   else {
+  //     let layoutImage =
+  //       layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
+  //     getLayout(layoutImage).then((res) => {
+  //       setOriginalLayout(res.data.bboxes);
+  //       getSuggestedLayout(res.data.bboxes, objects.length).then((res) => {
+  //         let adjustedLayouts = res.data.layouts.map((layout) => {
+  //           return layout.map((item) => ({
+  //             x: (item[0] * 200) / 512,
+  //             y: (item[1] * 200) / 512,
+  //             width: (item[2] * 200) / 512,
+  //             height: (item[3] * 200) / 512,
+  //           }));
+  //         });
+  //         setSuggestedLayouts(adjustedLayouts);
+  //         setShownLayout(0);
+  //       });
+  //     });
+  //   }
+  // }, [selectedLabelList, objects.length]);
 
   useEffect(() => {
     setCaption(description.caption);
@@ -195,6 +195,28 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
     }
   };
 
+  const handleAddObject = () => {
+    let objectId = "object" + (Object.keys(objects).length + 1);
+    setObjects([
+      ...objects,
+      {
+        id: objectId,
+        object: objectId,
+        detail: "",
+        color: colors.find((c) => c.id === objects.length).color,
+        rectangle: {
+          x: 20,
+          y: 30,
+          width: 40,
+          height: 50,
+          stroke: colors.find((c) => c.id === objects.length).color,
+          strokeWidth: 2,
+          id: objectId,
+        },
+      },
+    ]);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
@@ -206,9 +228,9 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
 
   return (
     <div className="mt-3">
-      <h6>Edit details</h6>
-      <div className="d-flex mt-1 mb-5">
-        <div className="me-2" style={{ width: "200px", height: "200px" }}>
+      <h6>Add details</h6>
+      <div className="mt-1 mb-5">
+        <div className="mb-3" style={{ width: "200px", height: "200px" }}>
           <Stage
             width={200}
             height={200}
@@ -237,7 +259,7 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
                   />
                 );
               })} */}
-              {suggestedLayouts[shownLayout]?.map((bbox, i) => {
+              {/* {suggestedLayouts[shownLayout]?.map((bbox, i) => {
                 const shapeProps = {
                   x: bbox.x,
                   y: bbox.y,
@@ -256,7 +278,7 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
                     draggable={false}
                   />
                 );
-              })}
+              })} */}
               {objects.map((obj, i) => {
                 const rect = obj.rectangle;
                 return (
@@ -280,7 +302,7 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
               })}
             </Layer>
           </Stage>
-          <button
+          {/* <button
             className="btn"
             onClick={() => {
               setShownLayout((shownLayout + 1) % suggestedLayouts.length);
@@ -296,14 +318,14 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
             }}
           >
             <i class="bi bi-arrow-right-short"></i>
-          </button>
+          </button> */}
         </div>
         <div className="w-100">
           <form onSubmit={handleSubmit}>
             <InputOnImage
               key={"caption"}
               name={"Caption"}
-              color={"white"}
+              color={"#fef7ef"}
               value={caption}
               onChange={(e) => {
                 setCaption(e.target.value);
@@ -326,6 +348,15 @@ const LayoutDrawer = ({ description, onSubmit, loading }) => {
                 />
               );
             })}
+            <div>
+              <button
+                type="button"
+                className="btn btn-custom btn-sm mt-3"
+                onClick={handleAddObject}
+              >
+                Add object
+              </button>
+            </div>
 
             <button type="submit" className="btn btn-custom mt-3" disabled={loading}>
               {loading ? "Generating..." : "Generate sketch"}
