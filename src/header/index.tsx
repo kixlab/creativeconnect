@@ -4,6 +4,7 @@ import useItem from "../hook/useItem";
 import { addLog } from "../api/log";
 import { Modal } from "react-bootstrap";
 import { initialUnderwaterData, initialUniverseData } from "../config/initialStageData";
+import { USERID } from "../api/userConfig";
 
 type HeaderProps = {
   showModal: () => void;
@@ -15,6 +16,19 @@ const Header: React.FC<HeaderProps> = ({ showModal }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const downloadStageData = (stageData: any) => {
+    const formattedData = JSON.stringify(stageData, null, 2); // Convert objects to a formatted JSON string
+    const blob = new Blob([formattedData], { type: "text/plain" });
+    const anchor = document.createElement("a");
+    anchor.download = USERID + ".txt";
+    anchor.href = window.URL.createObjectURL(blob);
+    anchor.target = "_blank";
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  };
 
   return (
     <>
@@ -42,7 +56,8 @@ const Header: React.FC<HeaderProps> = ({ showModal }) => {
           </div>
           <div
             onClick={() => {
-              console.log(stageData);
+              downloadStageData(stageData);
+              // console.log(stageData);
             }}
           >
             <i className="bi bi-cloud-download-fill"></i>
