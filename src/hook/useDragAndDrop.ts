@@ -71,7 +71,7 @@ const useDragAndDrop = (
 
   const insertKeyword = (e: DragEvent, data: { [key: string]: any }) => {
     addLog("insertKeyword", {
-      keyword: data.keyword,
+      keyword: data.keyword.type + " : " + data.keyword.keyword,
       source: data.source,
     });
 

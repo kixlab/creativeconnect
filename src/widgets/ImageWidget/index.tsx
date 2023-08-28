@@ -9,6 +9,7 @@ import { CustomSelectButton } from "../util/elements";
 
 import "./ImageWidget.css";
 import useItem from "../../hook/useItem";
+import { addLog } from "../../api/log";
 
 type UploadedImage = {
   id: string;
@@ -150,12 +151,25 @@ const CurrImageThumbnail: React.FC<{
     updateKeywords(item.id(), selectedKeywords, allKeywords);
   }, [selectedKeywords, allKeywords]);
 
+  useEffect(() => {
+    addLog("updateSelectedKeywords", {
+      id: item.id(),
+      keywords: selectedKeywords.map((keyword) => keyword.type + " : " + keyword.keyword),
+    });
+  }, [selectedKeywords]);
+
   const handleCustomInputSubmit = (e: React.FormEvent<HTMLFormElement>, type: string) => {
     e.preventDefault();
     const keyword = (e.target as any).keywordName.value;
     if (type && keyword) {
       setAllKeywords((prev) => [...prev, { keyword, type }]);
     }
+
+    addLog("addCustomKeyword", {
+      id: item.id(),
+      keyword: type + " : " + keyword,
+    });
+
     (e.target as any).keywordName.value = "";
   };
 

@@ -60,7 +60,7 @@ const MergeWidget: React.FC = () => {
 
   const handleMergeClick = () => {
     addLog("mergeKeywords", {
-      keywords: selectedLabelList.map((label) => label.type + ":" + label.keyword),
+      keywords: selectedLabelList.map((label) => label.type + " : " + label.keyword),
     });
 
     setLoading(true);
@@ -98,7 +98,7 @@ const MergeWidget: React.FC = () => {
   };
 
   const handleStarClick = (imageId: string) => {
-    addLog("starImgae", {
+    addLog("starImage", {
       filename: imageId,
     });
     if (findStarredImage(imageId)) removeStarredImage(imageId);

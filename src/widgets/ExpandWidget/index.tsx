@@ -63,8 +63,8 @@ const KeywordPanel: React.FC<{
         setExpandedElements(res.data.suggestedKeywords);
         setNeedReload(false);
         addLog("getExpandedKeywords", {
-          keywords: keywords.map((k) => k.type + ":" + k.keyword),
-          suggestedKeywords: res.data.suggestedKeywords.map((k: any) => k.type + ":" + k.keyword),
+          keywords: keywords.map((k) => k.type + " : " + k.keyword),
+          suggestedKeywords: res.data.suggestedKeywords.map((k: any) => k.type + " : " + k.keyword),
         });
       })
       .catch((err) => {
