@@ -24,7 +24,7 @@ const ExpandWidget: React.FC = () => {
     <div
       className="d-flex align-items-start justify-content-center text-center m-auto pt-2"
       style={{
-        width: "calc(100vw - 900px)",
+        width: "calc(100vw - 1000px)",
         height: "180px",
         background: "white",
         borderRadius: "10px 10px 0 0",

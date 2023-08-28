@@ -49,14 +49,14 @@ function Layout(data: LayoutProps) {
             {data.children}
             <div
               className="position-fixed bottom-0"
-              style={{ left: "50%", transform: "translateX(-50%)" }}
+              style={{ left: "50%", transform: "translateX(-55%)" }}
             >
               {CONDITION === "CONTROL" ? <></> : <ExpandWidget />}
             </div>
           </div>
         </div>
         <div
-          style={{ background: "white", width: "400px", maxHeight: "100%", overflowY: "scroll" }}
+          style={{ background: "white", width: "500px", maxHeight: "100%", overflowY: "scroll" }}
           className="hide-scrollbar"
         >
           <div className="d-flex align-items-center justify-content-center">

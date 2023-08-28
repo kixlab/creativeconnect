@@ -154,8 +154,8 @@ const MergeWidget: React.FC = () => {
           <div className="mt-5">
             <h6>Merge results : Select the one you like</h6>
             {descriptions.map((des, i) => (
-              <div className="d-flex align-items-center mb-2" style={{ minHeight: "150px" }}>
-                <div className="position-relative" style={{ width: "150px", marginRight: "1rem" }}>
+              <div className="d-flex align-items-center mb-2" style={{ minHeight: "220px" }}>
+                <div className="position-relative" style={{ width: "220px", marginRight: "1rem" }}>
                   {sketches[i] ? (
                     <>
                       <button
@@ -172,7 +172,7 @@ const MergeWidget: React.FC = () => {
                       </button>
                       <img
                         style={{
-                          width: "150px",
+                          width: "220px",
                           borderRadius: "0.25rem",
                           border: "1px solid #cccccc",
                         }}
@@ -187,7 +187,7 @@ const MergeWidget: React.FC = () => {
                   ) : (
                     <div
                       className="d-flex justify-content-center align-items-center"
-                      style={{ width: "150px" }}
+                      style={{ width: "220px", height: "220px" }}
                     >
                       <div className="spinner-border" role="status">
                         <span className="visually-hidden">Loading...</span>
@@ -232,11 +232,12 @@ const MergeWidget: React.FC = () => {
         </>
       )}
 
-      <div className="d-flex flex-wrap">
+      <div className="d-flex flex-wrap" style={{ gap: "10px" }}>
         {moresketches.map((src) => (
           <div
-            className="position-relative w-50"
+            className="position-relative"
             style={{
+              width: "220px",
               borderRadius: "0.25rem",
               border: "1px solid #cccccc",
             }}
@@ -271,11 +272,12 @@ const MergeWidget: React.FC = () => {
         ))}
         {moresketches.length > 0 && (
           <div
-            className="position-relative w-50 d-flex align-items-center justify-content-center"
+            className="position-relative d-flex align-items-center justify-content-center"
             style={{
+              width: "220px",
+              height: "220px",
               borderRadius: "0.25rem",
               border: "1px solid #cccccc",
-              minHeight: "180px",
             }}
           >
             <button
