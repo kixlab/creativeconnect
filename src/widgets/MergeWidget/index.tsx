@@ -35,7 +35,7 @@ const MergeWidget: React.FC = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const { selectedLabelList } = useLabelSelection();
+  const { selectedLabelList, resetSelectedLabel } = useLabelSelection();
   const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
 
   useEffect(() => {
@@ -73,12 +73,17 @@ const MergeWidget: React.FC = () => {
         const fetchImagesSequentially = async () => {
           for (let i = 0; i < res.data.descriptions.length; i++) {
             const des = res.data.descriptions[i];
-            const response = await getImageFromDescription(des);
-            setSketches((prev) => {
-              const newSketches = [...prev];
-              newSketches[i] = response.data.image_path_sketch[0];
-              return newSketches;
-            });
+            try {
+              const response = await getImageFromDescription(des);
+              setSketches((prev) => {
+                const newSketches = [...prev];
+                newSketches[i] = response.data.image_path_sketch[0];
+                return newSketches;
+              });
+            } catch (err) {
+              console.log(err);
+              continue;
+            }
           }
         };
         fetchImagesSequentially();
@@ -109,8 +114,21 @@ const MergeWidget: React.FC = () => {
       });
   };
 
+  const resetSelection = () => {
+    resetSelectedLabel();
+  };
+
   return (
     <Col className="mergeWidgetWrapper">
+      <div className="d-flex align-items-center mb-3">
+        <div className="w-100 d-flex justify-content-end">
+          <i
+            style={{ cursor: "pointer" }}
+            className="bi bi-arrow-clockwise"
+            onClick={resetSelection}
+          ></i>
+        </div>
+      </div>
       <div className="d-flex flex-wrap justify-content-center">
         {selectedLabelList.map((label) => (
           <ElementSelectButton
@@ -288,10 +306,12 @@ const MergeWidget: React.FC = () => {
                   description: selectedDescription,
                 });
                 setGeneratingMoreAndMore(true);
-                getMoreSketches(selectedDescription, originalLayout).then((res: any) => {
-                  setMoreSketches((prev) => [...prev, ...res.data.image_path_sketch]);
-                  setGeneratingMoreAndMore(false);
-                });
+                getMoreSketches(selectedDescription, originalLayout)
+                  .then((res: any) => {
+                    setMoreSketches((prev) => [...prev, ...res.data.image_path_sketch]);
+                    setGeneratingMoreAndMore(false);
+                  })
+                  .catch(() => setGeneratingMoreAndMore(false));
               }}
             >
               {generatingMoreAndMore ? "Generating..." : "More sketches"}

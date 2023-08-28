@@ -24,10 +24,15 @@ const useLabelSelection = () => {
     dispatch(selectedLabelListAction.removeItem(id));
   };
 
+  const resetSelectedLabel = async () => {
+    dispatch(selectedLabelListAction.reset());
+  };
+
   return {
     selectedLabelList,
     addSelectedLabel,
     removeSelectedLabel,
+    resetSelectedLabel,
   };
 };
 

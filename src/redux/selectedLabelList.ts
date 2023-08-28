@@ -34,6 +34,9 @@ export const selectedLabelListSlice = createSlice({
     removeItem(state, action) {
       selectedLabelListEntity.removeOne(state, action.payload);
     },
+    reset(state) {
+      selectedLabelListEntity.removeAll(state);
+    },
   },
 });
 

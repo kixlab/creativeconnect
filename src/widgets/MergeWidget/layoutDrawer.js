@@ -104,11 +104,11 @@ const colors = [
   },
   {
     id: 4,
-    color: "yellow",
+    color: "#FFB326",
   },
   {
     id: 5,
-    color: "gray",
+    color: "#FF26DE",
   },
   {
     id: 6,
@@ -116,7 +116,7 @@ const colors = [
   },
   {
     id: 7,
-    color: "#FFAE03",
+    color: "#7F2222",
   },
 ];
 
