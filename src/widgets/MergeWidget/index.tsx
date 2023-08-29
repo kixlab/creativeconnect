@@ -24,9 +24,12 @@ const MergeWidget: React.FC = () => {
   const [originalLayout, setOriginalLayout] = useState([]);
   const [moresketches, setMoreSketches] = useState<string[]>([]);
   const [generatingMore, setGeneratingMore] = useState<null | number>(null);
-  const [generatingMoreAndMore, setGeneratingMoreAndMore] = useState<boolean>(false);
+  const [generatingMoreAndMore, setGeneratingMoreAndMore] =
+    useState<boolean>(false);
 
-  const [selectedDescription, setSelectedDescription] = useState<any | null>(null);
+  const [selectedDescription, setSelectedDescription] = useState<any | null>(
+    null
+  );
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
 
   // Modal
@@ -36,7 +39,8 @@ const MergeWidget: React.FC = () => {
   const handleShow = () => setShow(true);
 
   const { selectedLabelList, resetSelectedLabel } = useLabelSelection();
-  const { addStarredImage, removeStarredImage, findStarredImage } = useStarredImageList();
+  const { addStarredImage, removeStarredImage, findStarredImage } =
+    useStarredImageList();
 
   useEffect(() => {
     setDescriptions([]);
@@ -51,7 +55,9 @@ const MergeWidget: React.FC = () => {
     if (layoutReferenceImages.length === 0) setOriginalLayout([]);
     else {
       let layoutImage =
-        layoutReferenceImages[Math.floor(Math.random() * layoutReferenceImages.length)].fileid;
+        layoutReferenceImages[
+          Math.floor(Math.random() * layoutReferenceImages.length)
+        ].fileid;
       getLayout(layoutImage).then((res) => {
         setOriginalLayout(res.data.bboxes);
       });
@@ -60,7 +66,9 @@ const MergeWidget: React.FC = () => {
 
   const handleMergeClick = () => {
     addLog("mergeKeywords", {
-      keywords: selectedLabelList.map((label) => label.type + " : " + label.keyword),
+      keywords: selectedLabelList.map(
+        (label) => label.type + " : " + label.keyword
+      ),
     });
 
     setLoading(true);
@@ -151,7 +159,10 @@ const MergeWidget: React.FC = () => {
         >
           {isLoading ? (
             <>
-              <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              <span
+                className="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
               <span className="visually-hidden" role="status">
                 Loading...
               </span>
@@ -172,8 +183,14 @@ const MergeWidget: React.FC = () => {
           <div className="mt-5">
             <h6>Merge results : Select the one you like</h6>
             {descriptions.map((des, i) => (
-              <div className="d-flex align-items-center mb-2" style={{ minHeight: "220px" }}>
-                <div className="position-relative" style={{ width: "220px", marginRight: "1rem" }}>
+              <div
+                className="d-flex align-items-center mb-2"
+                style={{ minHeight: "220px" }}
+              >
+                <div
+                  className="position-relative"
+                  style={{ width: "220px", marginRight: "1rem" }}
+                >
                   {sketches[i] ? (
                     <>
                       <button
@@ -223,10 +240,12 @@ const MergeWidget: React.FC = () => {
                       });
                       setGeneratingMore(i);
                       setSelectedDescription(des);
-                      getMoreSketches(des, originalLayout).then((res: any) => {
-                        setMoreSketches(res.data.image_path_sketch);
-                        setGeneratingMore(null);
-                      });
+                      getMoreSketches(des, originalLayout)
+                        .then((res: any) => {
+                          setMoreSketches(res.data.image_path_sketch);
+                          setGeneratingMore(null);
+                        })
+                        .catch(() => setGeneratingMore(null));
                     }}
                     disabled={generatingMore !== null}
                     className="btn btn-custom btn-sm"
@@ -234,7 +253,10 @@ const MergeWidget: React.FC = () => {
                     {generatingMore === i ? (
                       <div className="d-flex align-items-center justify-content-center">
                         Generating...
-                        <div className="spinner-border spinner-border-sm" role="status">
+                        <div
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                        >
                           <span className="visually-hidden">Loading...</span>
                         </div>
                       </div>
@@ -245,6 +267,9 @@ const MergeWidget: React.FC = () => {
                 </div>
               </div>
             ))}
+            <button onClick={() => setGeneratingMore(null)} className="btn">
+              reset
+            </button>
           </div>
           <hr />
         </>
@@ -308,7 +333,10 @@ const MergeWidget: React.FC = () => {
                 setGeneratingMoreAndMore(true);
                 getMoreSketches(selectedDescription, originalLayout)
                   .then((res: any) => {
-                    setMoreSketches((prev) => [...prev, ...res.data.image_path_sketch]);
+                    setMoreSketches((prev) => [
+                      ...prev,
+                      ...res.data.image_path_sketch,
+                    ]);
                     setGeneratingMoreAndMore(false);
                   })
                   .catch(() => setGeneratingMoreAndMore(false));
