@@ -13,7 +13,8 @@ const ExpandWidget: React.FC = () => {
     if (item.attrs["data-item-type"] === "keyword") {
       acc.push(item.keyword);
     } else if (item.attrs["data-item-type"] === "image") {
-      if (item.keywords) acc = acc.concat(item.keywords.filter((k) => k.type !== "Layout"));
+      if (item.keywords)
+        acc = acc.concat(item.keywords.filter((k) => k.type !== "Layout"));
     }
     return acc;
   }, []);
@@ -53,7 +54,9 @@ const KeywordPanel: React.FC<{
 }> = ({ name, keywords }) => {
   const [usedKeywords, setUsedKeywords] = useState<string[]>([]);
   const [needReload, setNeedReload] = useState(false);
-  const [expandedElements, setExpandedElements] = useState<any[] | "loading" | "error">([]);
+  const [expandedElements, setExpandedElements] = useState<
+    any[] | "loading" | "error"
+  >([]);
 
   const getNewKeywords = () => {
     setExpandedElements("loading");
@@ -64,7 +67,9 @@ const KeywordPanel: React.FC<{
         setNeedReload(false);
         addLog("getExpandedKeywords", {
           keywords: keywords.map((k) => k.type + " : " + k.keyword),
-          suggestedKeywords: res.data.suggestedKeywords.map((k: any) => k.type + " : " + k.keyword),
+          suggestedKeywords: res.data.suggestedKeywords.map(
+            (k: any) => k.type + " : " + k.keyword
+          ),
         });
       })
       .catch((err) => {
@@ -87,11 +92,21 @@ const KeywordPanel: React.FC<{
   }, [keywords]);
 
   return (
-    <div style={{ width: "50%", padding: "1rem" }}>
+    <div
+      style={{
+        width: "50%",
+        padding: "1rem",
+        height: "100%",
+        overflowY: "scroll",
+      }}
+    >
       <h6 className="pb-2">
         Related to {name} keywords ({keywords.length})
         {needReload && (
-          <button className="btn btn-custom btn-sm ms-3 my-0 py-0" onClick={getNewKeywords}>
+          <button
+            className="btn btn-custom btn-sm ms-3 my-0 py-0"
+            onClick={getNewKeywords}
+          >
             reload
           </button>
         )}
