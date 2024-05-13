@@ -9,9 +9,4 @@ npm start
 
 ## How to Serve
 
-```bash
-npm i -g serve
-npm i
-npm run build
-npm run serve
-```
+Get the server code from https://github.com/kixlab/creativeconnect-server
